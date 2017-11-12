@@ -8,7 +8,7 @@ public class _C {
     public static void main(String...args) {
         System.out.println(string);
         System.out.println(new _C().string);
-        String string = "Sakura";
+        String string = "Favios";
         int[] vector = {3,9};
         System.out.println(string.length() + " " + vector.length);
         
