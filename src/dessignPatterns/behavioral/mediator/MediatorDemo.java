@@ -11,7 +11,7 @@ package dessignPatterns.behavioral.mediator;
  * Pitfalls:
  * Deity object - everything to everybody
  * Limits subclassing
- * Concussing when to use it, specially against the command
+ * Confusing when to use it, specially against the command
  */
 public class MediatorDemo {
 
