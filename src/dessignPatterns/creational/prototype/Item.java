@@ -33,7 +33,7 @@ public abstract class Item implements Cloneable {
     }
 
     /**
-     * It is recommende to implement its own clone method that return the desired Oblect
+     * It is recommende to implement its own clone methodFromInterface that return the desired Oblect
      * e.g. protected Item (clone) {return (Item)(super.clone());}
      * @return
      * @throws CloneNotSupportedException

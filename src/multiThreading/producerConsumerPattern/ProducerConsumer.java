@@ -1,4 +1,4 @@
-package producerConsumer;
+package multiThreading.producerConsumerPattern;
 
 import java.util.logging.Logger;
 
@@ -7,12 +7,12 @@ import java.util.logging.Logger;
  */
 public class ProducerConsumer {
 
-    static Logger logger = Logger.getLogger(ProducerConsumer.class.getName());
+    private static Logger logger = Logger.getLogger(ProducerConsumer.class.getName());
 
-    public static final Object lock = new Object();
+    private static final Object lock = new Object();
 
-    static int[] buffer;
-    static int count;
+    private static int[] buffer;
+    private static int count;
 
     /**
      * As long as the buffer is full, the lock is freed so that another thread can own it, otherwise, an

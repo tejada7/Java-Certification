@@ -1,7 +1,5 @@
 package dessignPatterns.behavioral.iterator;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Iterator;
 
 /**
@@ -27,7 +25,7 @@ public class BikeRepository implements Iterable<String> {
         bikes[index++] = bike;
     }
 
-    @NotNull
+//    @NotNull
     @Override
     public Iterator<String> iterator() {
         Iterator<String> it = new Iterator<String>() {

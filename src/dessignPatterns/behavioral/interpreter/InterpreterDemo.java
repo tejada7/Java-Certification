@@ -25,7 +25,7 @@ public class InterpreterDemo {
     }
 
     /**
-     * Main method - build the interpreter and then interpret a specific sequence
+     * Main methodFromInterface - build the interpreter and then interpret a specific sequence
      *
      * @param args
      */

@@ -24,7 +24,7 @@ public class SecurityProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object result;
         try {
-            // Through reflection verify whether the client attempts to invoke a post method.
+            // Through reflection verify whether the client attempts to invoke a post methodFromInterface.
             if (method.getName().contains("post")) {
                 throw new IllegalAccessException("Post operation is not allowed");
             } else {

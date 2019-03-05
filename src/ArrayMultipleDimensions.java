@@ -1,10 +1,8 @@
-import java.util.Arrays;
-
 /**
  * Created by Favio on 20/8/2017.
  * In Java, arrays' rows vary in length.
  */
-public class ArrayWeirdDimentions {
+public class ArrayMultipleDimensions {
     public static void main(String[] args) {
         int array[][] = {
                 {1, 13},
@@ -16,9 +14,5 @@ public class ArrayWeirdDimentions {
             }
             System.out.println();
         }
-        String string = "abc";
-        System.out.println(Arrays.asList(new int[]{1,2,3}).size());
-        int a[] = new int[1];
-
     }
 }
