@@ -69,6 +69,28 @@ public class LinkedList<T> {
         }
     }
 
+    /**
+     * Removes an existing node within a list.
+     *
+     * @param value the node's value to be deleted
+     */
+    public void remove(T value) {
+        if (head != null) {
+            if (head.value.equals(value)) {
+                head = head.next;
+            } else {
+                Node aux = head;
+                while (aux.next != null) {
+                    if (aux.next.value.equals(value)) {
+                        aux.next = aux.next.next;
+                        return;
+                    }
+                    aux = aux.next;
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringJoiner joiner = new StringJoiner("->", "[", "]");
