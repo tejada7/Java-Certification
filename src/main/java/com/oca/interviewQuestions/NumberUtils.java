@@ -1,5 +1,8 @@
 package com.oca.interviewQuestions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Contain helpful methods for int numbers.
  */
@@ -12,17 +15,17 @@ public class NumberUtils {
      * @param powerOf the power
      * @return <code>true<code/> or <code>false<code/> according to the evaluation
      */
-    static boolean isPowerOf(int number, int powerOf) {
+    public static boolean isPowerOf(int number, int powerOf) {
         return Math.pow(number, 1d / powerOf) % 1 == 0d;
     }
 
     /**
      * Determines is a number is a palindrome, e.g. 1001, 14541
      *
-     * @param value the number to evaluate
+     * @param value the value to evaluate
      * @return <code>true<code/> or <code>false<code/> according to the evaluation
      */
-    static boolean isPalindrome(int value) {
+    public static boolean isPalindrome(int value) {
         do {
             int lastDigit = value % 10;
             int firstDigit = value / (int) Math.pow(10, (int) Math.log10(value));
@@ -42,10 +45,10 @@ public class NumberUtils {
      * Determines whether a number is Armstrong number. An Armstrong number is a number whose value is
      * equal to the sum of its digits raised to the power of its length e.g. 153 because 1^3 + 5^3 + 3^3 = 153.
      *
-     * @param value the number to evaluate
+     * @param value the value to evaluate
      * @return <code>true<code/> or <code>false<code/> according to the evaluation
      */
-    static boolean isArmstrong(int value) {
+    public static boolean isArmstrong(int value) {
         int exponent = (int) Math.log10(value) + 1;
         int sum = 0;
         int originalValue = value;
@@ -54,5 +57,35 @@ public class NumberUtils {
             value /= 10;
         } while (value > 0);
         return originalValue == sum;
+    }
+
+    /**
+     * A number is happy if it fis the following process: sum the squares of its digits and replace the number with the
+     * result. Repeat the process (sum the squares of its digits) until the result equals one, or until the process
+     * loops endlessly in a cycle which does not include one, e.g. 23 -> 2^2 + 3^2 = 13 -> 1^2 + 3^2 = 10 -> 1^2 = 1
+     *
+     * @param value the value to evaluate
+     * @return <code>true<code/> or <code>false<code/> according to the evaluation
+     */
+    public static boolean isHappy(int value) {
+        Set<Integer> subResults = new HashSet<>();
+        while (true) {
+            value = performAdditionSquares(value);
+            if (!subResults.add(value)) {
+                return false;
+            } else if (value == 1) {
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Sum the squares of its digits.
+     *
+     * @param value the value
+     * @return the sum of its digits' squares
+     */
+    private static int performAdditionSquares(int value) {
+        return String.valueOf(value).chars().map(Character::getNumericValue).map(digit -> digit * digit).sum();
     }
 }

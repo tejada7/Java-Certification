@@ -29,4 +29,13 @@ public class NumberUtilsTest {
         Assert.assertTrue(NumberUtils.isArmstrong(1));
         Assert.assertFalse(NumberUtils.isArmstrong(1000));
     }
+
+    @Test
+    public void isHappyTest() {
+        Assert.assertTrue(NumberUtils.isHappy(23));
+        Assert.assertTrue(NumberUtils.isHappy(193));
+        Assert.assertTrue(NumberUtils.isHappy(761));
+        Assert.assertFalse(NumberUtils.isHappy(4));
+        Assert.assertFalse(NumberUtils.isHappy(737));
+    }
 }
