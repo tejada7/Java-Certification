@@ -19,4 +19,14 @@ public class NumberUtilsTest {
         Assert.assertTrue(NumberUtils.isPalindrome(12321));
         Assert.assertFalse(NumberUtils.isPalindrome(123));
     }
+
+    @Test
+    public void isArmstrongTest() {
+        Assert.assertTrue(NumberUtils.isArmstrong(153));
+        Assert.assertTrue(NumberUtils.isArmstrong(370));
+        Assert.assertTrue(NumberUtils.isArmstrong(1634));
+        Assert.assertTrue(NumberUtils.isArmstrong(9474));
+        Assert.assertTrue(NumberUtils.isArmstrong(1));
+        Assert.assertFalse(NumberUtils.isArmstrong(1000));
+    }
 }

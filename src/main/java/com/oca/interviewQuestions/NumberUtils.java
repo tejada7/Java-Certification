@@ -1,6 +1,9 @@
 package com.oca.interviewQuestions;
 
-class NumberUtils {
+/**
+ * Contain helpful methods for int numbers.
+ */
+public class NumberUtils {
 
     /**
      * Determines if a number is a power of another number.
@@ -33,5 +36,23 @@ class NumberUtils {
             value %= (int) Math.pow(10, (int) Math.log10(value));
         } while (value > 0);
         return true;
+    }
+
+    /**
+     * Determines whether a number is Armstrong number. An Armstrong number is a number whose value is
+     * equal to the sum of its digits raised to the power of its length e.g. 153 because 1^3 + 5^3 + 3^3 = 153.
+     *
+     * @param value the number to evaluate
+     * @return <code>true<code/> or <code>false<code/> according to the evaluation
+     */
+    static boolean isArmstrong(int value) {
+        int exponent = (int) Math.log10(value) + 1;
+        int sum = 0;
+        int originalValue = value;
+        do {
+            sum += (int) Math.pow(value % 10, exponent);
+            value /= 10;
+        } while (value > 0);
+        return originalValue == sum;
     }
 }
