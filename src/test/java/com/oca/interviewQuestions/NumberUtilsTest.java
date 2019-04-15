@@ -1,7 +1,10 @@
 package com.oca.interviewQuestions;
 
+import com.oca.interviewQuestions.model.Fruit;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.*;
 
 public class NumberUtilsTest {
 
@@ -37,5 +40,36 @@ public class NumberUtilsTest {
         Assert.assertTrue(NumberUtils.isHappy(761));
         Assert.assertFalse(NumberUtils.isHappy(4));
         Assert.assertFalse(NumberUtils.isHappy(737));
+    }
+
+    @Test
+    public void isPrimeTest() {
+        Assert.assertTrue(NumberUtils.isPrime(7));
+        Assert.assertFalse(NumberUtils.isPrime(12));
+    }
+
+    @Test
+    public void pairCombinationNumberTest() {
+        Assert.assertEquals(6, NumberUtils.getPairCombinationsNumber(new HashSet<>(
+                Arrays.asList(Fruit.APPLE,
+                        Fruit.BANANA,
+                        Fruit.ORANGE,
+                        Fruit.PEAR))));
+    }
+
+    @Test
+    public void pairCombinationElementsTest() {
+        final List<Set<Fruit>> result = NumberUtils.getPairCombinationsElements(new ArrayList<>(
+                Arrays.asList(Fruit.APPLE,
+                        Fruit.BANANA,
+                        Fruit.ORANGE,
+                        Fruit.PEAR)));
+        Assert.assertEquals(6, result.size());
+        Assert.assertTrue(result.contains(Fruit.of(Fruit.APPLE, Fruit.BANANA)));
+        Assert.assertTrue(result.contains(Fruit.of(Fruit.APPLE, Fruit.ORANGE)));
+        Assert.assertTrue(result.contains(Fruit.of(Fruit.APPLE, Fruit.PEAR)));
+        Assert.assertTrue(result.contains(Fruit.of(Fruit.BANANA, Fruit.ORANGE)));
+        Assert.assertTrue(result.contains(Fruit.of(Fruit.BANANA, Fruit.PEAR)));
+        Assert.assertTrue(result.contains(Fruit.of(Fruit.ORANGE, Fruit.PEAR)));
     }
 }

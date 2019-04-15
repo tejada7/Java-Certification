@@ -1,6 +1,9 @@
 package com.oca.interviewQuestions;
 
+import com.oca.interviewQuestions.model.Fruit;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -87,5 +90,43 @@ public class NumberUtils {
      */
     private static int performAdditionSquares(int value) {
         return String.valueOf(value).chars().map(Character::getNumericValue).map(digit -> digit * digit).sum();
+    }
+
+    /**
+     * Determine whether a number is prime, i.e. it's only divisible by 1 and its own value.
+     *
+     * @param value the value to evaluate
+     * @return <code>true<code/> or <code>false<code/> according to the evaluation
+     */
+    public static boolean isPrime(int value) {
+        int countDivisors = 0;
+        for (int i = 2; i <= value / 2; i++) {
+            if (value % i == 0) {
+                countDivisors++;
+            }
+        }
+        return countDivisors == 0;
+    }
+
+    /**
+     * Get the number of possible pair combination given a set of objects.
+     *
+     * @param fruits the data set
+     *
+     * @return an <code>int<code/> value that represents the number of pair combinations from the data set
+     */
+    public static int getPairCombinationsNumber(Set<Fruit> fruits) {
+        return new PairElementCombinationNumber<Fruit>().apply(fruits);
+    }
+
+    /**
+     * Get the set of possible pair combination given a set of objects.
+     *
+     * @param fruits the data set
+     *
+     * @return an {@link List<Set<Fruit>>} object that contains the pair combinations from the data set
+     */
+    public static List<Set<Fruit>> getPairCombinationsElements(List<Fruit> fruits) {
+        return new PairElementCombinationElements<Fruit>().apply(fruits);
     }
 }
