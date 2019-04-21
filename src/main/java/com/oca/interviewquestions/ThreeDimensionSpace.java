@@ -1,4 +1,4 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 /**
  * Class that contains helpful methods to calculate distance between 2 points in space.
@@ -6,6 +6,10 @@ package com.oca.interviewQuestions;
  * @author Favio
  */
 public class ThreeDimensionSpace {
+
+    private ThreeDimensionSpace() {
+        throw new IllegalStateException("Constructor not allowed for this class.");
+    }
 
     public static class Point {
         protected double x;

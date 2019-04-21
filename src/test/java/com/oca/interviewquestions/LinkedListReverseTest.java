@@ -1,4 +1,4 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,16 +12,16 @@ import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class LinkedListDeleteNodeTest {
+public class LinkedListReverseTest {
 
     @Parameters
     public static Collection data() {
         return Arrays.asList(new Object[][]{
-                {new Integer[]{1, 2, 3, 4, 5}, 3, "[1->2->3->4->5]", "[1->2->4->5]"},
-                {new Integer[]{1, 2, 3}, 1, "[1->2->3]", "[2->3]"},
-                {new Integer[]{1, 2}, 3, "[1->2]", "[1->2]"},
-                {new Integer[]{1}, 1, "[1]", "[]"},
-                {null, 4, "[]", "[]"}
+                {new Integer[]{1, 2, 3, 4, 5}, "[1->2->3->4->5]", "[5->4->3->2->1]"},
+                {new Integer[]{1, 2, 3}, "[1->2->3]", "[3->2->1]"},
+                {new Integer[]{1, 2}, "[1->2]", "[2->1]"},
+                {new Integer[]{1}, "[1]", "[1]"},
+                {null, "[]", "[]"},
         });
     }
 
@@ -29,12 +29,9 @@ public class LinkedListDeleteNodeTest {
     public Integer[] dataSet;
 
     @Parameter(value = 1)
-    public Integer valueToDelete;
-
-    @Parameter(value = 2)
     public String outputBeforeReversing;
 
-    @Parameter(value = 3)
+    @Parameter(value = 2)
     public String expectedOutput;
 
     @Test
@@ -46,7 +43,7 @@ public class LinkedListDeleteNodeTest {
         Assert.assertEquals(outputBeforeReversing, linkedList.toString());
 
         // When
-        linkedList.remove(valueToDelete);
+        linkedList.reverse();
 
         // Then
         Assert.assertEquals(expectedOutput, linkedList.toString());

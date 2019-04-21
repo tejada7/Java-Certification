@@ -1,4 +1,4 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 import org.junit.Assert;
 import org.junit.Test;

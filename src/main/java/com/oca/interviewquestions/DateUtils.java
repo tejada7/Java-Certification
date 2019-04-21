@@ -1,9 +1,13 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 /**
  * Contain helpful methods for dates.
  */
 public class DateUtils {
+
+    private DateUtils() {
+        throw new IllegalStateException("Constructor not allowed for a util class.");
+    }
 
     /**
      * A leap year occurs every for years, and the rules to determine whether a year is catalogued under such category

@@ -1,4 +1,4 @@
-package com.oca.interviewQuestions.model;
+package com.oca.interviewquestions.model;
 
 import java.util.Arrays;
 import java.util.HashSet;

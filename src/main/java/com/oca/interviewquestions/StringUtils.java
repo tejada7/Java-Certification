@@ -1,4 +1,4 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 import java.util.*;
 
@@ -6,6 +6,10 @@ import java.util.*;
  * Contain helpful methods for int numbers.
  */
 public class StringUtils {
+
+    private StringUtils() {
+        throw new IllegalStateException("Constructor not allowed for a util class.");
+    }
 
     private static final String EMPTY_STRING = "";
 

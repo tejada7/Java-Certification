@@ -1,14 +1,15 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Contains a bunch of util methods to be used in implementations of {@link List}.
  */
 public class ListUtils {
+
+    private ListUtils() {
+        throw new IllegalStateException("Constructor not allowed for a util class.");
+    }
 
     /**
      * Remove duplicated elements from a list.
@@ -20,6 +21,6 @@ public class ListUtils {
             Set<E> result = new LinkedHashSet<>(list);
             return new ArrayList<>(result);
         }
-        return null;
+        return Collections.emptyList();
     }
 }

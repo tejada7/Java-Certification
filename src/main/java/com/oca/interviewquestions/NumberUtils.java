@@ -1,6 +1,6 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
-import com.oca.interviewQuestions.model.Fruit;
+import com.oca.interviewquestions.model.Fruit;
 
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +10,10 @@ import java.util.Set;
  * Contain helpful methods for int numbers.
  */
 public class NumberUtils {
+
+    private NumberUtils() {
+        throw new IllegalStateException("Constructor not allowed for a util class.");
+    }
 
     /**
      * Determines if a number is a power of another number.
@@ -116,7 +120,7 @@ public class NumberUtils {
      * @return an <code>int<code/> value that represents the number of pair combinations from the data set
      */
     public static int getPairCombinationsNumber(Set<Fruit> fruits) {
-        return new PairElementCombinationNumber<Fruit>().apply(fruits);
+        return new PairElementCombinationNumber<Fruit>().applyAsInt(fruits);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.function.Function;
  *
  * @param <T> the generic type of the object
  */
-class PairElementCombinationElements<T> implements Function<List<T>, List<Set<T>>> {
+public class PairElementCombinationElements<T> implements Function<List<T>, List<Set<T>>> {
 
     @Override
     public List<Set<T>> apply(List<T> elements) {

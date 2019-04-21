@@ -1,8 +1,8 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 
 import java.util.Collection;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Obtain the number of pair combinations given a set of Objects of type {@link T}.
@@ -10,13 +10,12 @@ import java.util.function.Function;
  *
  * @param <T> the generic type of the object
  */
-class PairElementCombinationNumber<T> implements Function<Collection<T>, Integer> {
+public class PairElementCombinationNumber<T> implements ToIntFunction<Collection<T>> {
 
     @Override
-    public Integer apply(Collection<T> elements) {
+    public int applyAsInt(Collection<T> elements) {
         final int n = elements.size();
         return (n * (n - 1)) / 2;
     }
-
 }
 

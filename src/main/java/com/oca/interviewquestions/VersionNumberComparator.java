@@ -1,18 +1,21 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.logging.Logger;
 
 /**
  * Compare two version numbers, for example, give two versions 2.2.5 and 2.3 -> 2.3 is greater and 2.2.5.
  */
 public class VersionNumberComparator implements Comparator<String> {
 
+    private static Logger logger = Logger.getLogger(VersionNumberComparator.class.getName());
+
     /**
      * {@inheritDoc}
+     *
      * @param v1 the first version parameter
      * @param v2 the first version parameter
-     *
      * @return 0 if v1 and v2 are equals, 1 if v1 is greater than v2, -1 otherwise
      */
     @Override
@@ -35,7 +38,7 @@ public class VersionNumberComparator implements Comparator<String> {
                     return result;
                 }
             } catch (IndexOutOfBoundsException iobe) {
-                System.err.println(iobe.getMessage());
+                logger.warning(iobe.getMessage());
             }
         }
         return 0;

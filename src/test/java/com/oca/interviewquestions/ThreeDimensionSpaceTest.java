@@ -1,4 +1,4 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static com.oca.interviewQuestions.ThreeDimensionSpace.*;
+import static com.oca.interviewquestions.ThreeDimensionSpace.*;
 import static org.junit.runners.Parameterized.*;
 import static org.junit.runners.Parameterized.Parameters;
 

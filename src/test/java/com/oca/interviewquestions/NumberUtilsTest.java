@@ -1,6 +1,6 @@
-package com.oca.interviewQuestions;
+package com.oca.interviewquestions;
 
-import com.oca.interviewQuestions.model.Fruit;
+import com.oca.interviewquestions.model.Fruit;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +10,6 @@ public class NumberUtilsTest {
 
     @Test
     public void isPowerOfTwoTest() {
-
         Assert.assertTrue(NumberUtils.isPowerOf(4, 2));
 
         Assert.assertTrue(NumberUtils.isPowerOf(27, 3));
