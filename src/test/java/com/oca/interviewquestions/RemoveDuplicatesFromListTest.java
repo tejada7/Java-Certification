@@ -6,11 +6,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.runners.Parameterized.*;
 import static org.junit.runners.Parameterized.Parameter;
+import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class RemoveDuplicatesFromListTest {
@@ -21,7 +22,7 @@ public class RemoveDuplicatesFromListTest {
                 {asList(1, 1, 2, 2, 3, 3), asList(1, 2, 3)},
                 {asList("a", "a", "b", "c", "b"), asList("a", "b", "c")},
                 {asList(5f, 4f, 5f, 4f), asList(5f, 4f)},
-                {null, null},
+                {null, Collections.emptyList()},
                 {asList(1, 5f, 3d, 4L, 4, 9, "a", "@", 0, null, null, "@"), asList(1, 5f, 3d, 4L, 4, 9, "a", "@", 0, null)}
         });
     }

@@ -1,5 +1,7 @@
 package com.oca.interviewquestions;
 
+import static com.oca.interviewquestions.DoubleUtils.*;
+
 /**
  * Class that contains helpful methods to calculate distance between 2 points in space.
  *
@@ -52,12 +54,11 @@ public class ThreeDimensionSpace {
      */
     public static double distance(Point3D p1, Point3D p2) {
         if (null != p1 && null != p2) {
-            return Math.round(Math.sqrt(calculateDiffSquare(p1.x, p2.x) + calculateDiffSquare(p1.y, p2.y) + calculateDiffSquare(p1.z, p2.z)) * 100d) / 100d;
+            return roundToNDecimals(Math.sqrt(calculateDiffSquare(p1.x, p2.x)
+                    + calculateDiffSquare(p1.y, p2.y)
+                    + calculateDiffSquare(p1.z, p2.z)), 2);
         }
         return Double.NaN;
     }
 
-    private static double calculateDiffSquare(double x, double x1) {
-        return Math.pow(x - x1, 2);
-    }
 }

@@ -14,7 +14,7 @@ import static org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ReverseTextTest {
 
-    @Parameters/*(name = "({index}): reverse({1})={0}")*/
+    @Parameters(name = "({index}): reverse({1})={0}")
     public static Collection data() {
         return Arrays.asList(new Object[][]{
                 {"", null},
@@ -33,6 +33,6 @@ public class ReverseTextTest {
 
     @Test
     public void reverseText() {
-        Assert.assertEquals(expected, ReverseText.reverse(input));
+        Assert.assertEquals(expected, StringUtils.reverse(input));
     }
 }

@@ -1,5 +1,8 @@
 package com.oca.interviewquestions;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * Contain helpful methods for dates.
  */
@@ -20,5 +23,23 @@ public class DateUtils {
      */
     public static boolean isLeapYear(int year) {
         return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0));
+    }
+
+    /**
+     * @param localDate the year contained in a {@link LocalDate} object
+     * @return <code>true<code/> or <code>false<code/> according to the evaluation
+     * @see {@link DateUtils#isLeapYear(int)}
+     */
+    public static boolean isLeapYear(LocalDate localDate) {
+        return isLeapYear(localDate.getYear());
+    }
+
+    /**
+     * @param date the year contained in a {@link Date} object
+     * @return <code>true<code/> or <code>false<code/> according to the evaluation
+     * @see {@link DateUtils#isLeapYear(int)}
+     */
+    public static boolean isLeapYear(Date date) {
+        return isLeapYear(date.getYear());
     }
 }

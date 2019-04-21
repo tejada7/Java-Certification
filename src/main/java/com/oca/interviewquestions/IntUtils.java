@@ -1,17 +1,14 @@
 package com.oca.interviewquestions;
 
-import com.oca.interviewquestions.model.Fruit;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Contain helpful methods for int numbers.
  */
-public class NumberUtils {
+public class IntUtils {
 
-    private NumberUtils() {
+    private IntUtils() {
         throw new IllegalStateException("Constructor not allowed for a util class.");
     }
 
@@ -112,25 +109,4 @@ public class NumberUtils {
         return countDivisors == 0;
     }
 
-    /**
-     * Get the number of possible pair combination given a set of objects.
-     *
-     * @param fruits the data set
-     *
-     * @return an <code>int<code/> value that represents the number of pair combinations from the data set
-     */
-    public static int getPairCombinationsNumber(Set<Fruit> fruits) {
-        return new PairElementCombinationNumber<Fruit>().applyAsInt(fruits);
-    }
-
-    /**
-     * Get the set of possible pair combination given a set of objects.
-     *
-     * @param fruits the data set
-     *
-     * @return an {@link List<Set<Fruit>>} object that contains the pair combinations from the data set
-     */
-    public static List<Set<Fruit>> getPairCombinationsElements(List<Fruit> fruits) {
-        return new PairElementCombinationElements<Fruit>().apply(fruits);
-    }
 }

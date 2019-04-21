@@ -9,7 +9,7 @@ import java.util.function.Function;
  *
  * @param <T> the generic type of the object
  */
-public class PairElementCombinationElements<T> implements Function<List<T>, List<Set<T>>> {
+public class GetPossiblePairCombinations<T> implements Function<List<T>, List<Set<T>>> {
 
     @Override
     public List<Set<T>> apply(List<T> elements) {

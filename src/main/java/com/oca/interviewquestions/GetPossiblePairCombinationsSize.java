@@ -10,7 +10,7 @@ import java.util.function.ToIntFunction;
  *
  * @param <T> the generic type of the object
  */
-public class PairElementCombinationNumber<T> implements ToIntFunction<Collection<T>> {
+public class GetPossiblePairCombinationsSize<T> implements ToIntFunction<Collection<T>> {
 
     @Override
     public int applyAsInt(Collection<T> elements) {

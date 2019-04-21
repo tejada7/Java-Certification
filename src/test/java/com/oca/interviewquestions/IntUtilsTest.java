@@ -6,50 +6,50 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class NumberUtilsTest {
+public class IntUtilsTest {
 
     @Test
-    public void isPowerOfTwoTest() {
-        Assert.assertTrue(NumberUtils.isPowerOf(4, 2));
+    public void isPowerOfTest() {
+        Assert.assertTrue(IntUtils.isPowerOf(4, 2));
 
-        Assert.assertTrue(NumberUtils.isPowerOf(27, 3));
-        Assert.assertFalse(NumberUtils.isPowerOf(124, 5));
+        Assert.assertTrue(IntUtils.isPowerOf(27, 3));
+        Assert.assertFalse(IntUtils.isPowerOf(124, 5));
     }
 
     @Test
     public void isPalindromeTest() {
-        Assert.assertTrue(NumberUtils.isPalindrome(12321));
-        Assert.assertFalse(NumberUtils.isPalindrome(123));
+        Assert.assertTrue(IntUtils.isPalindrome(12321));
+        Assert.assertFalse(IntUtils.isPalindrome(123));
     }
 
     @Test
     public void isArmstrongTest() {
-        Assert.assertTrue(NumberUtils.isArmstrong(153));
-        Assert.assertTrue(NumberUtils.isArmstrong(370));
-        Assert.assertTrue(NumberUtils.isArmstrong(1634));
-        Assert.assertTrue(NumberUtils.isArmstrong(9474));
-        Assert.assertTrue(NumberUtils.isArmstrong(1));
-        Assert.assertFalse(NumberUtils.isArmstrong(1000));
+        Assert.assertTrue(IntUtils.isArmstrong(153));
+        Assert.assertTrue(IntUtils.isArmstrong(370));
+        Assert.assertTrue(IntUtils.isArmstrong(1634));
+        Assert.assertTrue(IntUtils.isArmstrong(9474));
+        Assert.assertTrue(IntUtils.isArmstrong(1));
+        Assert.assertFalse(IntUtils.isArmstrong(1000));
     }
 
     @Test
     public void isHappyTest() {
-        Assert.assertTrue(NumberUtils.isHappy(23));
-        Assert.assertTrue(NumberUtils.isHappy(193));
-        Assert.assertTrue(NumberUtils.isHappy(761));
-        Assert.assertFalse(NumberUtils.isHappy(4));
-        Assert.assertFalse(NumberUtils.isHappy(737));
+        Assert.assertTrue(IntUtils.isHappy(23));
+        Assert.assertTrue(IntUtils.isHappy(193));
+        Assert.assertTrue(IntUtils.isHappy(761));
+        Assert.assertFalse(IntUtils.isHappy(4));
+        Assert.assertFalse(IntUtils.isHappy(737));
     }
 
     @Test
     public void isPrimeTest() {
-        Assert.assertTrue(NumberUtils.isPrime(7));
-        Assert.assertFalse(NumberUtils.isPrime(12));
+        Assert.assertTrue(IntUtils.isPrime(7));
+        Assert.assertFalse(IntUtils.isPrime(12));
     }
 
     @Test
     public void pairCombinationNumberTest() {
-        Assert.assertEquals(6, NumberUtils.getPairCombinationsNumber(new HashSet<>(
+        Assert.assertEquals(6, Fruit.getFruitPairCombinationsNumber(new HashSet<>(
                 Arrays.asList(Fruit.APPLE,
                         Fruit.BANANA,
                         Fruit.ORANGE,
@@ -58,7 +58,7 @@ public class NumberUtilsTest {
 
     @Test
     public void pairCombinationElementsTest() {
-        final List<Set<Fruit>> result = NumberUtils.getPairCombinationsElements(new ArrayList<>(
+        final List<Set<Fruit>> result = Fruit.getFruitPairCombinationsElements(new ArrayList<>(
                 Arrays.asList(Fruit.APPLE,
                         Fruit.BANANA,
                         Fruit.ORANGE,
