@@ -1,13 +1,13 @@
 package com.oca.interviewquestions;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
@@ -16,7 +16,7 @@ public class LinkedListDeleteNodeTest {
 
     @Parameters
     public static Collection data() {
-        return Arrays.asList(new Object[][]{
+        return asList(new Object[][]{
                 {new Integer[]{1, 2, 3, 4, 5}, 3, "[1->2->3->4->5]", "[1->2->4->5]"},
                 {new Integer[]{1, 2, 3}, 1, "[1->2->3]", "[2->3]"},
                 {new Integer[]{1, 2}, 3, "[1->2]", "[1->2]"},
@@ -43,12 +43,12 @@ public class LinkedListDeleteNodeTest {
         LinkedList<Integer> linkedList = new LinkedList<>();
         linkedList.add(dataSet);
 
-        Assert.assertEquals(outputBeforeReversing, linkedList.toString());
+        assertEquals(outputBeforeReversing, linkedList.toString());
 
         // When
         linkedList.remove(valueToDelete);
 
         // Then
-        Assert.assertEquals(expectedOutput, linkedList.toString());
+        assertEquals(expectedOutput, linkedList.toString());
     }
 }

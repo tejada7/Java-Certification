@@ -1,13 +1,13 @@
 package com.oca.interviewquestions;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
@@ -22,7 +22,7 @@ public class PowerOfTwoPredicateTest {
      */
     @Parameters
     public static Collection<Object> getData() {
-        return Arrays.asList(new Object[][]{
+        return asList(new Object[][]{
                 {4, true},
                 {27, false},
                 {124, false},
@@ -38,6 +38,6 @@ public class PowerOfTwoPredicateTest {
 
     @Test
     public void powerOfTest() {
-        Assert.assertEquals(expectedOutput, new IsPowerOfTwo().test(input));
+        assertEquals(expectedOutput, new IsPowerOfTwo().test(input));
     }
 }

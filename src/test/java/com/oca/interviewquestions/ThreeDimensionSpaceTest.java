@@ -1,15 +1,15 @@
 package com.oca.interviewquestions;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
 import java.util.Collection;
 
-import static com.oca.interviewquestions.ThreeDimensionSpace.*;
-import static org.junit.runners.Parameterized.*;
+import static com.oca.interviewquestions.ThreeDimensionSpace.Point3D;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
@@ -17,7 +17,7 @@ public class ThreeDimensionSpaceTest {
 
     @Parameters
     public static Collection data() {
-        return Arrays.asList(new Object[][]{
+        return asList(new Object[][]{
                 {new Point3D(1, 2, 3), new Point3D(4, 6, 8), 7.07},
                 {new Point3D(0, 0, 0), null, Double.NaN},
                 {null, new Point3D(0, 0, 0), Double.NaN},
@@ -37,6 +37,6 @@ public class ThreeDimensionSpaceTest {
 
     @Test
     public void calculateDistance() {
-        Assert.assertEquals(expected, ThreeDimensionSpace.distance(p1, p2), 0.0);
+        assertEquals(expected, ThreeDimensionSpace.distance(p1, p2), 0.0);
     }
 }

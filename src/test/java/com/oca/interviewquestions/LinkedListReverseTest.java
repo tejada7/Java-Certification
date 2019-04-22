@@ -1,13 +1,13 @@
 package com.oca.interviewquestions;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
@@ -16,7 +16,7 @@ public class LinkedListReverseTest {
 
     @Parameters
     public static Collection data() {
-        return Arrays.asList(new Object[][]{
+        return asList(new Object[][]{
                 {new Integer[]{1, 2, 3, 4, 5}, "[1->2->3->4->5]", "[5->4->3->2->1]"},
                 {new Integer[]{1, 2, 3}, "[1->2->3]", "[3->2->1]"},
                 {new Integer[]{1, 2}, "[1->2]", "[2->1]"},
@@ -40,12 +40,12 @@ public class LinkedListReverseTest {
         LinkedList<Integer> linkedList = new LinkedList<>();
         linkedList.add(dataSet);
 
-        Assert.assertEquals(outputBeforeReversing, linkedList.toString());
+        assertEquals(outputBeforeReversing, linkedList.toString());
 
         // When
         linkedList.reverse();
 
         // Then
-        Assert.assertEquals(expectedOutput, linkedList.toString());
+        assertEquals(expectedOutput, linkedList.toString());
     }
 }

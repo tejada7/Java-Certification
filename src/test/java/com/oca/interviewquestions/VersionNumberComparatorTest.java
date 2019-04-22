@@ -1,14 +1,14 @@
 package com.oca.interviewquestions;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.runners.Parameterized.*;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
@@ -16,7 +16,7 @@ public class VersionNumberComparatorTest {
 
     @Parameters
     public static Collection data() {
-        return Arrays.asList(new Object[][]{
+        return asList(new Object[][]{
                 {"2.2.5", "2.3", -1},
                 {"3.0", "2.1.5.3", 1},
                 {"3", "4.0", -1},
@@ -40,6 +40,6 @@ public class VersionNumberComparatorTest {
 
     @Test
     public void compareVersionTest() {
-        Assert.assertEquals(expected, new VersionNumberComparator().compare(version1, version2));
+        assertEquals(expected, new VersionNumberComparator().compare(version1, version2));
     }
 }

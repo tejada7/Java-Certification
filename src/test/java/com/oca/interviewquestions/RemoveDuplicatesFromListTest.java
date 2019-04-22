@@ -1,6 +1,5 @@
 package com.oca.interviewquestions;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -9,7 +8,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static com.oca.interviewquestions.ListUtils.*;
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
@@ -35,6 +36,6 @@ public class RemoveDuplicatesFromListTest {
 
     @Test
     public void shouldRemoveDuplicates_andKeepOrder() {
-        Assert.assertEquals(expectedList, ListUtils.removeDuplicates(originalList));
+        assertEquals(expectedList, removeDuplicates(originalList));
     }
 }
