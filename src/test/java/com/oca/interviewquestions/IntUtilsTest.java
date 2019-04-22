@@ -3,10 +3,16 @@ package com.oca.interviewquestions;
 import com.oca.interviewquestions.model.Fruit;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public class IntUtilsTest {
+
+    private static void execute() {
+        IntUtils.factorial(-1);
+    }
 
     @Test
     public void isPowerOfTest() {
@@ -70,5 +76,14 @@ public class IntUtilsTest {
         Assert.assertTrue(result.contains(Fruit.of(Fruit.BANANA, Fruit.ORANGE)));
         Assert.assertTrue(result.contains(Fruit.of(Fruit.BANANA, Fruit.PEAR)));
         Assert.assertTrue(result.contains(Fruit.of(Fruit.ORANGE, Fruit.PEAR)));
+    }
+
+    @Test
+    public void factorialTest() {
+        Assert.assertEquals(BigInteger.ONE, IntUtils.factorial(0));
+        Assert.assertEquals(BigInteger.ONE, IntUtils.factorial(1));
+        Assert.assertEquals(BigInteger.valueOf(120), IntUtils.factorial(5));
+        Assert.assertEquals(BigInteger.valueOf(40320), IntUtils.factorial(8));
+        Assertions.assertThrows(IllegalArgumentException.class, IntUtilsTest::execute);
     }
 }

@@ -1,5 +1,6 @@
 package com.oca.interviewquestions;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -109,4 +110,20 @@ public class IntUtils {
         return countDivisors == 0;
     }
 
+    /**
+     * Obtain the factorial of a given number.
+     *
+     * @param n the number
+     * @return the factorial in a {@link BigInteger} object.
+     */
+    public static BigInteger factorial(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("No negative number is allowed");
+        }
+        if (n == 0 || n == 1) {
+            return BigInteger.ONE;
+        } else {
+            return BigInteger.valueOf(n).multiply(factorial(n - 1));
+        }
+    }
 }
