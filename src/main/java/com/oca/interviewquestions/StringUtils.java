@@ -11,7 +11,8 @@ public class StringUtils {
         throw new IllegalStateException("Constructor not allowed for a util class.");
     }
 
-    private static final String EMPTY_STRING = "";
+    public static final String EMPTY_STRING = "";
+    public static final String SINGLE_SPACE = " ";
 
     /**
      * Recursive method that returns all possible permutations of any {@link String} object.
@@ -91,4 +92,34 @@ public class StringUtils {
         }
         return String.valueOf(array);
     }
+
+    /**
+     * Capitalize the first letter of each array string element.
+     *
+     * @param words the arrays containing a group of words
+     * @return a new {@link String} array
+     */
+    public static String[] capitalizeFirstLetter(String[] words) {
+        return Arrays.stream(words).map(StringUtils::capitalizeFirstLetter).toArray(String[]::new);
+    }
+
+    private static String capitalizeFirstLetter(String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1, word.length()).toLowerCase();
+    }
+
+    /**
+     * Capitalize the last letter of each array string element.
+     *
+     * @param words the arrays containing a group of words
+     * @return a new {@link String} array
+     */
+    public static String[] capitalizeLastLetter(String[] words) {
+        return Arrays.stream(words).map(StringUtils::capitalizeLastLetter).toArray(String[]::new);
+    }
+
+    private static String capitalizeLastLetter(String word) {
+        final int length = word.length();
+        return word.substring(0, length - 1) + word.substring(length - 1, length).toUpperCase();
+    }
+
 }
