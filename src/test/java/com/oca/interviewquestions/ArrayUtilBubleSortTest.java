@@ -14,7 +14,7 @@ import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class ArrayUtilTest {
+public class ArrayUtilBubleSortTest {
 
     @Parameters
     public static Collection getData() {
