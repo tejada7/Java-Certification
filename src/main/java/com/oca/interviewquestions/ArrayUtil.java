@@ -1,5 +1,10 @@
 package com.oca.interviewquestions;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Contain helpful methods for arrays.
  */
@@ -59,5 +64,37 @@ public class ArrayUtil {
             }
         }
         return rotatedArray;
+    }
+
+    /**
+     * Return the top k most frequent elements of an array.
+     *
+     * @param elements the array containing the elements
+     * @param k        the first k elements to find
+     * @param <E>      the array's data type
+     * @return an array of type {@link E} containing the k most frequent elements
+     * @throws IllegalArgumentException if the entry array is null
+     */
+    @SuppressWarnings("unchecked")
+    public static <E> E[] kFrequentElements(E[] elements, int k) {
+        if (elements == null) {
+            throw new IllegalArgumentException("The array is null.");
+        }
+        Map<E, Integer> records = new HashMap<>();
+        Arrays.stream(elements).forEach(e -> countElementsIntoMap(records, e));
+        return records.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(k)
+                .map(Map.Entry::getKey)
+                .toArray(value -> (E[]) new Object[value]);
+    }
+
+    private static <E> void countElementsIntoMap(Map<E, Integer> records, E element) {
+        if (records.containsKey(element)) {
+            records.put(element, records.get(element) + 1);
+        } else {
+            records.put(element, 1);
+        }
     }
 }
