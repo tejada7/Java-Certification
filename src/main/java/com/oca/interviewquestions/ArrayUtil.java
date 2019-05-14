@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Contain helpful methods for arrays.
@@ -22,6 +24,7 @@ public class ArrayUtil {
      * @throws IllegalArgumentException if the array passed as parameter is null
      * @see Comparable
      */
+    @SuppressWarnings("unchecked")
     public static <E extends Comparable> void bubbleSort(E[] array) {
         if (array == null) {
             throw new IllegalArgumentException("No null parameter is allowed");
@@ -54,6 +57,10 @@ public class ArrayUtil {
             throw new IllegalArgumentException("The matrix cannot be null");
         }
         int n = matrix.length;
+        // Since E is a non-reifiable type there is no way the compiler can check the cast
+        // The elements of the array will contain only E instances, however, at runtime the type of the array won't be
+        // E[][], but rather Object[][]
+        @SuppressWarnings("unchecked")
         E[][] rotatedArray = (E[][]) new Object[n][n];
         for (int i = 0; i < (n + 1) / 2; i++) {
             for (int j = 0; j < (n + 1) / 2; j++) {
@@ -97,4 +104,39 @@ public class ArrayUtil {
             records.put(element, 1);
         }
     }
+
+    /**
+     * Merge n arrays, combining them into one newly created array based on a criteria.
+     *
+     * @param comparator the comparator criteria
+     * @param arrays     the arrays to be merged
+     * @param <E>        the generic type of the arrays
+     * @return a new object {@link E} arrays
+     * @throws IllegalArgumentException if no arguments are provided
+     */
+    @SuppressWarnings("unchecked")
+    public static <E> E[] mergeAndSortArrays(Comparator comparator, E[]... arrays) {
+        if (arrays == null || arrays.length == 0) {
+            throw new IllegalArgumentException("No arguments provided.");
+        }
+        return (E[]) Arrays.stream(arrays)
+                .flatMap((Function<E[], Stream<?>>) Arrays::stream)
+                .sorted(comparator)
+                .toArray();
+    }
+
+    /**
+     * Merge n arrays, combining them into one newly created array adopting the default or natural sorting order.
+     *
+     * @param arrays the arrays to be merged
+     * @param <E>    the generic type of the arrays
+     * @return a new object {@link E} arrays
+     * @throws IllegalArgumentException if no arguments are provided
+     */
+    @SuppressWarnings("unchecked")
+    public static <E> E[] mergeAndSortArrays(E[]... arrays) {
+        return mergeAndSortArrays(Comparator.naturalOrder(), arrays);
+    }
+
+
 }
