@@ -4,6 +4,7 @@ import com.oca.interviewquestions.tondeuse.business.Mower;
 import com.oca.interviewquestions.tondeuse.business.enums.Orientation;
 import com.oca.interviewquestions.tondeuse.exceptions.InvalidActionException;
 import com.oca.interviewquestions.tondeuse.model.Position;
+import com.oca.interviewquestions.tondeuse.view.Drawer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,17 +35,44 @@ public class MowerLauncher {
         }
         try {
             List<String> lines = Files.readAllLines(Paths.get(args[0]));
-            processInput(lines).forEach(LOGGER::fine);
+            processInput(lines, true).forEach(LOGGER::fine);
         } catch (IOException ioe) {
             LOGGER.severe("The " + args[0] + " has not been found.");
         }
     }
 
-    public static List<String> processInput(List<String> lines) {
+    public static List<String> processInput(List<String> lines, boolean animation) {
         List<String> results = new ArrayList<>();
         final String[] size = lines.get(0).split(SEPARATOR);
         Mower.setMaxSizeX(Integer.parseInt(size[0]));
         Mower.setMaxSizeY(Integer.parseInt(size[1]));
+        if (animation) {
+            animationExecution(lines, results);
+        } else {
+            consoleExecution(lines, results);
+        }
+        return results;
+    }
+
+    private static void animationExecution(List<String> lines, List<String> results) {
+        Drawer drawer = new Drawer(Mower.getMaxSizeX(), Mower.getMaxSizeY());
+        drawer.setVisible(true);
+        for (int i = 1; i < lines.size(); i += 2) {
+            final String[] position = lines.get(i).split(SEPARATOR);
+            final String movements = lines.get(i + 1);
+            try {
+                final Mower mower = new Mower(new Position(position[0], position[1]),
+                        Orientation.getOrientationByAbbreviation(position[2]),
+                        movements);
+                drawer.setMower(mower);
+                mower.performActions(drawer);
+            } catch (InvalidActionException e) {
+                LOGGER.severe(e.getMessage());
+            }
+        }
+    }
+
+    public static void consoleExecution(List<String> lines, List<String> results) {
         for (int i = 1; i < lines.size(); i += 2) {
             final String[] position = lines.get(i).split(SEPARATOR);
             final String movements = lines.get(i + 1);
@@ -56,6 +84,5 @@ public class MowerLauncher {
                 LOGGER.severe(e.getMessage());
             }
         }
-        return results;
     }
 }

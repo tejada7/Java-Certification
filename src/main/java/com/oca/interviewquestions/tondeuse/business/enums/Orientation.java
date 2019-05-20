@@ -1,19 +1,17 @@
 package com.oca.interviewquestions.tondeuse.business.enums;
 
+import com.oca.interviewquestions.tondeuse.business.interfaces.Movable;
 import com.oca.interviewquestions.tondeuse.exceptions.InvalidActionException;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Represent the 4 cardinal positions of the lawnmower, along with the business logic when turning in different
  * directions.
  */
 public enum Orientation {
-    NORTH("N") {
+    NORTH("N", "mowerN.png") {
         @Override
         Orientation turnRight() {
             return EAST;
@@ -23,7 +21,7 @@ public enum Orientation {
         Orientation turnLeft() {
             return WEST;
         }
-    }, SOUTH("S") {
+    }, SOUTH("S", "mowerS.png") {
         @Override
         Orientation turnRight() {
             return WEST;
@@ -33,7 +31,7 @@ public enum Orientation {
         Orientation turnLeft() {
             return EAST;
         }
-    }, WEST("W") {
+    }, WEST("W", "mowerW.png") {
         @Override
         Orientation turnRight() {
             return NORTH;
@@ -43,7 +41,7 @@ public enum Orientation {
         Orientation turnLeft() {
             return SOUTH;
         }
-    }, EAST("E") {
+    }, EAST("E", "mowerE.png") {
         @Override
         Orientation turnRight() {
             return SOUTH;
@@ -56,28 +54,30 @@ public enum Orientation {
     };
 
     private String abbreviation;
+    private String imgPath;
     private static Map<String, Orientation> positionByAbbreviation = new HashMap<>();
 
     static {
         Arrays.stream(Orientation.values()).forEach(item -> positionByAbbreviation.put(item.abbreviation, item));
     }
 
-    Orientation(String abbreviation) {
+    Orientation(String abbreviation, String imgPath) {
         this.abbreviation = abbreviation;
+        this.imgPath = imgPath;
     }
 
     public String getAbbreviation() {
         return abbreviation;
     }
 
-    public Orientation turn(Actions actions, Consumer<Orientation> consumer) {
+    public Orientation turn(Actions actions, Movable consumer) {
         switch (actions) {
             case TURN_RIGHT:
                 return turnRight();
             case TURN_LEFT:
                 return turnLeft();
             default:
-                consumer.accept(this);
+                consumer.moveForward(this);
                 return this;
         }
     }
@@ -97,5 +97,14 @@ public enum Orientation {
         return Optional.of(positionByAbbreviation.get(abbreviation.toUpperCase())).orElseThrow(
                 () -> new InvalidActionException("The action " + abbreviation + " is invalid.")
         );
+    }
+
+    /**
+     * Return the URL containing the image representing orientation.
+     *
+     * @return an {@link URL} object
+     */
+    public URL getImageURL() {
+        return Objects.requireNonNull(this.getClass().getClassLoader().getResource(imgPath));
     }
 }

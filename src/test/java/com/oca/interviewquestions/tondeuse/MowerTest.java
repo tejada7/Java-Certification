@@ -44,13 +44,13 @@ public class MowerTest {
 
     @Test
     public void mowerTestFromCodeInput() {
-        assertEquals(expectedOutput, MowerLauncher.processInput(input));
+        assertEquals(expectedOutput, MowerLauncher.processInput(input, true));
     }
 
     @Test
     public void mowerTestFromExternalFile() throws URISyntaxException, IOException {
         final URL resource = getClass().getClassLoader().getResource("mower_test_case_1.txt");
         List<String> lines = Files.readAllLines(Paths.get(resource.toURI()));
-        assertEquals(expectedOutput, MowerLauncher.processInput(lines));
+        assertEquals(expectedOutput, MowerLauncher.processInput(lines, false));
     }
 }
