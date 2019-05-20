@@ -9,22 +9,22 @@ import java.util.Optional;
 
 /**
  * Represent the 3 lawnmower's actions:
- * TURN_RIGHT -> turn 90 degrees clockwise
- * TURN_LEFT -> turn 90 degrees anti-clockwise
- * MOVE_FORWARD -> move the mower forward based on the current {@link Orientation}
+ * TURN_RIGHT -> performAction 90 degrees clockwise
+ * TURN_LEFT -> performAction 90 degrees anti-clockwise
+ * MOVE -> move the mower forward based on the current {@link Orientation}
  */
-public enum Actions {
-    TURN_RIGHT("D"), TURN_LEFT("G"), MOVE_FORWARD("A");
+public enum Action {
+    TURN_RIGHT("D"), TURN_LEFT("G"), MOVE("A");
 
     private String abbreviation;
 
-    private static Map<String, Actions> actionsByAbbreviation = new HashMap<>();
+    private static Map<String, Action> actionsByAbbreviation = new HashMap<>();
 
     static {
-        Arrays.stream(Actions.values()).forEach(item -> actionsByAbbreviation.put(item.abbreviation, item));
+        Arrays.stream(Action.values()).forEach(item -> actionsByAbbreviation.put(item.abbreviation, item));
     }
 
-    Actions(String abbreviation) {
+    Action(String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
@@ -35,7 +35,7 @@ public enum Actions {
      * @return a {@link Orientation} constant
      * @throws InvalidActionException if no abbreviation matches to the stored ones
      */
-    public static Actions getActionByAbbreviation(String abbreviation) throws InvalidActionException {
+    public static Action getActionByAbbreviation(String abbreviation) throws InvalidActionException {
         return Optional.of(actionsByAbbreviation.get(abbreviation.toUpperCase())).orElseThrow(
                 () -> new InvalidActionException("The option " + abbreviation + " is invalid.")
         );

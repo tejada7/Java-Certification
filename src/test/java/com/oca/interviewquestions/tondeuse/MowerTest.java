@@ -44,7 +44,7 @@ public class MowerTest {
 
     @Test
     public void mowerTestFromCodeInput() {
-        assertEquals(expectedOutput, MowerLauncher.processInput(input, true));
+        assertEquals(expectedOutput, MowerLauncher.processInput(input, false));
     }
 
     @Test

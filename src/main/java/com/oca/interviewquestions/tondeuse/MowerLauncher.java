@@ -1,8 +1,9 @@
 package com.oca.interviewquestions.tondeuse;
 
-import com.oca.interviewquestions.tondeuse.business.Mower;
+import com.oca.interviewquestions.tondeuse.business.enums.Action;
 import com.oca.interviewquestions.tondeuse.business.enums.Orientation;
 import com.oca.interviewquestions.tondeuse.exceptions.InvalidActionException;
+import com.oca.interviewquestions.tondeuse.model.Mower;
 import com.oca.interviewquestions.tondeuse.model.Position;
 import com.oca.interviewquestions.tondeuse.view.Drawer;
 
@@ -11,7 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.oca.interviewquestions.tondeuse.model.Field.maxSizeX;
+import static com.oca.interviewquestions.tondeuse.model.Field.maxSizeY;
 
 /**
  * The first line corresponds to the coordinates of the upper right corner of the lawn, those
@@ -41,48 +46,78 @@ public class MowerLauncher {
         }
     }
 
+    /**
+     * Process the input either by using the {@link MowerLauncher#consoleExecution(List)} or the
+     * {@link MowerLauncher#animationExecution(List)} based on the boolean value animation.
+     *
+     * @param lines     the commands to execute
+     * @param animation whether to display a graphical simulation or a simpel console output
+     * @return a {@link List} object containing the final position of the mowers
+     */
     public static List<String> processInput(List<String> lines, boolean animation) {
-        List<String> results = new ArrayList<>();
         final String[] size = lines.get(0).split(SEPARATOR);
-        Mower.setMaxSizeX(Integer.parseInt(size[0]));
-        Mower.setMaxSizeY(Integer.parseInt(size[1]));
-        if (animation) {
-            animationExecution(lines, results);
-        } else {
-            consoleExecution(lines, results);
-        }
-        return results;
+        maxSizeX = Integer.parseInt(size[0]);
+        maxSizeY = Integer.parseInt(size[1]);
+        return animation ? animationExecution(lines) : consoleExecution(lines);
     }
 
-    private static void animationExecution(List<String> lines, List<String> results) {
-        Drawer drawer = new Drawer(Mower.getMaxSizeX(), Mower.getMaxSizeY());
+    /**
+     * Launch a swing GUI to simulate the problem's behavior. Turn the mower based on the movements stored in the
+     * movements variable and executes the action, displaying the output to the console.
+     */
+    private static List<String> animationExecution(List<String> lines) {
+        Drawer drawer = new Drawer(maxSizeX, maxSizeY);
         drawer.setVisible(true);
+
+        List<String> results = new ArrayList<>();
         for (int i = 1; i < lines.size(); i += 2) {
             final String[] position = lines.get(i).split(SEPARATOR);
             final String movements = lines.get(i + 1);
             try {
                 final Mower mower = new Mower(new Position(position[0], position[1]),
-                        Orientation.getOrientationByAbbreviation(position[2]),
-                        movements);
+                        Orientation.getOrientationByAbbreviation(position[2]), drawer, drawer);
                 drawer.setMower(mower);
-                mower.performActions(drawer);
+                for (char action : movements.toCharArray()) {
+                    mower.performAction(Action.getActionByAbbreviation(String.valueOf(action)));
+                    delay(3000);
+                }
+                results.add(mower.toString());
             } catch (InvalidActionException e) {
                 LOGGER.severe(e.getMessage());
             }
         }
+        return results;
     }
 
-    public static void consoleExecution(List<String> lines, List<String> results) {
+    /**
+     * Turn the mower based on the movements stored in the movements variable and executes the action, displaying the
+     * output to the console.
+     */
+    private static List<String> consoleExecution(List<String> lines) {
+        List<String> results = new ArrayList<>();
         for (int i = 1; i < lines.size(); i += 2) {
             final String[] position = lines.get(i).split(SEPARATOR);
             final String movements = lines.get(i + 1);
             try {
-                results.add(new Mower(new Position(position[0], position[1]),
-                        Orientation.getOrientationByAbbreviation(position[2]),
-                        movements).performActions());
+                final Mower mower = new Mower(new Position(position[0], position[1]),
+                        Orientation.getOrientationByAbbreviation(position[2]));
+                for (char action : movements.toCharArray()) {
+                    mower.performAction(Action.getActionByAbbreviation(String.valueOf(action)));
+                }
+                results.add(mower.toString());
             } catch (InvalidActionException e) {
                 LOGGER.severe(e.getMessage());
             }
+        }
+        return results;
+    }
+
+    private static void delay(int milliSeconds) {
+        try {
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 }

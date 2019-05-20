@@ -1,54 +1,59 @@
 package com.oca.interviewquestions.tondeuse.business.enums;
 
 import com.oca.interviewquestions.tondeuse.business.interfaces.Movable;
+import com.oca.interviewquestions.tondeuse.business.interfaces.Rotatable;
 import com.oca.interviewquestions.tondeuse.exceptions.InvalidActionException;
+import com.oca.interviewquestions.tondeuse.view.Drawer;
+import com.oca.interviewquestions.tondeuse.view.TextAreaHandler;
 
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represent the 4 cardinal positions of the lawnmower, along with the business logic when turning in different
  * directions.
  */
-public enum Orientation {
+public enum Orientation implements Rotatable {
     NORTH("N", "mowerN.png") {
         @Override
-        Orientation turnRight() {
+        public Orientation turnRight() {
             return EAST;
         }
 
         @Override
-        Orientation turnLeft() {
+        public Orientation turnLeft() {
             return WEST;
         }
     }, SOUTH("S", "mowerS.png") {
         @Override
-        Orientation turnRight() {
+        public Orientation turnRight() {
             return WEST;
         }
 
         @Override
-        Orientation turnLeft() {
+        public Orientation turnLeft() {
             return EAST;
         }
     }, WEST("W", "mowerW.png") {
         @Override
-        Orientation turnRight() {
+        public Orientation turnRight() {
             return NORTH;
         }
 
         @Override
-        Orientation turnLeft() {
+        public Orientation turnLeft() {
             return SOUTH;
         }
     }, EAST("E", "mowerE.png") {
         @Override
-        Orientation turnRight() {
+        public Orientation turnRight() {
             return SOUTH;
         }
 
         @Override
-        Orientation turnLeft() {
+        public Orientation turnLeft() {
             return NORTH;
         }
     };
@@ -56,8 +61,10 @@ public enum Orientation {
     private String abbreviation;
     private String imgPath;
     private static Map<String, Orientation> positionByAbbreviation = new HashMap<>();
+    private static final Logger LOGGER = Logger.getLogger(Orientation.class.toString());
 
     static {
+        LOGGER.addHandler(new TextAreaHandler(Drawer.textArea));
         Arrays.stream(Orientation.values()).forEach(item -> positionByAbbreviation.put(item.abbreviation, item));
     }
 
@@ -70,21 +77,58 @@ public enum Orientation {
         return abbreviation;
     }
 
-    public Orientation turn(Actions actions, Movable consumer) {
-        switch (actions) {
+    /**
+     * Return the new orientation based on a given action. It additionally executes the implementation of a
+     * {@link Movable} interface.
+     *
+     * @param action       the type of action
+     * @param movablesImpl the functions to be executed for a {@link Movable} implementation
+     * @return the new orientation based on the rules depicted in the methods {@link Orientation#turnRight()} and
+     * {@link Orientation#turnLeft()}
+     */
+    public Orientation performActionBasedOnOrientation(Action action, List<Movable> movablesImpl) {
+        Orientation newOrientation = this;
+        switch (action) {
             case TURN_RIGHT:
-                return turnRight();
+                newOrientation = turnRight();
+                LOGGER.log(Level.INFO, "Rotating to the " + newOrientation);
+                break;
             case TURN_LEFT:
-                return turnLeft();
+                newOrientation = turnLeft();
+                LOGGER.log(Level.INFO, "Rotating to the " + newOrientation);
+                break;
+            case MOVE:
+                movablesImpl.forEach(strategy -> strategy.execute(this));
+                break;
             default:
-                consumer.moveForward(this);
-                return this;
+                // DO NOTHING
         }
+        return newOrientation;
     }
 
-    abstract Orientation turnRight();
-
-    abstract Orientation turnLeft();
+    /**
+     * Return the new orientation based on a given action. It additionally executes the implementation of a
+     * {@link Rotatable} interface.
+     *
+     * @param action        the type of action
+     * @param rotatableImpl the functions to be executed for a {@link Rotatable} implementation
+     * @param movablesImpl  the functions to be executed for a {@link Movable} implementation
+     * @return the new orientation based on the rules depicted in the methods {@link Orientation#turnRight()} and
+     * {@link Orientation#turnLeft()}
+     */
+    public Orientation performActionBasedOnOrientation(Action action, Rotatable rotatableImpl, List<Movable> movablesImpl) {
+        switch (action) {
+            case TURN_RIGHT:
+                rotatableImpl.turnRight();
+                break;
+            case TURN_LEFT:
+                rotatableImpl.turnLeft();
+                break;
+            default:
+                // DO NOTHING
+        }
+        return performActionBasedOnOrientation(action, movablesImpl);
+    }
 
     /**
      * Retrieve the enum constant given its abbreviation.
