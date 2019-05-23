@@ -13,5 +13,5 @@ public interface Movable {
      *
      * @param orientation the current orientation
      */
-    void execute(Orientation orientation);
+    void moveForward(Orientation orientation);
 }

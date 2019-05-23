@@ -32,7 +32,7 @@ public class MowerTest {
                         "1 2 N",
                         "GAGAGAGAA",
                         "3 3 E",
-                        "AADAADADDA"), Arrays.asList("2 3 N", "5 1 E")}
+                        "AADAADADDA"), Arrays.asList("1 3 N", "5 1 E")}
         });
     }
 

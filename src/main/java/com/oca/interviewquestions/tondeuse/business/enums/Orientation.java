@@ -1,6 +1,5 @@
 package com.oca.interviewquestions.tondeuse.business.enums;
 
-import com.oca.interviewquestions.tondeuse.business.interfaces.Movable;
 import com.oca.interviewquestions.tondeuse.business.interfaces.Rotatable;
 import com.oca.interviewquestions.tondeuse.exceptions.InvalidActionException;
 import com.oca.interviewquestions.tondeuse.view.Drawer;
@@ -8,7 +7,6 @@ import com.oca.interviewquestions.tondeuse.view.TextAreaHandler;
 
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -75,59 +73,6 @@ public enum Orientation implements Rotatable {
 
     public String getAbbreviation() {
         return abbreviation;
-    }
-
-    /**
-     * Return the new orientation based on a given action. It additionally executes the implementation of a
-     * {@link Movable} interface.
-     *
-     * @param action       the type of action
-     * @param movablesImpl the functions to be executed for a {@link Movable} implementation
-     * @return the new orientation based on the rules depicted in the methods {@link Orientation#turnRight()} and
-     * {@link Orientation#turnLeft()}
-     */
-    public Orientation performActionBasedOnOrientation(Action action, List<Movable> movablesImpl) {
-        Orientation newOrientation = this;
-        switch (action) {
-            case TURN_RIGHT:
-                newOrientation = turnRight();
-                LOGGER.log(Level.INFO, "Rotating to the " + newOrientation);
-                break;
-            case TURN_LEFT:
-                newOrientation = turnLeft();
-                LOGGER.log(Level.INFO, "Rotating to the " + newOrientation);
-                break;
-            case MOVE:
-                movablesImpl.forEach(strategy -> strategy.execute(this));
-                break;
-            default:
-                // DO NOTHING
-        }
-        return newOrientation;
-    }
-
-    /**
-     * Return the new orientation based on a given action. It additionally executes the implementation of a
-     * {@link Rotatable} interface.
-     *
-     * @param action        the type of action
-     * @param rotatableImpl the functions to be executed for a {@link Rotatable} implementation
-     * @param movablesImpl  the functions to be executed for a {@link Movable} implementation
-     * @return the new orientation based on the rules depicted in the methods {@link Orientation#turnRight()} and
-     * {@link Orientation#turnLeft()}
-     */
-    public Orientation performActionBasedOnOrientation(Action action, Rotatable rotatableImpl, List<Movable> movablesImpl) {
-        switch (action) {
-            case TURN_RIGHT:
-                rotatableImpl.turnRight();
-                break;
-            case TURN_LEFT:
-                rotatableImpl.turnLeft();
-                break;
-            default:
-                // DO NOTHING
-        }
-        return performActionBasedOnOrientation(action, movablesImpl);
     }
 
     /**

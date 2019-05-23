@@ -25,11 +25,11 @@ public class Position {
      * @param posY the y position
      */
     public Position(String posX, String posY) {
-        this(Integer.parseInt(posX) - 1, Integer.parseInt(posY) - 1);
+        this(Integer.parseInt(posX), Integer.parseInt(posY));
     }
 
     @Override
     public String toString() {
-        return (posX + 1) + " " + (posY + 1);
+        return posX + " " + posY;
     }
 }

@@ -75,7 +75,7 @@ public class Drawer extends JFrame implements ResizableView, Movable, Rotatable 
     }
 
     @Override
-    public void execute(Orientation orientation) {
+    public void moveForward(Orientation orientation) {
         repaint();
     }
 

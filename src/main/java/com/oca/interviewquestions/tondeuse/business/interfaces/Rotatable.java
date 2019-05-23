@@ -3,7 +3,7 @@ package com.oca.interviewquestions.tondeuse.business.interfaces;
 import com.oca.interviewquestions.tondeuse.business.enums.Orientation;
 
 /**
- * Define the behavior of a rotable element
+ * Define the behavior of a rotable element.
  */
 public interface Rotatable {
     /**

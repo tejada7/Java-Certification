@@ -1,5 +1,6 @@
 package com.oca.interviewquestions.tondeuse.business.impl;
 
+import com.oca.interviewquestions.ThreeDimensionSpace.Point;
 import com.oca.interviewquestions.tondeuse.business.enums.Orientation;
 import com.oca.interviewquestions.tondeuse.business.interfaces.Movable;
 import com.oca.interviewquestions.tondeuse.model.Field;
@@ -8,12 +9,14 @@ import com.oca.interviewquestions.tondeuse.model.Mower;
 import java.util.function.Consumer;
 
 /**
- * Default implementation of the action move forward:
+ * Default implementation of the action move forward: update the positions based on a rectangular area of size
+ * ( ({@link Field#maxSizeX} + 1) * (({@link Field#maxSizeY} + 1)) ), where the left bottom corner represents the point
+ * {@link Point} (0, 0).
+ *
  */
-public class MowerMovableImpl implements Movable {
+public class MowerMovableImpl extends StringAbstractConsumer implements Movable {
 
     private Mower mower;
-    private Consumer<String> consumer;
 
     /**
      * Instantiate a new object.
@@ -22,16 +25,16 @@ public class MowerMovableImpl implements Movable {
      * @param loggerConsumer a consumer that defines the logging behavior
      */
     public MowerMovableImpl(Mower mower, Consumer<String> loggerConsumer) {
+        super(loggerConsumer);
         this.mower = mower;
-        this.consumer = loggerConsumer;
     }
 
     @Override
-    public void execute(Orientation orientation) {
+    public void moveForward(Orientation orientation) {
         consumer.accept(String.format("Moving from %s in %s direction", mower.getCurrentPosition(), orientation));
         switch (orientation) {
             case NORTH:
-                if (mower.getCurrentPosition().posY + 1 < Field.maxSizeY) {
+                if (mower.getCurrentPosition().posY + 1 <= Field.maxSizeY) {
                     mower.getCurrentPosition().posY++;
                 }
                 break;
@@ -46,7 +49,7 @@ public class MowerMovableImpl implements Movable {
                 }
                 break;
             case EAST:
-                if (mower.getCurrentPosition().posX + 1 < Field.maxSizeX) {
+                if (mower.getCurrentPosition().posX + 1 <= Field.maxSizeX) {
                     mower.getCurrentPosition().posX++;
                 }
                 break;

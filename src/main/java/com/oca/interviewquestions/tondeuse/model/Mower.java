@@ -3,7 +3,9 @@ package com.oca.interviewquestions.tondeuse.model;
 import com.oca.interviewquestions.tondeuse.MowerLauncher;
 import com.oca.interviewquestions.tondeuse.business.enums.Action;
 import com.oca.interviewquestions.tondeuse.business.enums.Orientation;
+import com.oca.interviewquestions.tondeuse.business.impl.MowerActionableImpl;
 import com.oca.interviewquestions.tondeuse.business.impl.MowerMovableImpl;
+import com.oca.interviewquestions.tondeuse.business.interfaces.Actionable;
 import com.oca.interviewquestions.tondeuse.business.interfaces.Movable;
 import com.oca.interviewquestions.tondeuse.business.interfaces.Rotatable;
 import com.oca.interviewquestions.tondeuse.view.Drawer;
@@ -12,6 +14,7 @@ import com.oca.interviewquestions.tondeuse.view.TextAreaHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +33,7 @@ public class Mower {
     private Orientation currentOrientation;
     private List<Movable> strategiesWhenMoving;
     private Rotatable strategyWhenRotating;
+    private Actionable actionsPerformer;
 
     /**
      * Constructor with two arguments. Initializes the default {@link Movable} strategy in order to add the
@@ -43,7 +47,10 @@ public class Mower {
         currentPosition = initialPosition;
         currentOrientation = initialOrientation;
         strategiesWhenMoving = new ArrayList<>();
-        strategiesWhenMoving.add(new MowerMovableImpl(this, s -> LOGGER.log(Level.INFO, s)));
+        final Consumer<String> stringConsumer = s -> LOGGER.log(Level.INFO, s);
+        MowerMovableImpl defaultMovableImpl = new MowerMovableImpl(this, stringConsumer);
+        strategiesWhenMoving.add(defaultMovableImpl);
+        actionsPerformer = new MowerActionableImpl(stringConsumer);
     }
 
     /**
@@ -70,8 +77,8 @@ public class Mower {
      */
     public void performAction(Action action) {
         currentOrientation = Objects.isNull(strategyWhenRotating) ?
-                currentOrientation.performActionBasedOnOrientation(action, strategiesWhenMoving) :
-                currentOrientation.performActionBasedOnOrientation(action, strategyWhenRotating, strategiesWhenMoving);
+                actionsPerformer.performActionBasedOnOrientation(currentOrientation, action, strategiesWhenMoving) :
+                actionsPerformer.performActionsAndGetNewOperation(currentOrientation, action, strategiesWhenMoving, strategyWhenRotating);
     }
 
     public Position getCurrentPosition() {
