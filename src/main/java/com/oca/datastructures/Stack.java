@@ -16,12 +16,19 @@ public class Stack<T> {
 
     /**
      * Default constructor, it initializes the data array with the default capacity.
+     * <p>
+     * Since T is a non-reifiable type there is no way the compiler can check the cast
+     * The elements of the array will contain only T instances, however, at runtime the type of the array won't be
+     * T[], but rather Object[].
+     * </p>
      */
+    @SuppressWarnings("unchecked")
     public Stack() {
         data = (T[]) new Object[DEFAULT_CAPACITY];
     }
 
     private void resize() {
+        @SuppressWarnings("unchecked")
         T[] newArray = (T[]) new Object[size * 2];
         System.arraycopy(data, 0, newArray, 0, data.length);
         data = newArray;
