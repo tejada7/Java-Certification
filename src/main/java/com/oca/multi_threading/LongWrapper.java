@@ -1,4 +1,4 @@
-package com.oca.multiThreading;
+package com.oca.multi_threading;
 
 /**
  * Created by Favio on 7/1/2018.

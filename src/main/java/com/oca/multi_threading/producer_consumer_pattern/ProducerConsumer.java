@@ -1,4 +1,4 @@
-package com.oca.multiThreading.producerConsumerPattern;
+package com.oca.multi_threading.producer_consumer_pattern;
 
 import java.util.logging.Logger;
 
@@ -21,11 +21,12 @@ public class ProducerConsumer {
     static class Producer {
         void produce() {
             synchronized (lock) {
-                if (isFull()) {
+                while (isFull()) {
                     try {
                         lock.wait();
                     } catch (InterruptedException exception) {
                         logger.log(java.util.logging.Level.SEVERE, "Checked exception thrown", exception);
+                        Thread.currentThread().interrupt();
                     }
                 }
                 buffer[count++] = 1;
@@ -41,11 +42,12 @@ public class ProducerConsumer {
     static class Consumer {
         void consume() {
             synchronized (lock) {
-                if (isEmpty()) {
+                while (isEmpty()) {
                     try {
                         lock.wait();
                     } catch (InterruptedException exception) {
                         logger.log(java.util.logging.Level.SEVERE, "Checked exception thrown", exception);
+                        Thread.currentThread().interrupt();
                     }
                 }
                 buffer[--count] = 1;
