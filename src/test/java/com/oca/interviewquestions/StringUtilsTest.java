@@ -5,8 +5,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.oca.interviewquestions.StringUtils.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class StringUtilsTest {
 
@@ -53,6 +52,19 @@ public class StringUtilsTest {
 
         List<String> result1 = iterativePermutation("12345678");
         assertEquals(1 * 2 * 3 * 4 * 5 * 6 * 7 * 8, result.size());
+    }
+
+    @Test
+    public void isStringBalancedWithParenthesisAndBrackets() {
+        assertTrue(isBalanced("[()]"));
+        assertTrue(isBalanced("(()[])"));
+        assertFalse(isBalanced("([)]"));
+        assertFalse(isBalanced("(("));
+        assertFalse(isBalanced("[(()])"));
+        assertTrue(isBalanced("([(([[(([]))]]))])"));
+        assertTrue(isBalanced("[](()()[[]])()[]([])"));
+        assertFalse(isBalanced("([((([(([]))])))))])"));
+        assertFalse(isBalanced("[](()()[[]])[][[([])"));
     }
 }
 

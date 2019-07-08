@@ -1,6 +1,7 @@
 package com.oca.interviewquestions;
 
 import java.util.*;
+import java.util.LinkedList;
 
 /**
  * Contain helpful methods for int numbers.
@@ -122,4 +123,46 @@ public class StringUtils {
         return word.substring(0, length - 1) + word.substring(length - 1, length).toUpperCase();
     }
 
+    /**
+     * Determines if the input string contains a balanced parenthesis and brackes. e.g.
+     * [()] -> true
+     * (()[]) -> true
+     * ([)] -> false
+     * (( -> false
+     * [(()]) -> false
+     * ([(([[(([]))]]))]) -> true
+     * [](()()[[]])()[]([]) -> true
+     * ([((([(([]))])))))]) -> false
+     * [](()()[[]])[][[([]) -> false
+     *
+     * @param str the input
+     * @return a boolean value
+     */
+    public static boolean isBalanced(String str) {
+
+        // set matching pairs
+        Map<Character, Character> braces = new HashMap<>();
+        braces.put('(', ')');
+        braces.put('[', ']');
+
+        // if length of string is odd, then it is not balanced
+        if (str.length() % 2 != 0) {
+            return false;
+        }
+
+        // travel half until openings are found and compare with
+        // remaining if the closings matches
+        Deque<Character> halfBraces = new LinkedList<>();
+        for (char ch : str.toCharArray()) {
+            if (braces.containsKey(ch)) {
+                halfBraces.push(braces.get(ch));
+            }
+            // if stack is empty or if closing bracket is not equal to top of stack,
+            // then braces are not balanced
+            else if (halfBraces.isEmpty() || ch != halfBraces.pop()) {
+                return false;
+            }
+        }
+        return halfBraces.isEmpty();
+    }
 }
