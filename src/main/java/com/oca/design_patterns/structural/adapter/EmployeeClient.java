@@ -20,7 +20,6 @@ public class EmployeeClient {
         EmployeeLDAP employeeLDAP = new EmployeeLDAP("2", "Peter", "pan", "asd@gmail.com");
         employeeList.add(new EmployeeAdapterLdap(employeeLDAP));
 
-
         EmployeeCSV employeeCSV = new EmployeeCSV(1, "asd", "asd", "123");
         employeeList.add(new EmployeeAdapterCSV(employeeCSV));
 

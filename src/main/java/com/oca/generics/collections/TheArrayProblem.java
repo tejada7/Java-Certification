@@ -8,10 +8,10 @@ public class TheArrayProblem {
         Person donDrapwe = new Person("Don Draper", 89);
         Person peggyOlson = new Person("Peggy Olson", 65);
 
-//        usingArrays(donDrapwe, peggyOlson);
-//        usingLists(donDrapwe, peggyOlson);
-//        usingSets(donDrapwe, peggyOlson);
-//        usingMaps(donDrapwe, peggyOlson);
+        usingArrays(donDrapwe, peggyOlson);
+        usingLists(donDrapwe, peggyOlson);
+        usingSets(donDrapwe, peggyOlson);
+        usingMaps(donDrapwe, peggyOlson);
 
     }
 

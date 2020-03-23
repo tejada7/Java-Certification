@@ -1,6 +1,7 @@
 package com.oca.miscellaneous;
 
 import java.awt.print.PageFormat;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,7 +18,34 @@ import static java.util.Collections.sort;
 public class Miscellaneous {
 
     public static void main(String[] args) {
-        function36();
+        function40();
+    }
+
+    private static void function40() {
+        char c = 'X';
+        int y = 1;
+        System.out.print(true ? c : 0);
+        System.out.print(false ? y : c);
+    }
+
+    private static void function39() {
+        int x = 1;
+        int y = 1;
+        x += y += x += y;
+        System.out.println(x);
+        System.out.println(y);
+    }
+
+    private static void function38() {
+        System.out.println(Long.toHexString(0x100000000L + 0xcafebabe));
+        System.out.println(0xcafebabe);
+        System.out.println(0x7afebabe);
+    }
+
+    private static void function37() {
+        System.out.println(2.00 - 1.10);
+        System.out.println(BigDecimal.valueOf(2.00).subtract(BigDecimal.valueOf(1.10)));
+        System.out.println(BigDecimal.valueOf(.1));
     }
 
     static int pow(int number, int base) {
@@ -45,7 +73,7 @@ public class Miscellaneous {
         int[] arrayCopy = Arrays.copyOf(array, array.length);
         System.out.println(Arrays.equals(array, arrayCopy));
         System.out.println(pow(5, 4));
-        System.out.println(-0f/0);
+        System.out.println(-0f / 0);
     }
 
     private static void function35() {
@@ -57,11 +85,11 @@ public class Miscellaneous {
     }
 
     interface ForaxInterface {
-        static void main(String...args) {
+        static void main(String... args) {
             IntFunction<String> fun = s -> new Random(s)
                     .ints(6, 0, 27)
                     .filter(v -> v != 0)
-                    .mapToObj(v -> "" + (char)('`' + v))
+                    .mapToObj(v -> "" + (char) ('`' + v))
                     .collect(Collectors.joining(""));
 
             System.out.println(fun.apply(-229985452));
