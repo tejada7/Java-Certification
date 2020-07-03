@@ -19,3 +19,18 @@ Also, avoid `float` and `double` where exact answers are required; for monetary 
 The promotion from int to long is a widening primitive conversion, which preserves the (incorrect) numerical value 
 When working with large numbers, watch out for overflow—it’s a silent killer. 
  
+#### 4. Multicast sout((int) (char) (byte) -1) -> ???
+
+byte: `1111 1111`
+
+char: `1111 1111 1111 1111` ~ 65535 widening and narrowing primitive conversion, The byte is converted to an int and the int to a char
+
+int: `0000 0000 0000 0000 1111 1111 1111 1111`
+
+If you are converting from a char value c to a wider type, and you don’t want sign extension, consider using a bit mask for clarity, even though it isn’t required:
+```java
+int i = c & 0xffff;
+```
+
+#### 5. 
+#### 6. 
