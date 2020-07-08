@@ -32,5 +32,7 @@ If you are converting from a char value c to a wider type, and you don’t want 
 int i = c & 0xffff;
 ```
 
-#### 5. 
+#### 5. Ternary operator corner cases
+The ternary operator has itself a type which is determined by its operands which should be compatible, there are though 
+special cases in the event numeric primitives are involved, for more details refer to [Dos equis problem](src/main/java/com/oca/puzzles/DosEquis.java) 
 #### 6. 
