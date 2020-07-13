@@ -35,4 +35,12 @@ int i = c & 0xffff;
 #### 5. Ternary operator corner cases
 The ternary operator has itself a type which is determined by its operands which should be compatible, there are though 
 special cases in the event numeric primitives are involved, for more details refer to [Dos equis problem](src/main/java/com/oca/puzzles/DosEquis.java) 
-#### 6. 
+#### 6. Beware of the compound assignment operators (+=, -=, *=, /=, %=, <<=, >>=, >>>=, &=, ^=, and |=.)
+There is always a cast to the left-hand side of the operation, e.g.
+```java
+int x = 1;
+short y = 1;
+x+=y; // x will become 2
+y+=x; // Beware!!! int will be casted to short and we'd silently lose precision
+y = y + x; // does not compile due to loss of precision
+```
