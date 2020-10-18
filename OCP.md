@@ -92,5 +92,23 @@ List<?> list = new ArrayList() != var list = new ArrayList()
 #### Infinite Streams
 * `Stream.generate(Supplier(T))` -> Creates Stream by calling the Supplier for each element upon request
 * `Stream.iterate(T seed, Predicate<T> hasNextCondition, UnaryOperator(T))` -> Creates Stream by using the seed for the first element and then calling the UnaryOperator for each subsequent element upon request. Stops if the Predicate returns false
-                                                                              
-   
+
+#### Reduce method
+* `Optional<T> reduce(BinaryOperator<T> accumulator)` -> accumulator is responsible for merging all Stream's elements T and return an optional of T. Example
+    ```java
+      List.of("h", "o", "l", "a").stream().reduce(String::concat); // Optional<"Hola">
+  
+      Arrays.stream(new String[]{})..reduce(String::concat); // Optional.empty
+    ```
+* `T reduce(T identity, BinaryOperator<T> accumulator)` -> identity is the starting value so that the accumulator sequentially merges other T Stream elements and return a T
+    ```java
+        List.of("h", "o", "l", "a").stream().reduce("¡" ,String::concat); // "¡Hola"
+  
+        Arrays.stream(new String[]{})..reduce("¡", String::concat); // "¡"
+    ```
+* `U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner)` -> identity is the starting value so that the accumulator sequentially transforms T to U, the combiner is only used for parallel streaming, and its purpose is to combine preliminary results.  
+    ```java
+        List.of("h", "o", "l", "a").stream().reduce(0, (identity, streamElement) -> identity + streamElement.length(), Integer::sum); // the combiner does not do anything here and the result is 4
+ 
+        List.of("h", "o", "l", "a").stream().parallel().reduce(0, (identity, streamElement) -> identity + streamElement.length(), Integer::sum); // the result is 4 and the performance is better
+    ```
