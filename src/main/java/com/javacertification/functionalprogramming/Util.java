@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.*;
 public class Util {
 
     private Util() {
-        throw new IllegalStateException("Illegal constructor invokation.");
+        throw new IllegalStateException("Illegal constructor invocation.");
     }
 
     static boolean isPrime(int number) {

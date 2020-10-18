@@ -63,7 +63,7 @@ and its limitation are:
 
 From where, for upper bounds and unbounded wildcards, the list becomes logically immutable and therefore cannot be modified, 
  although it is technically possible to remove elements.
-            
+
 ```java
 List<?> list = new ArrayList() != var list = new ArrayList()
 ```
@@ -81,3 +81,16 @@ List<?> list = new ArrayList() != var list = new ArrayList()
 |BinaryOperator<T>|T|apply(T,T)|2(T,T)|
 |Callable<T>|T|call()|0|
 |Runnable<T>|void|run()|0|
+
+### Streams
+> With streams, the data isn't generated up front. It is created when needed. This is an example of lazy evaluation, which delays execution until necessary.
+#### Stream pipeline's parts
+* Source
+* Intermediate operations
+* Terminal operation
+
+#### Infinite Streams
+* `Stream.generate(Supplier(T))` -> Creates Stream by calling the Supplier for each element upon request
+* `Stream.iterate(T seed, Predicate<T> hasNextCondition, UnaryOperator(T))` -> Creates Stream by using the seed for the first element and then calling the UnaryOperator for each subsequent element upon request. Stops if the Predicate returns false
+                                                                              
+   
