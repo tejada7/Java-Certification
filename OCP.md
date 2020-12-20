@@ -112,3 +112,11 @@ List<?> list = new ArrayList() != var list = new ArrayList()
  
         List.of("h", "o", "l", "a").stream().parallel().reduce(0, (identity, streamElement) -> identity + streamElement.length(), Integer::sum); // the result is 4 and the performance is better
     ```
+
+#### Collect method
+* `<R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner)` -> supplier is the function that creates the result container so that the accumulator can fold elements to the result container; finally, the combiner combines the partial result containers in the event it is a parallel stream.  
+    ```java
+        List.of("h", "o", "l", "a").stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append); // the result will be a string builder with the greeting hola, it's worth noting that combines does nothing, unlike the belwo example: 
+ 
+        List.of("h", "o", "l", "a").stream().parallel().collect(TreeSet::new, Set::add, Set::addAll); // Set<h,o,l,a>
+    ```
