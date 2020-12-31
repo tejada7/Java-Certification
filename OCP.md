@@ -120,3 +120,81 @@ List<?> list = new ArrayList() != var list = new ArrayList()
  
         List.of("h", "o", "l", "a").stream().parallel().collect(TreeSet::new, Set::add, Set::addAll); // Set<h,o,l,a>
     ```
+### IO
+In Java, although the file separator / can be used in both Unix-based and Microsoft Windows operating systems, it is recommended to use either:
+```java
+File.separator;
+// Or
+System.getProperty("file.separator");
+```
+That being said, there are two ways to instantiate files/directories in Java:
+#### 1. File
+Represents the path to a particular file or directory on the file system. The file class cannot read or write data **within** a file.
+```java
+new File (String pathname);
+new File (File parent, String child);
+new File (String parent, String child);
+```
+When working with an instance of the File class, keep in mind that it only represents a path to a file. Unless operated upon, it is not connected to an actual file within the file system.
+
+Below an exhaustive list of its available methods:
+
+|Method Name|Description|
+|---|---|
+|`boolean delete()`|Deletes the file or directory and returns true only if successful. If this instance denotes a directory, then the directory must be empty in order to be deleted.|
+|`boolean exists()`|Checks if a file exists.|
+|`String getAbsolutePath()`|Retrieves the absolute name of the file or directory within the file system.|
+|`String getName()`|Retrieves the name of the file or directory.|
+|`String getParent()`|Retrieves the parent directory that the path is contained in or null if there is none.|
+|`boolean isDirectory()`|Checks if a File reference is a directory within the file system.|
+|`boolean isFile()`|Checks if a File reference is a file within the file system.|
+|`long lastModified()`|Returns the number of milliseconds since the epoch (number of milliseconds since 12 a.m. UTC on January 1, 1970) when the file was last modified.|
+|`long length()`|Retrieves the number of bytes in the file.|
+|`File[] listFiles()`|Retrieves a list of files within a directory|
+|`boolean mkdir()`|Creates the directory named by this path.|
+|`boolean mkdirs()`|Creates the directory named by this path including any nonexistent parent directories.|
+|`boolean renameTo(File dest)`|Renames the file or directory denoted by this path to dest and returns true only if successful|
+              
+##### Files utility class
+// TODO
+
+#### 2. Path
+```java
+Path.of(String first, String...more)
+Path.of(URI uri)
+```
+
+##### Paths utility class
+// TODO
+
+#### Streams
+Java defines two sets of stream classes for reading and writing streams: byte streams and character streams:
+* **Byte streams** read/write binary data (0s and 1s) and have class names that end in InputStream or OutputStream.
+* **Character streams** read/write text data and have class names that end in Reader or Writer.  
+
+|Class Name|Description|
+|---|---|
+|`Inputstream`|Abstract class for all input byte streams.|
+|`Outputstream`|Abstract class for all output byte streams.|
+|`Reader`|Abstract class for all input character streams.|
+|`Writer`|Abstract class for all output character streams.|
+
+
+|Class Name|Parent Class|Low/High Level|Description|
+|---|---|---|---|
+|`FileInputStream`|`InputStream`|Low|Reads file data as bytes.|
+|`FileOutputStream`|`OutputStream`|Low|Writes file data as bytes.|
+|`FileReader`|`InputStreamReader <-- Reader`|Low|Reads file data as characters.|
+|`FileWriter`|`OutputStreamWriter <-- Writer`|Low|Writes file data as characters.|
+|`InputStreamReader`|`Reader`|High|It reads bytes and decodes them into characters.|
+|`OutputStreamWriter`|`Writer`|High|Characters written to it are encoded into bytes.|
+|`BufferedInputStream`|`FilterInputStream <-- InputStream`|High|Reads byte data from an existing InputStream in a buffered manner, which improves efficiency and performance.|
+|`BufferedOutputStream`|`FilterOutputStream <-- OutputStream`|High|Writes byte data to an existing OutputStream in a buffered manner, which improves efficiency and performance.|
+|`BufferedReader`|`Reader`|High|Reads character data from an existing Reader in a buffered manner, which improves efficiency and performance.|
+|`BufferedWriter`|`Writer`|High|Writes character data to an existing Writer in a buffered manner, which improves efficiency and performance.|
+|`ObjectInputStream`|`InputStream`|High|Deserializes primitive Java data types and graphs of Java objects from an existing InputStream.|
+|`ObjectOutputStream`|`OutputStream`|High|Serializes primitive Java data types and graphs of Java objects to an existing OutputStream.|
+|`PrintStream`|`FilterOutputStream <-- OutputStream`|High|Writes formatted representations of Java objects to a binary stream.|
+|`PrintWriter`|`Writer`|High|Writes formatted representations of Java objects to a character stream.|
+From which, a _low-level_ stream connects directly with the source of the data, such as a file, an array, or a String; whereas a _high-level_ stream is built on top of another stream using wrapping. Wrapping is the process by which an instance is passed to the constructor of another class, and operations on the resulting instance are filtered and applied to the original instance.
+

@@ -37,7 +37,7 @@ class UtilTest {
     @ParameterizedTest
     @MethodSource("wordsInFile")
     void countWordsInFile(BiFunction<String, String, Long> function) {
-        String fileName = "./src/main/java/com/oca/functionalprogramming/Util.java";
+        String fileName = "./src/main/java/com/javacertification/functionalprogramming/Util.java";
 
         assertAll(
                 () -> assertEquals(0, function.apply(fileName, "nope")),
