@@ -3,6 +3,7 @@ package com.javacertification.ocp.io;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InputOutput {
@@ -39,12 +40,16 @@ public class InputOutput {
         }
     }
 
-    public <T> T deserializeObject(String filename, Class<? extends T> clazz) throws IOException, ClassNotFoundException {
-        Object o;
+    public <T> List<T> deserializeObject(String filename, Class<? extends T> clazz) throws IOException, ClassNotFoundException {
+        List<Object> o = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
-            o = ois.readObject();
+            while (true) {
+                o.add(ois.readObject());
+            }
+        } catch (EOFException e) {
+            System.err.println("End of file");
         }
-        return ((T) o);
+        return ((List<T>) o);
     }
 
     private void writeString(String string, BufferedWriter br) {

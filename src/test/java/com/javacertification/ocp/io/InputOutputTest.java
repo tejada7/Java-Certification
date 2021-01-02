@@ -51,8 +51,8 @@ class InputOutputTest {
 
         // Then
         var actual = inputOutput.deserializeObject("object", InputOutput.Foo.class);
-        assertEquals("name", actual.getName());
-        assertEquals(1, actual.getId());
-        assertFalse(actual.isFlag());
+        assertEquals("name", actual.get(0).getName());
+        assertEquals(1, actual.get(0).getId());
+        assertFalse(actual.get(0).isFlag());
     }
 }

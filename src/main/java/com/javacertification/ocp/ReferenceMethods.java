@@ -1,12 +1,6 @@
 package com.javacertification.ocp;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.function.*;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.function.BiPredicate;
 
 public class ReferenceMethods {
 
