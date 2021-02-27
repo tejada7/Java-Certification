@@ -1,5 +1,43 @@
 # Java 11 Oracle Certified Professional study notes
 
+### Inner classes
+* Static nested class
+    * Can be instantiated without an instance of the enclosing class
+    * I cannot access instance variables or methods of the outer class directly, it needs an explicit reference to the outer class.
+    * The enclosing class can refer to the static fields and methods of the inner class
+```java
+package parent;
+public class Parent {
+    private String name;
+    public static final String CONSTANT = "";
+
+    public static class InnerStaticClass {
+        public static void staticMethod() {
+            System.out.println(new Parent().name);            
+            System.out.println(CONSTANT);            
+        }
+
+        public void instanceMethod() {
+            System.out.println(new Parent().name);            
+            System.out.println(CONSTANT);         
+        }
+    } 
+}
+```
+
+```java
+package foo;
+import parent.Parent.InnerStaticClass;
+    class Foo {
+        Parent.InnerClass.staticMethod();
+        new Parent.InnerClass.instanceMethod();
+    }   
+```
+* Member inner class (aka inner class)
+* Anonymous class
+* Local class.- Can be defined within methods, constructors and initializers.
+
+
 ### Java Collections Framework types
  
 |Type|Can contain duplicate elements|Elements always ordered?|Has keys and value?|Must add/remove in specific order?|
