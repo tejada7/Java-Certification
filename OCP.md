@@ -293,3 +293,86 @@ The below table compares the legacy `java.io.File` vs. the `NIO.2` methods:
 |`file.listFiles()`|`Files.list(path)`|
 |`file.mkdir()`|`Files.createDirectory(path)`|
 |`file.mkdirs()`|`Files.createDirectories(path)`|
+### Modules
+Given the structure:
+```shell script
+.
+├── src
+    ├── module-info.java
+    └── com
+          └── ocp
+                └── hello
+                      └── Main.java
+```
+And the content of `module-info.java`:
+```java
+module com.ocp.hello {} // Modules names should usually match the package names 
+```
+Compiling the old-fashioned way (with classpath):
+```shell script
+javac -d out -m src/com/ocp/hello/Main.java 
+```
+Will create the binary files on the `out` directory:
+```shell script
+.
+├── src
+│   ├── module-info.java
+│   └── com
+│         └── ocp
+│               └── hello
+│                     └── Main.java
+└── out
+    └── com
+          └── ocp
+                └── hello
+                      └── Main.java
+```
+To run the `Main` class:
+```shell script
+java -cp out com.ocp.hello.Main.java 
+```
+Compiling the module:
+```shell script
+javac -d out -m src/com/ocp/hello/Main.java src/module-info.java 
+```
+It will create the structure:
+```shell script
+.
+├── src
+│   ├── module-info.java
+│   └── com
+│         └── ocp
+│               └── hello
+│                     └── Main.java
+└── out
+    └── com
+     │   └── ocp
+     │         └── hello
+     │              └── Main.class
+     └────── module-info.class
+```
+to Run:
+```shell script
+java -p out -m com.ocp.hello/com/ocp/hello/Main 
+```
+Alternatively, we can restructure the program as:
+
+```shell script
+.
+└── src
+    └── com.ocp.hello 
+        ├── module-info.java
+        └── com
+            └── ocp
+                └── hello
+                    └── Main.java
+```
+And compile with:
+Compiling a module:
+```shell script
+javac -d out --module-path-source src -m com.ocp.hello 
+```
+And finally run with the same command:
+```shell script
+java -p out -m com.ocp.hello/com/ocp/hello/Main 
+```
