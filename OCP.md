@@ -3,7 +3,7 @@
 ### Inner classes
 * Static nested class
     * Can be instantiated without an instance of the enclosing class
-    * I cannot access instance variables or methods of the outer class directly, it needs an explicit reference to the outer class.
+    * It cannot access instance variables or methods of the outer class directly, it needs an explicit reference to the outer class.
     * The enclosing class can refer to the static fields and methods of the inner class
 ```java
 package parent;
@@ -194,18 +194,59 @@ Below an exhaustive list of its available methods:
 |`boolean renameTo(File dest)`|Renames the file or directory denoted by this path to dest and returns true only if successful|
               
 ##### Files utility class
-// TODO
+This utility class operates only on Path instances, and not File ones.
+
+|Enum type|Interface inherited|Enum value|Details|
+|---|---|---|---|
+|`LinkOption`|CopyOption OpenOption|NOFOLLOW_LINKS|Do not follow symbolic links.|
+|`StandardCopyOption`|CopyOption|ATOMIC_MOVE|Move file as atomic file system operation.|
+| | |COPY_ATTRIBUTES|Copy existing attributes to new file.|
+| | |REPLACE_EXISTING|Overwrite file if it already exists.|
+|`StandardOpenOption`|OpenOption|APPEND|If file is already open for write, then append to the end.|
+| | |CREATE|Create a new file if it does not exist.|
+| | |CREATE_NEW|Create a new file only if it does not exist, fail otherwise.|
+| | |READ|Open for read access.|
+| | |TRUNCATE_EXISTING|If file is already open for write, then erase file and append to beginning.|
+| | |WRITE|Open for write access.|
+|`FileVisitOption`|N/A|FOLLOW_LINKS|Follow symbolic links.|
+
+|||
+|---|---|
+|`boolean exists(Path, LinkOption…)`|`Path move(Path, Path, CopyOption…)`|
+|`boolean isSameFile(Path, Path)`|`void delete(Path)`|
+|`Path createDirectory(Path, FileAttribute<?>…)`|`boolean deleteIfExists(Path)`|
+|`Path createDirectories(Path, FileAttribute<?>…)`|`BufferedReader newBufferedReader(Path)`|
+|`Path copy(Path, Path, CopyOption…)`|`BufferedWriter newBufferedWriter(Path, OpenOption…)`|
+|`long copy(InputStream, Path, CopyOption…)`|`List<String> readAllLines(Path)`|
+|`long copy(Path, OutputStream)`| |
 
 #### 2. Path
+A Path instance represents a hierarchical path on the storage system to a file or directory. You can think of a Path as the NIO.2 replacement for the java.io.File class, although how you use it is a bit different.
+
+Unlike the `java.io.File`, the `Path` interface contains support for _symbolic links_. 
 ```java
 Path.of(String first, String...more)
 Path.of(URI uri)
 ```
 
-##### Paths utility class
-// TODO
+|||
+|---|---|
+|`Path of(String, String…)`|`Path getParent()`|
+|`URI toURI()`|`Path getRoot()`|
+|`File toFile()`|`boolean isAbsolute()`|
+|`String toString()`|`Path toAbsolutePath()`|
+|`int getNameCount()`|`Path relativize()`|
+|`Path getName(int)`|`Path resolve(Path)`|
+|`Path subpath(int, int)`|`Path normalize()`|
+|`Path getFileName()`|`Path toRealPath(LinkOption…)`|
 
-#### Streams
+##### Paths factory class
+```java
+Paths.get(String first, String...more)
+Paths.get(URI uri)
+```
+
+#### IO Streams
 Java defines two sets of stream classes for reading and writing streams: byte streams and character streams:
 * **Byte streams** read/write binary data (0s and 1s) and have class names that end in InputStream or OutputStream.
 * **Character streams** read/write text data and have class names that end in Reader or Writer.  
@@ -236,3 +277,19 @@ Java defines two sets of stream classes for reading and writing streams: byte st
 |`PrintWriter`|`Writer`|High|Writes formatted representations of Java objects to a character stream.|
 From which, a _low-level_ stream connects directly with the source of the data, such as a file, an array, or a String; whereas a _high-level_ stream is built on top of another stream using wrapping. Wrapping is the process by which an instance is passed to the constructor of another class, and operations on the resulting instance are filtered and applied to the original instance.
 
+The below table compares the legacy `java.io.File` vs. the `NIO.2` methods:
+
+|Legacy I/O File method|NIO.2 method|
+|---|---|
+|`file.delete()`|`Files.delete(path)`|
+|`file.exists()`|`Files.exists(path)`|
+|`file.getAbsolutePath()`|`path.toAbsolutePath()`|
+|`file.getName()`|`path.getFileName()`|
+|`file.getParent()`|`path.getParent()`|
+|`file.isDirectory()`|`Files.isDirectory(path)`|
+|`file.isFile()`|`Files.isRegularFile(path)`|
+|`file.lastModified()`|`Files.getLastModifiedTime(path)`|
+|`file.length()`|`Files.size(path)`|
+|`file.listFiles()`|`Files.list(path)`|
+|`file.mkdir()`|`Files.createDirectory(path)`|
+|`file.mkdirs()`|`Files.createDirectories(path)`|
