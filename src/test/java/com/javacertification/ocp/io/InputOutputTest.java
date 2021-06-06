@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,4 +56,38 @@ class InputOutputTest {
         assertEquals(1, actual.get(0).getId());
         assertFalse(actual.get(0).isFlag());
     }
+
+    @Test
+    void shouldGetConsoleUsingScannerImpl() {
+        // Given
+        var input = "Something";
+        var scannerImpl = new InputOutput.ScannerImpl(input);
+
+        // When
+        var actual = scannerImpl.readLine("Please input something to the console...");
+
+        // Then
+        assertEquals(input, actual);
+        assertThrows(NoSuchElementException.class, scannerImpl::readLine);
+    }
+
+    @Test
+    void shouldThrowExceptionWhen_AttemptingToGetConsoleFromUnitTest() {
+        assertThrows(IllegalStateException.class, InputOutput.ConsoleImpl::new);
+    }
+
+    @Test
+    void shouldGetBufferReaderImplUsingStringAsInput() {
+        // Given
+        var input = "Something";
+        var bufferReaderImpl = new InputOutput.BufferReaderImpl(input);
+
+        // When
+        var actual = bufferReaderImpl.readLine("Please input something to the console...");
+
+        // Then
+        assertEquals(input, actual);
+        assertNull(bufferReaderImpl.readLine());
+    }
+
 }

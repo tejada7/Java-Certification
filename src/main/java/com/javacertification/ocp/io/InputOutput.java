@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class InputOutput {
 
@@ -82,6 +83,99 @@ public class InputOutput {
 
         public boolean isFlag() {
             return flag;
+        }
+    }
+
+    interface InputConsole {
+        <T> T readLine(final String message);
+
+        <T> T readLine();
+    }
+
+    static class ScannerImpl implements InputConsole {
+
+        private final Scanner scanner;
+
+        public ScannerImpl() {
+            scanner = new Scanner(System.in);
+        }
+
+        public ScannerImpl(final String input) {
+            scanner = new Scanner(input);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+
+        public Object readLine(String message) {
+            System.out.println(message);
+            return scanner.nextLine();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object readLine() {
+            return scanner.nextLine();
+        }
+    }
+
+    static class ConsoleImpl implements InputConsole {
+
+        private final Console console = System.console();
+
+        public ConsoleImpl() {
+            if (null == console) {
+                throw new IllegalStateException("The console is not available");
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object readLine(String message) {
+            System.out.println(message);
+            return console.readLine();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object readLine() {
+            return console.readLine();
+        }
+    }
+
+    static class BufferReaderImpl implements InputConsole {
+
+        private final BufferedReader bufferedReader;
+
+        public BufferReaderImpl(final String input) {
+            bufferedReader = new BufferedReader(new StringReader(input));
+        }
+
+        public BufferReaderImpl() {
+            bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object readLine(String message) {
+            System.out.println(message);
+            try {
+                return bufferedReader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object readLine() {
+            try {
+                return bufferedReader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }
