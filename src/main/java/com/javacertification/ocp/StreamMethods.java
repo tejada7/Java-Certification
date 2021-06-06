@@ -1,7 +1,12 @@
 package com.javacertification.ocp;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,7 +16,7 @@ public class StreamMethods {
         final List<Integer> integerList = List.of();
         var x = integerList.stream().reduce((i, j) -> i * j);
         System.out.println(x);
-        var array = new String[] {"w", "o", "l", "f", "!"};
+        var array = new String[]{"w", "o", "l", "f", "!"};
 
         System.out.println(Arrays.stream(array).reduce(String::concat));
         final BiFunction<Integer, String, Integer> biFunction = (integer, s) -> integer + s.length();
@@ -34,7 +39,7 @@ public class StreamMethods {
         Stream.iterate(1, n -> n + 1)
                 .skip(5)
                 .limit(10)
-        .forEach(System.out::println);
+                .forEach(System.out::println);
 
 
         Stream.of(array).sorted();
@@ -58,5 +63,61 @@ public class StreamMethods {
         // group set of names by lengths
         Map<Integer, Set<String>> setNamesByLength = list.stream()
                 .collect(Collectors.groupingBy(String::length, Collectors.toSet()));
+    }
+
+    /**
+     * Converts a collection of non-null integers to a map of unique decimals as key with its corresponding binary representation.
+     *
+     * @param integers the collection of integers
+     * @return a map of integers.
+     */
+    public Map<Integer, Integer> decimalByBinary(Collection<Integer> integers) {
+        return integers.stream()
+                .collect(Collectors.toMap(Function.identity(),
+                        e -> Integer.parseInt(Integer.toBinaryString(e)),
+                        this::handleCollision,
+                        TreeMap::new
+                ));
+    }
+
+    public Map<MusicalGender, BigDecimal> getAverageRatingByMusicalGender(Collection<? extends Person> persons) {
+        return persons.stream()
+                .flatMap(person -> person.preferences.stream())
+                .flatMap(preference -> preference.ratingByMusicalGenre.entrySet().stream())
+                .collect(Collectors.groupingBy(Map.Entry::getKey,
+                        Collectors.collectingAndThen(Collectors.averagingDouble(Map.Entry::getValue),
+                                averageInDouble -> new BigDecimal(averageInDouble, new MathContext(3)))));
+    }
+
+    private Integer handleCollision(Integer integer, Integer integer2) {
+        System.out.println("Found duplicate key: " + integer);
+        return integer;
+    }
+
+    static class Person {
+        int age;
+        String name;
+        Collection<Preference> preferences;
+
+        public Person(int age, String name, Collection<Preference> preferences) {
+            this.age = age;
+            this.name = name;
+            this.preferences = preferences;
+        }
+    }
+
+    static class Preference {
+        Map<MusicalGender, Integer> ratingByMusicalGenre;
+
+        public Preference(Map<MusicalGender, Integer> ratingByMusicalGenre) {
+            this.ratingByMusicalGenre = ratingByMusicalGenre;
+        }
+    }
+
+    static enum MusicalGender {
+        ROCK,
+        POP,
+        COUNTRY,
+        HIP_HOP
     }
 }
