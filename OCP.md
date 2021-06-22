@@ -120,6 +120,20 @@ List<?> list = new ArrayList() != var list = new ArrayList()
 |Callable<T>|T|call()|0|
 |Runnable<T>|void|run()|0|
 
+### Copying Lists
+* `List.of()` accepts either multiple individual parameters or an array. If it's a collection though, it'll be treated
+as a regular object, e.g.
+```java
+var original = List.of(1, 2, 3);
+var copyList = List.of(original); // It'll become a single-element list of list List<List<Integer>>
+```  
+List.of() creates an immutable collection, meaning any attempt to modify it will throw an UnsupportedOperationException 
+* `List.copyOf()` accepts only a collection and creates an immutable list too. 
+
+**N.B None of the above methods accept null values, throwing NullPointerException otherwise.**
+* `Collections.unmodifiableList()` creates an unmodifiable view of a list and does not protect the underlying list from
+being modified. Besides, this method allows null elements.  
+
 ### Streams
 > With streams, the data isn't generated up front. It is created when needed. This is an example of lazy evaluation, which delays execution until necessary.
 #### Stream pipeline's parts
