@@ -258,6 +258,9 @@ Java defines two sets of stream classes for reading and writing streams: byte st
 |`Reader`|Abstract class for all input character streams.|
 |`Writer`|Abstract class for all output character streams.|
 
+Most important implementations: 
+
+- Reader: FileReader (mark not supported), StringReader (mark supported), CharArrayReader (mark supported)
 
 |Class Name|Parent Class|Low/High Level|Description|
 |---|---|---|---|
@@ -310,7 +313,7 @@ module com.ocp.hello {} // Modules names should usually match the package names
 ```
 Compiling the old-fashioned way (with classpath):
 ```shell script
-javac -d out -m src/com/ocp/hello/Main.java 
+javac -d out src/com/ocp/hello/Main.java 
 ```
 Will create the binary files on the `out` directory:
 ```shell script
@@ -333,7 +336,7 @@ java -cp out com.ocp.hello.Main.java
 ```
 Compiling the module:
 ```shell script
-javac -d out -m src/com/ocp/hello/Main.java src/module-info.java 
+javac -d out src/com/ocp/hello/Main.java src/module-info.java 
 ```
 It will create the structure:
 ```shell script
@@ -353,7 +356,9 @@ It will create the structure:
 ```
 to Run:
 ```shell script
-java -p out -m com.ocp.hello/com/ocp/hello/Main 
+java -p out -m com.ocp.hello/com.ocp.hello.Main
+or 
+java --module-path {module-path} --module {module-name}/{fully-qualified-class-name}
 ```
 Alternatively, we can restructure the program as:
 
@@ -374,5 +379,32 @@ javac -d out --module-path-source src -m com.ocp.hello
 ```
 And finally run with the same command:
 ```shell script
-java -p out -m com.ocp.hello/com/ocp/hello/Main 
+java -p out -m com.ocp.hello/com.ocp.hello.Main 
+or
+java --module-path {module-path} --module {module-name}/{fully-qualified-class-name}
 ```
+For **compiling** Java files using modules, the following command-line options are available:
+* `--module-source-path`: location of the modules sources files, it has to point to a parent directory where all
+module-info files are stored, note that if we have module called foo, then a directory foo must be present in this
+parent directory (usually src). If more directories are available, then they can be separated with semicolon
+(--module-source-path src;src1).
+* `-d`: option to specify the output directory of the compiled files, it's always required independently of using modules.
+For running the program the old way, the `-cp` option must point to the same folder and if running a modular program, the option
+`-p` must be used instead. 
+* `--module or -m`: Use only with `--module-source-path`. It's useful to compile all classes in a module at once without
+listing them out. 
+* `--module-path or -p` (also used for running with java command): This option specifies the location(s) of any other
+module upon which the module to be compiled depends. You can specify the exploded module directories, directories
+containing modular jars, or specific modular jars here. e.g.
+If you want to compile module foo and it depends on another module named abc.util packaged as utils.jar located in
+thirdpartymodules directory then your module-path can be thirdpartymodules or thirdpartymodules/utils.jar.
+That both the following two commands will work:
+```shell script
+javac --module-source-path src --module-path thirdpartymodules -d out --module foo 
+or
+javac --module-source-path src --module-path thirdpartymodules/utils.jar -d out --module foo 
+``` 
+
+*N.B If we need to add a non-modular third party jar, we have to add the jar to the `--module-path` so that it'll be
+loaded as an automatic-module, then in the application requiring the third-party jar,
+we add requires <automatic-module-name> in the module-info.java*
