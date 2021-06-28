@@ -422,3 +422,8 @@ javac --module-source-path src --module-path thirdpartymodules/utils.jar -d out 
 *N.B If we need to add a non-modular third party jar, we have to add the jar to the `--module-path` so that it'll be
 loaded as an automatic-module, then in the application requiring the third-party jar,
 we add requires <automatic-module-name> in the module-info.java*
+### Deserialization
+When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
+called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
+class** it can find in the class hierarchy.
+Any static or transient fields are ignored. Values that are not provided will be given their default Java value, such as null for String, or 0 for int values. 
