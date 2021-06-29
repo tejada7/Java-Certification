@@ -422,6 +422,19 @@ javac --module-source-path src --module-path thirdpartymodules/utils.jar -d out 
 *N.B If we need to add a non-modular third party jar, we have to add the jar to the `--module-path` so that it'll be
 loaded as an automatic-module, then in the application requiring the third-party jar,
 we add requires <automatic-module-name> in the module-info.java*
+
+There are three command line options applicable to javac and java that can be used for customizing exports and requires
+configurations of modules temporarily. 
+These are: `add-reads`, `add-exports`, and, `add-opens`. For example, if you want module1 to be able to read public
+packages of module2 and neither of the modules have appropriate information in their respective module-info files, then
+you can use the following commands to enable such access :  
+```
+javac --add-reads module1=module2 --add-exports module2/com.ocp.package1=module1 
+
+java --add-reads module1=module2 --add-exports module2/com.ocp.package1=module1
+```
+`--add-reads module1=module2` implies that module1 wants to read all exported packages of module2.
+`--add-exports module2/com.ocp.package1=module1` implies that module2 exports package com.ocp.package1 to module1.
 ### Deserialization
 When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
