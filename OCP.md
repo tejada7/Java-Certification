@@ -440,3 +440,13 @@ When deserializing an object, the constructor of the serialized class, along wit
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
 class** it can find in the class hierarchy.
 Any static or transient fields are ignored. Values that are not provided will be given their default Java value, such as null for String, or 0 for int values. 
+### Concurrency
+* **Liveness** - Ability of an application to be able to execute in a timely manner. Liveness problems, then, are those
+in which the application becomes unresponsive or in some kind of "stuck" state.
+* **Deadlock** - Situation where two or more threads are blocked **forever**, waiting for each other.
+* **Livelock** - Occurs when two or more threads are conceptually blocked forever, although they are each still active
+and trying to complete their task. 
+* **Starvation** - Occurs when a single thread is perpetually denied access to a shared resource or lock. The thread is
+still active, but it is unable to complete its work as a result of other threads contanstly taking the resource that
+they are trying to access.
+
