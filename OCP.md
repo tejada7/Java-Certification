@@ -37,7 +37,38 @@ import parent.Parent.InnerStaticClass;
 * Anonymous class
 * Local class.- Can be defined within methods, constructors and initializers.
 
+### Accessing instance and static content
+Given:
+```java
+class Parent {
 
+    static constant = "123";
+    String name = "parent";
+    
+    String getName(){ return name;}
+}
+```
+And:
+```java
+class Child extends Parent {
+
+    static constant = "456";
+    String name = "child";
+    
+    String getName(){ return name}
+}
+```
+, accessing static and instance fields as well as static methods depends on the class of reference variable and not the
+actual object to which the variable points to. Mind that this is opposite of what happens in the case of instance methods.
+In case of instance methods, the method of the actual class of the object is called. e.g.
+```java
+public static void main (String...args) {
+    System.out.println(new Parent().name+", "+new parent().constant+", "+new Parent().getName()); // will print "parent 123 parent"
+
+    Parent object = new Child();
+    System.out.println(object.name+", "+object.constant+", "+object.getName()); // will print "parent 123 child"
+}
+```
 ### Java Collections Framework types
  
 |Type|Can contain duplicate elements|Elements always ordered?|Has keys and value?|Must add/remove in specific order?|
