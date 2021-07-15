@@ -480,4 +480,20 @@ and trying to complete their task.
 * **Starvation** - Occurs when a single thread is perpetually denied access to a shared resource or lock. The thread is
 still active, but it is unable to complete its work as a result of other threads contanstly taking the resource that
 they are trying to access.
-
+### Suppressed Exceptions
+They usually occur when using try-with-resources when an exception is thrown when closing the resource. However, it can
+also occur in any context by leveraging the methods `Throwable#addSuppressed` and `Throwable#getSuppressed`.
+It's important to mention that a method can **only throw one exception**. For example:
+```java
+void method() {
+    try {
+        //doSomething
+    } catch(Exception e) {
+        throw new RuntimeException("Exception from catch block");
+    } finally {
+        throw new RuntimeException("Exception from finally block");
+    }
+}
+```  
+Only the exception from finally block will be thrown and the exception from the catch block will be **lost** (i.e. not
+even considered as a suppressed exception).
