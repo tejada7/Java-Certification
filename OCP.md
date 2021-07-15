@@ -497,3 +497,18 @@ void method() {
 ```  
 Only the exception from finally block will be thrown and the exception from the catch block will be **lost** (i.e. not
 even considered as a suppressed exception).
+### Multiple inheritance of state
+One reason why the Java programming language does not permit you to extend more than one class is to avoid the issues of
+multiple inheritance of state, which is the ability to inherit fields from multiple classes. For example, suppose that
+you are able to define a new class that extends multiple classes. 
+When you create an object by instantiating that class, that object will inherit fields from all of the class's
+superclasses. What if methods or constructors from different superclasses instantiate the same field? Which method or
+constructor will take precedence? Because interfaces do not contain fields, you do not have to worry about problems that
+result from multiple inheritance of state.
+### Multiple inheritance of implementation
+It is the ability to inherit method definitions from multiple classes. Problems arise with this type of multiple
+inheritance, such as name conflicts and ambiguity.  Default methods introduce one form of multiple inheritance of
+implementation. A class can implement more than one interface, which can contain default methods that have the same
+name. The Java compiler provides some rules to determine which default method a particular class uses.
+### Multiple inheritance of type
+It is the ability of a class to implement more than one interface.
