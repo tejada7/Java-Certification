@@ -505,6 +505,7 @@ When you create an object by instantiating that class, that object will inherit 
 superclasses. What if methods or constructors from different superclasses instantiate the same field? Which method or
 constructor will take precedence? Because interfaces do not contain fields, you do not have to worry about problems that
 result from multiple inheritance of state.
+> *Remember that member variables are hidden and not overridden.*
 ### Multiple inheritance of implementation
 It is the ability to inherit method definitions from multiple classes. Problems arise with this type of multiple
 inheritance, such as name conflicts and ambiguity.  Default methods introduce one form of multiple inheritance of
@@ -512,3 +513,23 @@ implementation. A class can implement more than one interface, which can contain
 name. The Java compiler provides some rules to determine which default method a particular class uses.
 ### Multiple inheritance of type
 It is the ability of a class to implement more than one interface.
+### Deque
+|Method|description|
+|---|---|
+|`add`|Adds an element to the end of the collection (same as the add from `List`), it throws an exception is no capacity is available|
+|`addLast`|Same as the above|
+|`addFirst`|Adds an element to the head of the collection|
+|`offer`|Adds an element to the end of the `Queue`|
+|`offerLast`|Same as the above|
+|`offerFirst`|Adds an element to the head of the queue|
+|`remove`|Removes an element from the end of the collection and throws an exception is elements are present|
+|`removeFirst`|Same as the above|
+|`removeLast`|Removes an element from the head of the collection|
+|`poll`|Removes an element from the end of the `Queue`|
+|`pollFirst`|Same as the above|
+|`pollLast`|Removes an element from the head of the `Queue`|
+|`peek`|Reads an element from the end of the `Queue`|
+|`peekFirst`|Same as the above|
+|`peekLast`|Reads an element from the head of the `Queue`|
+|`push`|Appends an element to the front of the `Stack`|
+|`pop`|Removes an element from the head of the `Stack`|
