@@ -403,7 +403,9 @@ to Run:
 ```shell script
 java -p out -m com.ocp.hello/com.ocp.hello.Main
 or 
-java --module-path {module-path} --module {module-name}/{fully-qualified-class-name}
+java --module-path <module path> --module <module name>/<fully qualified class name>
+or
+java --show-module-resolution --module-path <module path> --module <module name>/<fully qualified class name>
 ```
 Alternatively, we can restructure the program as:
 
@@ -420,13 +422,13 @@ Alternatively, we can restructure the program as:
 And compile with:
 Compiling a module:
 ```shell script
-javac -d out --module-path-source src -m com.ocp.hello 
+javac -d out --module-source-path src -m com.ocp.hello 
 ```
 And finally run with the same command:
 ```shell script
 java -p out -m com.ocp.hello/com.ocp.hello.Main 
 or
-java --module-path {module-path} --module {module-name}/{fully-qualified-class-name}
+java --module-path <module path> --module <module name>/<fully qualified class name>
 ```
 For **compiling** Java files using modules, the following command-line options are available:
 * `--module-source-path`: location of the modules sources files, it has to point to a parent directory where all
@@ -459,13 +461,38 @@ configurations of modules temporarily.
 These are: `add-reads`, `add-exports`, and, `add-opens`. For example, if you want module1 to be able to read public
 packages of module2 and neither of the modules have appropriate information in their respective module-info files, then
 you can use the following commands to enable such access :  
-```
+```shell
 javac --add-reads module1=module2 --add-exports module2/com.ocp.package1=module1 
 
 java --add-reads module1=module2 --add-exports module2/com.ocp.package1=module1
 ```
 `--add-reads module1=module2` implies that module1 wants to read all exported packages of module2.
 `--add-exports module2/com.ocp.package1=module1` implies that module2 exports package com.ocp.package1 to module1.
+
+To describe the module:
+```shell
+java -p <module path> -d <module name>
+or
+java -p <module path> --describe-module <module name>
+```
+And to list the modules:
+```shell
+java -p <module path> --list-modules
+```
+### jdeps
+As a reminder on how to create a jar:
+```shell
+jar -cvf <output directory>/<jar file>.jar <outout directory>/ .
+```
+Then to display a summary of the modules used in the jar:
+```shell
+jdeps -s <jar file>.jar
+or
+jdeps --summary <jar file>.jar
+```
+### jmod
+jmods are file extensions only recommended when we have native libraries that cannot be stored in jar files. That said,
+jars are the recommended format for modules.
 ### Deserialization
 When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
