@@ -493,6 +493,10 @@ jdeps --summary <jar file>.jar
 ### jmod
 jmods are file extensions only recommended when we have native libraries that cannot be stored in jar files. That said,
 jars are the recommended format for modules.
+The below example displays the required modules by the ma.jmod file:
+```shell
+jmod describe jmods/ma.jmod
+```
 ### Deserialization
 When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
