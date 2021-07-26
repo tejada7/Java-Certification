@@ -502,6 +502,12 @@ The below example displays the required modules by the ma.jmod file:
 jmod describe jmods/ma.jmod
 ```
 jmods allows to: `create`, `list`, `describe`, `extract`, `hash`
+### javap
+Allows to disassemble .class files, displaying information about fields, contructors and methods.
+```shell
+javap -v -p -l <class name>.class
+```
+Wherein: `v` means verbose, `p` allows to print private fields and methods and `l` displays the line numbers. 
 ### Deserialization
 When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
