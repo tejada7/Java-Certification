@@ -490,6 +490,10 @@ jdeps -s <jar file>.jar
 or
 jdeps --summary <jar file>.jar
 ```
+Alternatively, we can get the dependencies of a specific class:
+```shell
+jdeps --module-path out out/<module name>/<fully qualified class name>
+```
 ### jmod
 jmods are file extensions only recommended when we have native libraries that cannot be stored in jar files. That said,
 jars are the recommended format for modules.
@@ -497,6 +501,7 @@ The below example displays the required modules by the ma.jmod file:
 ```shell
 jmod describe jmods/ma.jmod
 ```
+jmods allows to: `create`, `list`, `describe`, `extract`, `hash`
 ### Deserialization
 When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
