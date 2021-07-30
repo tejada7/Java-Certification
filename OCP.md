@@ -113,7 +113,7 @@ The convention is to use single uppercase letters to make it obvious that they a
 > *Type erasure means removing generic information within a class by replacing it with Object and the necessary casting
 >, it happens when compiling and creating the bytecode.*
 
-That being said, *reifiable types* can do anything that Java allows. Non-reifiable types have some limitations, generics are non-reifiable
+That said, *reifiable types* can do anything that Java allows. Non-reifiable types have some limitations, generics are non-reifiable
 and its limitation are: 
  
 * Calling constructors (i.e. new T())
@@ -136,6 +136,16 @@ From where, for upper bounds and unbounded wildcards, the list becomes logically
 ```java
 List<?> list = new ArrayList() != var list = new ArrayList()
 ```
+### Rules for identifying correct overriding of generic-return-style methods
+
+Given `T` as type (i.e. class, enum or interface) and `S` and its subtype, `A` being any type for the rules below, we
+use <<< to mean *is a subtype of*, therefore, we can state that:
+```
+S <<< T
+A<S> <<< A<? extends S> <<< A<? extends T>
+A<T> <<< A<? super T> <<< A<? super S>
+```
+
 ### Functional Interfaces reference table 
 |Functional interface|Return type|Method name|# of parameters|
 |---|---|---|---|
@@ -564,14 +574,14 @@ It is the ability of a class to implement more than one interface.
 |`offer`|Adds an element to the end of the `Queue`|
 |`offerLast`|Same as the above|
 |`offerFirst`|Adds an element to the head of the queue|
-|`remove`|Removes an element from the end of the collection and throws an exception is elements are present|
+|`remove`|Removes an element from the head of the collection and throws an exception is elements are present|
 |`removeFirst`|Same as the above|
-|`removeLast`|Removes an element from the head of the collection|
-|`poll`|Removes an element from the end of the `Queue`|
+|`removeLast`|Removes an element from the end of the collection|
+|`poll`|Removes an element from the head of the `Queue`|
 |`pollFirst`|Same as the above|
-|`pollLast`|Removes an element from the head of the `Queue`|
-|`peek`|Reads an element from the end of the `Queue`|
+|`pollLast`|Removes an element from the tail of the `Queue`|
+|`peek`|Reads an element from the head of the `Queue`|
 |`peekFirst`|Same as the above|
-|`peekLast`|Reads an element from the head of the `Queue`|
+|`peekLast`|Reads an element from the tail of the `Queue`|
 |`push`|Appends an element to the front of the `Stack`|
 |`pop`|Removes an element from the head of the `Stack`|
