@@ -44,3 +44,7 @@ x+=y; // x will become 2
 y+=x; // Beware!!! int will be casted to short and we'd silently lose precision
 y = y + x; // does not compile due to loss of precision
 ```
+#### 7. Decimal literals are all positive
+To write a decimal negative constant, we use the minus sign (-) and this rule does not apply to octacl and hexadecimal
+numbers, whose high-order bit determines whether they're negative or not. For instance, 0xcafebabe is negative as its
+first high-order bit is equals to 1.
