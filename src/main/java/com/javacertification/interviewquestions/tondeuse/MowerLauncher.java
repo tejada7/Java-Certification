@@ -6,20 +6,24 @@ import com.javacertification.interviewquestions.tondeuse.exceptions.InvalidActio
 import com.javacertification.interviewquestions.tondeuse.model.Mower;
 import com.javacertification.interviewquestions.tondeuse.model.Position;
 import com.javacertification.interviewquestions.tondeuse.view.Drawer;
+import io.vavr.control.Try;
+import lombok.extern.slf4j.Slf4j;
+import org.jooq.lambda.Unchecked;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.javacertification.interviewquestions.tondeuse.model.Field.maxSizeX;
 import static com.javacertification.interviewquestions.tondeuse.model.Field.maxSizeY;
+import static org.apache.commons.lang3.StringUtils.SPACE;
 
 /**
- * The first line corresponds to the coordinates of the upper right corner of the lawn, those
+ * This program takes two arguments as input: the first one refers to the absolute path where the text file containing
+ * the directions is located, the second argument (called --graphical) is optional and allows to display a UI to
+ * simulate the mower.
+ * As per the text file, the first line corresponds to the coordinates of the upper right corner of the lawn, those
  * from the bottom left corner are assumed to be (0,0)
  * - The rest of the file allows to control all the mowers that have been deployed. Each
  * mower with two lines concerning it:
@@ -28,50 +32,54 @@ import static com.javacertification.interviewquestions.tondeuse.model.Field.maxS
  * - the second line is a series of instructions ordering the mower to explore the lawn.
  * The instructions are a sequence of characters without spaces.
  */
-public class MowerLauncher {
+@Slf4j
+public final class MowerLauncher {
 
-    private static final Logger LOGGER = Logger.getLogger(MowerLauncher.class.toString());
-    private static final String SEPARATOR = " ";
+    public static void main(final String[] args) {
+        new MowerLauncher().run(args);
+    }
 
-    public static void main(String[] args) {
+    public void run(final String... args) {
         if (args.length == 0) {
-            LOGGER.warning("No arguments are provided. Please provide the path file name containing the input.");
+            log.warn("No arguments are provided. Please provide the path file name containing the input.");
             return;
         }
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(args[0]));
-            processInput(lines, true).forEach(LOGGER::fine);
-        } catch (IOException ioe) {
-            LOGGER.severe("The " + args[0] + " has not been found.");
-        }
+        Try.of(() -> processInput(Files.readAllLines(Paths.get(args[0])), getGraphicalArgument(args)))
+                .onSuccess(results -> results.forEach(log::info))
+                .onFailure(error -> log.error("An error occurred " + error));
+    }
+
+    private boolean getGraphicalArgument(final String[] args) {
+        return Try.of(() -> args[1].equals("--graphical"))
+                .getOrElse(Boolean.FALSE);
     }
 
     /**
      * Process the input by turning the mower based on the movements stored in the movements variable and executing the
-     * action, displaying the output to the console, and if the animation argument is true, then it also launches a
+     * action, displaying the output to the console, and if the graphical argument is true, then it also launches a
      * swing GUI that simulates the problem's behavior.
      *
      * @param lines     the commands to moveForward
-     * @param animation whether to display a graphical simulation or a simpel console output
+     * @param graphical whether to display a graphical simulation or a simple console output
      * @return a {@link List} object containing the final position of the mowers
      * @see Drawer
      */
-    public static List<String> processInput(List<String> lines, boolean animation) {
-        final String[] size = lines.get(0).split(SEPARATOR);
+    public static List<String> processInput(final List<String> lines, final boolean graphical) {
+        final var size = lines.get(0).split(SPACE);
         maxSizeX = Integer.parseInt(size[0]);
         maxSizeY = Integer.parseInt(size[1]);
         Drawer drawer = null;
-        if (animation) {
+        if (graphical) {
             drawer = new Drawer(maxSizeX + 1, maxSizeY + 1);
             drawer.setVisible(true);
         }
-        List<String> results = new ArrayList<>();
+        final var results = new ArrayList<String>();
         for (int i = 1; i < lines.size(); i += 2) {
-            final String[] position = lines.get(i).split(SEPARATOR);
-            final String movements = lines.get(i + 1);
+            final var position = lines.get(i).split(SPACE);
+            final var movements = lines.get(i + 1);
             try {
                 final Mower mower;
-                if (animation) {
+                if (graphical) {
                     mower = initGraphicMower(drawer, position);
                     drawer.setMower(mower);
                 } else {
@@ -79,13 +87,13 @@ public class MowerLauncher {
                 }
                 for (char action : movements.toCharArray()) {
                     mower.performAction(Action.getActionByAbbreviation(String.valueOf(action)));
-                    if (animation) {
-                        delay(3000);
+                    if (graphical) {
+                        delay(2000);
                     }
                 }
                 results.add(mower.toString());
             } catch (InvalidActionException e) {
-                LOGGER.severe(e.getMessage());
+                log.error(e.getMessage());
             }
         }
         return results;
@@ -102,11 +110,6 @@ public class MowerLauncher {
     }
 
     private static void delay(int milliSeconds) {
-        try {
-            Thread.sleep(milliSeconds);
-        } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
-            Thread.currentThread().interrupt();
-        }
+        Unchecked.runnable(() -> Thread.sleep(milliSeconds)).run();
     }
 }

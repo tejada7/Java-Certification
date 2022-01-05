@@ -39,7 +39,7 @@ Este programa necesitará implementar la especificación anterior y pasar la pru
 El siguiente archivo se proporciona como entrada:<br/>
 **5 5** <br/>
 **1 2 N**<br/>
-**GAGAGAGAA**
+**GAGAGAGAA**<br/>
 **3 3 E**<br/>
 **AADAADADDA**<br/>
 Esperamos el siguiente resultado (posición final de las segadoras):<br/>
