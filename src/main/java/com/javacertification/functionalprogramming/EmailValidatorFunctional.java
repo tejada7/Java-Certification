@@ -1,55 +1,37 @@
 package com.javacertification.functionalprogramming;
 
-import com.javacertification.functionalprogramming.EmailValidatorFunctional.Result.Failure;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import static com.javacertification.functionalprogramming.EmailValidatorFunctional.*;
-import static com.javacertification.functionalprogramming.EmailValidatorFunctional.Result.Success;
-import static java.lang.System.*;
+import static com.javacertification.functionalprogramming.Case.match;
+import static com.javacertification.functionalprogramming.Case.matchCase;
+import static com.javacertification.functionalprogramming.Result.failure;
+import static com.javacertification.functionalprogramming.Result.success;
+import static java.lang.System.err;
 import static java.lang.System.out;
 
 public class EmailValidatorFunctional implements Function<String, Result<String>> {
 
-    private static final Pattern EMAIL_PATTERN
-            = Pattern.compile("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
+    private static final Pattern EMAIL_PATTERN = Pattern
+            .compile("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
 
     @Override
     public Result<String> apply(final String email) {
-        return (email == null)
-                ? new Failure("email must not be null")
-                : ((email.strip().length() == 0)
-                ? new Failure("email must not be empty")
-                : (EMAIL_PATTERN.matcher(email).matches()
-                ? new Success(email)
-                : new Failure("invalid email")));
-    }
-
-    interface Result<T> {
-
-        void bind(final Consumer<T> success, final Consumer<T> failure);
-
-        record Success(String email) implements Result<String> {
-            @Override
-            public void bind(Consumer<String> success, Consumer<String> failure) {
-                success.accept(email);
-            }
-        }
-
-        record Failure(String errorMessage) implements Result<String> {
-            @Override
-            public void bind(final Consumer<String> success, final Consumer<String> failure) {
-                failure.accept(errorMessage);
-            }
-        }
+        return match(
+                matchCase(() -> success(email)),
+                matchCase(() -> email == null, () -> failure("email must not be null")),
+                matchCase(() -> email.strip().length() == 0, () -> failure("email must not be empty")),
+                matchCase(() -> !EMAIL_PATTERN.matcher(email).matches(), () -> failure("invalid email"))
+        );
     }
 
     public static void main(String[] args) {
-        new EmailValidatorFunctional().apply("john.doe@acme.com").bind(sendVerificationMail(), logError());
-        new EmailValidatorFunctional().apply("  ").bind(sendVerificationMail(), logError());
-        new EmailValidatorFunctional().apply(null).bind(sendVerificationMail(), logError());
+        final var emailValidator = new EmailValidatorFunctional();
+
+        emailValidator.apply("john.doe@acme.com").bind(sendVerificationMail(), logError());
+        emailValidator.apply("  ").bind(sendVerificationMail(), logError());
+        emailValidator.apply(null).bind(sendVerificationMail(), logError());
     }
 
     private static Consumer<String> sendVerificationMail() {
