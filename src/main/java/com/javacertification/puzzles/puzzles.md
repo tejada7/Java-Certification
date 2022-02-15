@@ -48,3 +48,38 @@ y = y + x; // does not compile due to loss of precision
 To write a decimal negative constant, we use the minus sign (-) and this rule does not apply to octacl and hexadecimal
 numbers, whose high-order bit determines whether they're negative or not. For instance, 0xcafebabe is negative as its
 first high-order bit is equals to 1.
+
+#### 8. Beware of numerical comparison operators
+To make the following loop infinite:
+```java
+while (i <= j && j <= i && i != j) {
+    // infinite loop    
+}
+```
+, both `i` and `j` variables cannot be of type primitive, but instead they can be of any wrapper, such as
+```java
+Integer i = new Integer(0); 
+Integer j = new Integer(0); 
+```
+Hence, the aforementioned loop will become infinite because:
+- the first two expressions (i.e. `i <= j` and `j <= i`) will perform unboxing and hence return `true`
+- the remaining sentence (i.e. `i != j`) will evaluate to true as the equality operator (`==`) performs a reference
+comparison rather than a value one. 
+
+There is nonetheless an edge case to be aware of, which is the cache for integers which usually ranges from -128 to 127.
+In that case, the fact of using the `Integer#valueOf` static factory method would have sufficed to violate the evaluation
+`i != j`, i.e.
+```java
+Integer i = new Integer(0); 
+Integer j = new Integer(0);
+// i == j -> false
+// ... whereas ...
+Integer i = Integer.valueOf(0);
+Integer j = Integer.valueOf(0);
+// or
+Integer i = 0;
+Integer j = 0;
+// would've i == j -> true
+```
+N.B. the zero value is not a requirement for the loop to become infinite, indeed any valid integer (with the same value
+for `i` and `j`) would have worked just fine too. 
