@@ -83,3 +83,11 @@ Integer j = 0;
 ```
 N.B. the zero value is not a requirement for the loop to become infinite, indeed any valid integer (with the same value
 for `i` and `j`) would have worked just fine too. 
+#### 9. Beware of MIN_VALUE negations
+For both `Integer` and `Long` classes the negation of `MIN_VALUE` will return the same value, this happens because of
+two's-complement arithmetic. In a nutshell, there is a number for which the representation of its negation cannot be
+properly handled. This applies to `Integer#MIN_VALUE` and `Long#MIN_VALUE`:
+```java
+Integer.MIN_VALUE == -Integer.MIN_VALUE 
+Long.MIN_VALUE == -Long.MIN_VALUE 
+```
