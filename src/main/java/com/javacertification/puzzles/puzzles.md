@@ -91,3 +91,17 @@ properly handled. This applies to `Integer#MIN_VALUE` and `Long#MIN_VALUE`:
 Integer.MIN_VALUE == -Integer.MIN_VALUE 
 Long.MIN_VALUE == -Long.MIN_VALUE 
 ```
+#### 10. Never use float as loop counters!
+The below loop:
+```java
+final int START = 2000000000;
+int count = 0;
+for (float f = START; f < START + 50; f++)
+```
+Will never iterate as the promotion `(float) START + 50` leads to loss of precision, meaning that the loop will actually
+not iterate.
+As a golden rule, we must be wary of three type of primitive widening promotions leading to loss of precision:
+- `int` to `float`
+- `long` to `float`
+- `long` to `double`
+And above anything else: _do not use floating-point loop indices_
