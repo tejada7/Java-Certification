@@ -8,4 +8,4 @@ Solutions to  [Java Puzzles](src/main/java/com/javacertification/puzzles/puzzles
 
 The [Mower problem](src/main/java/com/javacertification/interviewquestions/tondeuse/Mower.md) was my boarding pass to join the current company I work for.
 
-[OCP study notes](OCP.md) was my boarding pass to join the current company I work for.
+[OCP study notes](OCP_Java11.md) was my boarding pass to join the current company I work for.
