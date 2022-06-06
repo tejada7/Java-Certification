@@ -49,3 +49,16 @@ greeting.stripIndent()/**
   \n not added !!! →   *bonjour
                        */
 ```
+
+### String comparison
+Strings in Java are naturally ordered (i.e. ascending from smaller to bigger) in the following order:
+1. Numbers 
+2. `CharSequences` in capital letters 
+3. `CharSequences` in small letters 
+
+e.g.
+Given
+```java
+String[] array = {"abc", "T", "TOTO", "123", "1", "2", "_1_2", "xyz", "a", "x", "z", "y", "xy", "b", "c", "d", "ab", "ba", "ac", "ca"};
+Arrays.sort(array); // It'll become: [1, 123, 2, T, TOTO, _1_2, a, ab, abc, ac, b, ba, c, ca, d, x, xy, xyz, y, z]
+```
