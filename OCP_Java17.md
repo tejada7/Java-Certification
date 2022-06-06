@@ -62,3 +62,52 @@ Given
 String[] array = {"abc", "T", "TOTO", "123", "1", "2", "_1_2", "xyz", "a", "x", "z", "y", "xy", "b", "c", "d", "ab", "ba", "ac", "ca"};
 Arrays.sort(array); // It'll become: [1, 123, 2, T, TOTO, _1_2, a, ab, abc, ac, b, ba, c, ca, d, x, xy, xyz, y, z]
 ```
+
+### Time API notes
+
+- `ZonedDateTime` contains an `OffSetDateTime` as well as a Zone. However, both types can be initialized as:
+
+```java
+OffsetDateTime.now(ZoneId.of("America/La_Paz")) // 2022-06-06T14:12:06.294197-04:00
+ZonedDateTime.now(ZoneId.of("America/La_Paz")) // 2022-06-06T14:12:06.294197-04:00[America/La_Paz]
+```
+One fundamental difference relies on the fact that `ZonedDateTime` allows daylight saving calculations:
+```java
+// Given the US's spring forward:
+ZonedDateTime.of(LocalDateTime.parse("2022-03-13T01:30:00"), ZoneId.of("America/Los_Angeles"))
+        .plusHours(1) // 2022-03-13T03:30-07:00[America/Los_Angeles]
+        
+// Whereas
+OffsetDateTime.of(LocalDateTime.parse("2022-03-13T01:30:00"), ZoneOffset.of("-08:00"))
+        .plusHours(1) //2022-03-13T02:30-08:00
+
+// It's worth noting that CEST timezone is not accepted in Java, instead always use CET:
+ZonedDateTime.of(LocalDateTime.parse("2022-03-27T01:30:00"), ZoneId.of("CET"))
+        .plusHours(1) // 2022-03-27T03:30+02:00[CET]
+```
+- `DateTimeFormatter` contains 4 `FormatStyles`:
+  given
+
+```java
+DateTimeFormatter
+        .ofLocalizedDate(formatStyle)
+        .withLocale(new Locale.Builder().setLanguageTag(locale).build())
+        .format(Instant.now())
+```
+  where formatStyle and locale are:
+
+| FormatStyle | locale es-BO              | locale en-US | locale fr-FR|
+|-------------|---------------------------|--------------|--------------|
+| SHORT       | 6/6/2022                  | 2022-06-06   | 06/06/2022             |
+| MEDIUM      | 6 jun. de 2022            | Jun 6, 2022  | 6 juin 2022             |
+| LONG        | 6 de junio de 2022        | June 6, 2022 | lundi 6 juin 2022             |
+| FULL        | lunes, 6 de junio de 2022 | Monday, June 6, 2022        | lundi 6 juin 2022             |
+
+- UTC uses the same time zone zero as GMT, therefore they are equivalent
+- Z at the end of some dates means Zulu or zero timezone (not to be confused with 0 offset)
+- It's possible to truncate some parts of the time:
+```java
+// Here we ignore the minutes
+LocalTime.of(1, 10)
+        .truncatedTo(ChronoUnit.HOURS) // 01:00
+```
