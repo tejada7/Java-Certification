@@ -111,3 +111,13 @@ DateTimeFormatter
 LocalTime.of(1, 10)
         .truncatedTo(ChronoUnit.HOURS) // 01:00
 ```
+### StringBuilder notes
+- The replace method from `StringBuilder` takes 3 arguments:
+```java
+StringBuilder replace(int start, int end, String str) {
+```
+whereas the one from `String` comes in two flavors:
+```java
+String replace(char oldChar, char newChar)
+String replace(CharSequence target, CharSequence replacement)
+```
