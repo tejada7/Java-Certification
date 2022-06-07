@@ -6,6 +6,6 @@ I still keep this repo updated by pushing questions that I got during my job int
 
 Solutions to  [Java Puzzles](src/main/java/com/javacertification/puzzles/puzzles.md) book.
 
-The [Mower problem](src/main/java/com/javacertification/interviewquestions/tondeuse/Mower.md) was my boarding pass to join the current company I work for.
-
-[OCP study notes](OCP_Java11.md) was my boarding pass to join the current company I work for.
+- [The mower problem](src/main/java/com/javacertification/interviewquestions/tondeuse/Mower.md)
+- [OCP Java 11 study notes](OCP_Java11.md)
+- [OCP Java 17 study notes](OCP_Java17.md)

@@ -121,3 +121,20 @@ whereas the one from `String` comes in two flavors:
 String replace(char oldChar, char newChar)
 String replace(CharSequence target, CharSequence replacement)
 ```
+### Method overloading order
+
+Given the methods:
+```java
+void doStuff(int i) {...}
+void doStuff(long l) {...}
+void doStuff(Integer i) {...}
+void doStuff(int...args) {...}
+```
+The below table shows the order by which Java resolves a method when overloaded. 
+
+| Rule                  |
+|-----------------------|
+| exact match by type   |
+| larger primitive type |
+| autoboxing            |
+| vargs                 |
