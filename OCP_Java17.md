@@ -192,3 +192,11 @@ class Child extends Parent {
   }
 }
 ```
+### Rules for overriding a method
+1. The method in child must have the same signature (i.e. name + args) as the parent's one
+2. The method in child must be at least as accessible as the method in the parent class
+3. The method in child may not declare any exceptions (including checked, or else it cannot be broader than the checked 
+exception of the parent)
+4. The child return type must be **covariant** i.e. the overriding return type should be assignable to the parent return
+type without a cast
+
