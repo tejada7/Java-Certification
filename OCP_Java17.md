@@ -138,3 +138,57 @@ The below table shows the order by which Java resolves a method when overloaded.
 | larger primitive type |
 | autoboxing            |
 | vargs                 |
+
+### Class initialization order
+1. Parent class static content (i.e. steps 2 to 3)
+2. static variable declaration order-wise
+3. static blocks order-wise
+4. if there's a superclass, initialize it first (i.e. steps 5 to 7)
+5. instance variable declaration order-wise
+6. instance block order-wise
+7. initialize constructor
+
+example:
+```java
+class Parent {
+  static {
+    System.out.print("A"); // 1
+  }
+
+  {
+    System.out.print("B"); // 3
+  }
+
+  public Parent(String name) {
+    this(1);
+    System.out.print("C"); // 5
+  }
+
+  public Parent() {
+    System.out.print("D");
+  }
+
+  public Parent(int stripes) {
+    System.out.print("E"); // 4
+  }
+}
+
+class Child extends Parent {
+  static {
+    System.out.print("F"); // 2
+  }
+
+  {
+    System.out.print("H"); // 6 
+  }
+
+  public Child(int stripes) {
+    super("");
+    System.out.print("G"); // 7
+  }
+
+  public static void main(String[] grass) {
+    new Child(1); // AFBECHG
+  }
+}
+```
