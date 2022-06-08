@@ -200,3 +200,8 @@ exception of the parent)
 4. The child return type must be **covariant** i.e. the overriding return type should be assignable to the parent return
 type without a cast
 
+### Variable and method hiding
+Java does not allow variables to be overriden, they can be hidden though. They are resolved based on the type of the
+reference and **not the instance type** conversely to what occurs with polymorphic method calls.
+
+Likewise, static methods can be overriden if the parent's method is not declared as final.  
