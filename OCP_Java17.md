@@ -224,3 +224,22 @@ implemented by unspecified classes.
 
 Direct subclasses of sealed classes must be marked final, sealed or non-sealed (excluding for interfaces for which they 
 can be defined as either sealed or non-sealed).
+
+### Records compact constructor
+Given:
+```java
+record Person(String fullName, int age) {}
+```
+We can leverage compact constructors to process (i.e. validate or alter) constructor arguments before the actual
+constructor is invoked: 
+```java
+record Person(String fullName, int age) {
+    
+    Person { // Mind that () aren't required, nor the list of arguments
+        if (fullName == null || fullName.isBlank()) {
+            throw new IllegalArgumentException("fullname invalid format.");
+        }    
+        age++; // Allowed, but discouraged !!!
+    }
+}
+```
