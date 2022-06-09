@@ -205,3 +205,22 @@ Java does not allow variables to be overriden, they can be hidden though. They a
 reference and **not the instance type** conversely to what occurs with polymorphic method calls.
 
 Likewise, static methods can be overriden if the parent's method is not declared as final.  
+
+### Sealing classes
+_Why do we need sealed classes?_ 
+It strengthens domain modeling by allowing closed class hierarchy representation. It ultimately enhances the new Java 
+pattern matching feature with switch statement.   
+
+Some new keywords:
+- `sealed` → indicates that a class (concrete or abstract) or interface may only be extended/implemented by named classes
+or interfaces.
+- `permits` → used along with `sealed`, lists the classes/interfaces that can extend/implement it.
+It's usage depends on the location of the subclasses:
+  - In a different package → required
+  - In the same file as the sealed class → not required, but permitted.
+  - Nested class of the sealed class → not required, but permitted.
+- `non-sealed` → applies to any class/interface extending/implementing the sealed class, indicating that it can be extended/
+implemented by unspecified classes.
+
+Direct subclasses of sealed classes must be marked final, sealed or non-sealed (excluding for interfaces for which they 
+can be defined as either sealed or non-sealed).
