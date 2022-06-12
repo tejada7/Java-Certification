@@ -243,3 +243,20 @@ record Person(String fullName, int age) {
     }
 }
 ```
+### Lambda expressions & functional interfaces
+Lambdas aren't allowed to redeclare local variables. They're only allowed to reference final or effectively final
+variables.
+```java
+void doStuff() {
+    var var = "foo";
+    final var var1 = "foo";
+    // String p = ""; // If this line would be uncommented out, then the below line wouldn't compile
+    Predicate<String> p = string -> {
+        String var1 = ""; // not allowed
+        print(var); // allowed if and only if var is effectively final    
+        return true;
+    };
+}
+```
+Functional interfaces must only have one abstract class excluding any redefining method of the class Object (i.e. 
+`toString`, `hashCode`, `equals`, etc).
