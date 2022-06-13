@@ -4,7 +4,7 @@
 - __happens-before relationship:__ it's a guarantee that any action performed in any thread is reflected to other 
 actions in different threads. `Stream#forEachOrdered` is an example of executions that comply with this term. 
 - __Pattern matching:__ is a technique of controlling program flow that only executes a section of code that meets
-certain criteria. Moreover, it's used in conjuction with if statements for greater program control.
+certain criteria. Moreover, it's used in conjunction with if statements for greater program control.
 
 
 ### How to print bytes as String
@@ -260,3 +260,23 @@ void doStuff() {
 ```
 Functional interfaces must only have one abstract class excluding any redefining method of the class Object (i.e. 
 `toString`, `hashCode`, `equals`, etc).
+
+### Collections and generics
+It's important to note that there're two ArrayList implementations:
+- The one from `java.util.`, and:
+- The private static inner class from `java.util.Arrays` → this is an implementation `AbstractList` which **does not
+allow elements removal.**  
+
+You've probably encountered yourself in a situation where you needed to convert a collection into an array:
+```java
+// Given
+final var list = List.of(1, 2, 3);
+// Traditional way:
+final Object[] array = list.toArray();
+// Or, strongly typed:
+final int[] array = list.toArray(new Integer[0]);
+// Or, a bit better
+final int[] array = list.toArray(new Integer[list.size()]);
+// However, there is this good-looking option with method reference:
+final int[] array = list.toArray(Integer[]::new);
+```
