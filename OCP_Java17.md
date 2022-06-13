@@ -280,3 +280,13 @@ final int[] array = list.toArray(new Integer[list.size()]);
 // However, there is this good-looking option with method reference:
 final int[] array = list.toArray(Integer[]::new);
 ```
+#### Deque
+`java.util.ArrayDeque` is combination of stack and queue, the exhaustive list of methods can be found [here](OCP_Java11.md).
+
+```java
+add == addLast == offerLast == offer
+addFirst == push == offerFirst
+poll == pollFirst == pop == getFirst == element == peek == peekFirst == remove == removeFirst
+getLast == peekLast == removeLast == pollLast
+```
+Mind that there are some methods that remove and return the element such as remove and pop.
