@@ -290,3 +290,28 @@ poll == pollFirst == pop == getFirst == element == peek == peekFirst == remove =
 getLast == peekLast == removeLast == pollLast
 ```
 Mind that there are some methods that remove and return the element such as remove and pop.
+
+### Generic limitations
+- We cannot invoke `new T[]` nor `new T()`
+- Generic variables cannot be superseded of static modifier (do not confuse with static generic methods)
+- No primitive support, except employing auto-boxing
+- Unsupported `instanceOf` as due to type erasure, all generics become `Object` at runtime
+
+It's possible to create records with generics, take a look at the following simplified Monad implementation:
+```java
+record IdentityFunctor<T>(T value) {
+        IdentityFunctor {
+            Objects.requireNonNull(value, "The value cannot be null.");
+        }
+
+        public <R> IdentityFunctor<R> map(final Function<T, R> mapper) {
+            return new IdentityFunctor<>(mapper.apply(value));
+        }
+
+        public <R> R match(final Function<T, R> mapper) {
+          return mapper.apply(value);
+        }
+    }
+```
+
+### 
