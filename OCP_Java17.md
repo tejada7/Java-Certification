@@ -360,3 +360,10 @@ final var pairAndOddNumbers = Stream.of(1, 2, 3, 4, 5)
                                 Pair::of));
 System.out.println(pairAndOddNumbers); // (2, 3)
 ```
+### Using Unary operator with pre-increment
+Given:
+```java
+UnaryOperator<Integer> f = x -> x++; // This won't ever increment the value as it's using a pre-incrementor
+// We should instead use `x -> ++x`
+
+```
