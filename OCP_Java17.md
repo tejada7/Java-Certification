@@ -342,3 +342,21 @@ final Stream<?> stream = StreamSupport.stream(splitetator, false);
 
 It's worth noting that .spliterator() on a stream is a terminal operation, and it can be applied on infinite streams.
 In that situation, the method getExactSizeIfKnown() will return -1 and estimatedSize() will return Long#MAX_VALUE.
+
+### Teeing collector
+Allows to merge two collectors into a single object:
+```java
+final var totalElementsAndTotal = Stream.of(1, 2, 3, 4, 5)
+                .collect(Collectors.teeing(Collectors.counting(), // counts the total elements in the stream
+                                           Collectors.summingInt(Integer::intValue), // sums up their values
+                                           Pair::of)); // we define the object on which collect both results
+System.out.println(totalElementsAndTotal); // It'll print (5, 15)
+```
+or
+```java
+final var pairAndOddNumbers = Stream.of(1, 2, 3, 4, 5)
+                .collect(teeing(filtering(num -> (num & 1) == 0, counting()), // Pair
+                                filtering(num -> (num & 1) != 0, counting()), // Odd
+                                Pair::of));
+System.out.println(pairAndOddNumbers); // (2, 3)
+```
