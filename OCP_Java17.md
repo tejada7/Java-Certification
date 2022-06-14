@@ -314,4 +314,31 @@ record IdentityFunctor<T>(T value) {
     }
 ```
 
-### 
+### Spliterator
+Provides a level of control when processing, particularly useful when applying parallel algorithms on large datasources.
+
+Given:
+```java
+final var original = Stream.of(1, 2, 3, 4, 5).spliterator();
+final var firstHalf = original.trySplit(); // firstHalf will hence contain [1, 2], whereas the original spliterator [3, 4, 5]
+        
+original.tryAdvance(System.out::print); // 3, then the original spliterator will contain [4, 5]
+original.forEachRemaining(System.out::print); // 45
+original.tryAdvance(System.out::print); // Does not print anything and returns false
+        
+original.trySplit(); // ret// urn null as no elements are present anymore.
+```
+
+Turning a stream or collection into a Spliterator:
+```java
+final Spliterator<?> splitetator = stream.spliterator();
+final Spliterator<?> splitetator = collection.spliterator();
+```
+
+And conversely:
+```java
+final Stream<?> stream = StreamSupport.stream(splitetator, false);
+```
+
+It's worth noting that .spliterator() on a stream is a terminal operation, and it can be applied on infinite streams.
+In that situation, the method getExactSizeIfKnown() will return -1 and estimatedSize() will return Long#MAX_VALUE.
