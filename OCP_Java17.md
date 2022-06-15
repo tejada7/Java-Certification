@@ -437,3 +437,40 @@ CompactNumberFormat.getInstance(Locale.FR, LONG).format(1_500_000_000); // 2 mil
 CompactNumberFormat.getInstance(Locale.forLanguageTag("es-BO"), SHORT).format(1_400_000_000); // 1400 M
 CompactNumberFormat.getInstance(Locale.forLanguageTag("es-BO"), LONG).format(1_400_000_000); // 1400 milliones
 ```
+### InstantSource
+It certainly becomes an alternative to Instant as it provides an abstraction to Clock, meaning that we should no longer 
+need to `mock` the Clock for unit testing. Besides, it allows to plug diverse InstantSources when needed:
+
+```java
+import java.time.InstantSource;
+...
+
+@RequiredArgsConstructor
+class Bean {
+  @Autowire
+  private final InstantSource instantSource;
+
+  public boolean isBefore(final Instant toCompare) {
+    return instantSource.instant().isBefore(toCompare);
+  }
+}
+
+@Configuration
+class Config {
+  @Bean
+  public InstantSource instantSource() {
+    return Clock.systemUTC();
+  }
+}
+
+class UnitTest {
+
+  @Test
+  should_test_something {
+    //...
+    // When
+    new Bean(InstantSource.fixed(Instant.EPOCH)).isBefore(customDate);
+    //...
+  }
+}
+```
