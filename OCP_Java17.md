@@ -81,10 +81,25 @@ ZonedDateTime.of(LocalDateTime.parse("2022-03-13T01:30:00"), ZoneId.of("America/
 OffsetDateTime.of(LocalDateTime.parse("2022-03-13T01:30:00"), ZoneOffset.of("-08:00"))
         .plusHours(1) //2022-03-13T02:30-08:00
 
-// It's worth noting that CEST timezone is not accepted in Java, instead always use CET:
+// It's worth noting that CEST timezone is not accepted by ZoneId class, instead always use CET:
 ZonedDateTime.of(LocalDateTime.parse("2022-03-27T01:30:00"), ZoneId.of("CET"))
         .plusHours(1) // 2022-03-27T03:30+02:00[CET]
 ```
+- The most important patterns used by `SimpleDateFormat` and `DateTimeFormatter` are:
+
+| Symbol                                    | Meaning                                                                              | Example                                                    |
+|-------------------------------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------|
+| y<br/>yy<br/>yyyy<br/>yyyyy               | year, it can also work with `Y`                                                      | 2022<br/>22<br/>2022<br/>02022                             |
+| M<br/>MM<br/>MMM<br/>MMMM<br/>MMMMM       | month, it does not work with `m` as it's minute                                      | 6<br/>06<br/>Jun<br/>June<br/>J                            |
+| d or dd                                   | day of the month, it does not work with `D` as it represents<br/>the day of the year | 15                                                         |
+| e<br/>ee<br/>eee<br/>eeee<br/>eeeee       | day of the week, it also works with `E`                                              | 3<br/>03<br/>Wed<br/>Wednesday<br/>W                       |
+| h<br/>hh                                  | hour of the day, it also works with `H`                                              | 5<br/>05                                                   |
+| m<br/>mm                                  | minute, it does not work with `M` as it's month                                      | 1<br/>01                                                   |
+| s<br/>ss<br/>S<br/>SS<br/>SSS<br/>SSSS... | `S` means fraction of second, whereas `s` is the second of the minute                | 1<br/>01<br/>1<br/>01<br/>013<br/>0135                     |
+| a                                         | after meridian or past meridian                                                      | AM or PM                                                   |
+| z, zz, zzz<br/>zzzz                       | Timezone name                                                                        | BOT or CEST, Bolivian Time or Central European Summer Time |
+| Z, ZZ, ZZZ<br/>ZZZZ<br/>ZZZZZ             | Timezone offset                                                                      | -0400 or +0200<br/>GMT-04:00 or GMT+02:00<br/>-04:00 or +02:00|                                           |                                                                                      |                                                            |
+for the exhaustive list, refer to the `DateTimeFormatter`'s javaDoc
 - `DateTimeFormatter` contains 4 `FormatStyles`:
   given
 
@@ -365,5 +380,23 @@ Given:
 ```java
 UnaryOperator<Integer> f = x -> x++; // This won't ever increment the value as it's using a pre-incrementor
 // We should instead use `x -> ++x`
-
 ```
+
+### Formatting values
+
+The below symbols work with `out#printf`, `String#formatter`, `String#format`: 
+
+| Symbol | Supported type  | Additional notes                                                                                                                                                                                                                |
+|--------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| %s     | string          | N/A                                                                                                                                                                                                                             |
+| %d     | int or long     | N/A                                                                                                                                                                                                                             |
+| %f     | float or double | Let's take the example of [3.14159285]<br/>By default it considers 6 decimals → [3.14159]<br/>%.3f will round to two decimals → [3.142]<br/>%5.2f adds spaces to the left → [ 3.14]<br/>%05.2f adds zeros to the left → [03.14] |
+| %n     | \n              | It adds a new line independently<br/> of the operating system.                                                                                                                                                                  |
+
+### Formatting numbers
+The below symbols work with `NumberFormat#format`:
+
+| Symbol | Description                          | example                                                  |
+|--------|--------------------------------------|----------------------------------------------------------|
+| #      | Omits position if digit is absent    | `new DecimalFormat("##.00").format(3.141592)` → [3.14] |
+| 0      | Fills in with 0's if digit is absent | `new DecimalFormat("00.00").format(3.141592)` → [03.14]  |
