@@ -400,3 +400,40 @@ The below symbols work with `NumberFormat#format`:
 |--------|--------------------------------------|----------------------------------------------------------|
 | #      | Omits position if digit is absent    | `new DecimalFormat("##.00").format(3.141592)` → [3.14] |
 | 0      | Fills in with 0's if digit is absent | `new DecimalFormat("00.00").format(3.141592)` → [03.14]  |
+
+### Locales
+- `Locale#toString` formats the locales as `language abbreviation in small letters` + `_` + `country abbreviation in capital letters`,
+e.g. `es_ES,` `en_US,` `fr_FR,` `es_BO`
+- [IETF languages tags](IETF language tag) are in the form `es-ES`, `en-US`, `fr-FR` and `es-BO` ⚠️ mind the `-` instead of `_`. 
+For Java to correctly load this kind of format, we have two options:
+  - `var locale = Locale.forLanguageTag("en-US")`, → `locale.toString(); // en_US`
+  - `var locale = new Locale("en", "US");` → `locale.toString(); // en_US`
+  - To check whether a locale is valid: `asList(Locale.getAvailableLocales()).contains(locale)`
+  - It's possible to set finer-grained control of the default locale by setting the `Locale#Category` (either `DISPLAY` 
+or `FORMAT`) by calling `Locale.setDefault(category, locale)` 
+#### Formatting currencies
+```java
+final var amount = 50.99;
+System.out.println(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("en-US"))
+        .format(amount)); // $50.99
+System.out.println(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("en-GB"))
+        .format(amount)); // £50.99
+System.out.println(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("fr-FR"))
+        .format(amount)); // 50.99 €
+System.out.println(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-BO"))
+        .format(amount)); // Bs50.99
+```
+#### CompactNumberFormat
+It's designed to be used in places where print space may be limited. There are two self-explanatory styles available:
+- LONG
+- SHORT
+```java
+CompactNumberFormat.getInstance(Locale.US, SHORT).format(1_400_000_000); // 1B
+CompactNumberFormat.getInstance(Locale.US, LONG).format(1_400_000_000); // 1 billion
+        
+CompactNumberFormat.getInstance(Locale.FR, SHORT).format(1_500_000_000); // 2 Md, ⚠️ mind that rounding is applied 
+CompactNumberFormat.getInstance(Locale.FR, LONG).format(1_500_000_000); // 2 milliards
+        
+CompactNumberFormat.getInstance(Locale.forLanguageTag("es-BO"), SHORT).format(1_400_000_000); // 1400 M
+CompactNumberFormat.getInstance(Locale.forLanguageTag("es-BO"), LONG).format(1_400_000_000); // 1400 milliones
+```
