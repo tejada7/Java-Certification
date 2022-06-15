@@ -401,6 +401,12 @@ The below symbols work with `NumberFormat#format`:
 | #      | Omits position if digit is absent    | `new DecimalFormat("##.00").format(3.141592)` → [3.14] |
 | 0      | Fills in with 0's if digit is absent | `new DecimalFormat("00.00").format(3.141592)` → [03.14]  |
 
+### MessageFormat
+There is an old but useful class to replace placeholders in the format {0}, {1}, ...
+```java
+System.out.println(MessageFormat.format("{0} {1}!!! {2}", "Hello", "world", 2022)); // Hello world!!! 2,022
+```
+
 ### Locales
 - `Locale#toString` formats the locales as `language abbreviation in small letters` + `_` + `country abbreviation in capital letters`,
 e.g. `es_ES,` `en_US,` `fr_FR,` `es_BO`
@@ -410,7 +416,8 @@ For Java to correctly load this kind of format, we have two options:
   - `var locale = new Locale("en", "US");` → `locale.toString(); // en_US`
   - To check whether a locale is valid: `asList(Locale.getAvailableLocales()).contains(locale)`
   - It's possible to set finer-grained control of the default locale by setting the `Locale#Category` (either `DISPLAY` 
-or `FORMAT`) by calling `Locale.setDefault(category, locale)` 
+or `FORMAT`) by calling `Locale.setDefault(category, locale)`
+  - A locale consists of a required lowercase language code and optional uppercase country code.
 #### Formatting currencies
 ```java
 final var amount = 50.99;
@@ -473,4 +480,15 @@ class UnitTest {
     //...
   }
 }
+```
+### Resource bundle and properties
+
+```java
+// If not found, a MissingResourceException is thrown.
+ResourceBundle.getBundle("filename", Locale.US); // Will look in the module/class path for the file called filename_en_US.properties, if not found filename_en.properties, filename_US.properties, filename.properties and so on.
+        
+Properties properties = new Properties();
+System.out.println(properties.get("key")); // null
+System.out.println(properties.getProperty("key")); // null
+System.out.println(properties.getProperty("key", "defaultValue")); // defaultValue
 ```
