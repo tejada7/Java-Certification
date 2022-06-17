@@ -492,3 +492,23 @@ System.out.println(properties.get("key")); // null
 System.out.println(properties.getProperty("key")); // null
 System.out.println(properties.getProperty("key", "defaultValue")); // defaultValue
 ```
+
+### Module notes 
+For a more detailed description, refer to the [OCP Java 11 study notes | modules section](OCP_Java11.md#modules)  
+Compiling a class within a module:
+
+```java
+javac -p mods -d directory classesToCompile
+```
+Running a main method from a class from a module:
+```java
+java -p directory -m moduleName/pathToClass.ClassName
+```
+Generating a jar out of the compiled files:
+```java
+jar -cfv mods/dep.jar -C directory/ .
+```
+Running the same class from the jar file:
+```java
+java -p mods -m moduleName/pathToClass.ClassName
+```

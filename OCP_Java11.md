@@ -352,6 +352,19 @@ The below table compares the legacy `java.io.File` vs. the `NIO.2` methods:
 |`file.mkdir()`|`Files.createDirectory(path)`|
 |`file.mkdirs()`|`Files.createDirectories(path)`|
 ### Modules
+It's important to understand what problems are modules designed to solve:
+- Reinforced security → vulnerable packages can be omitted.
+- Clearer dependency management → avoid jar hell or confusion by ensuring that each package comes from only one module   
+- Better performance → improved startup time and less memory consumption
+- Better access control → it resembles to a multi-Maven-module approach that adds an additional layer of access control  
+- Custom Java build → by restricting the number of the internal jdk dependencies that ultimately reduces jar sizing   
+
+That said, there are three types of modules:
+- named → they contain a module-info.java file, they reside in the module path (and not in the classpath)
+- automatic → does not contain a module-info.java file but does reside in the module path, so that it gets treated as a module.
+As far as its name, it'll be resolved from the MANIFEST.MF file, property `Automatic-Module-Name` if specified, otherwise Java will automatically determine its name
+- unnamed → resides in the classpath rather that the module path, thus, it's not treated as a module. **It can read from any jars on the class or module paths.** It does not export any package, thus only readable from the classpath
+
 Given the structure:
 ```shell script
 .
@@ -383,7 +396,7 @@ Will create the binary files on the `out` directory:
     └── com
           └── ocp
                 └── hello
-                      └── Main.java
+                      └── Main.class
 ```
 To run the `Main` class:
 ```shell script
@@ -455,7 +468,7 @@ module upon which the module to be compiled depends. You can specify the explode
 containing modular jars, or specific modular jars here. e.g.
 If you want to compile module foo and it depends on another module named abc.util packaged as utils.jar located in
 thirdpartymodules directory then your module-path can be thirdpartymodules or thirdpartymodules/utils.jar.
-That both the following two commands will work:
+The following commands would equally work:
 ```shell script
 javac --module-source-path src --module-path thirdpartymodules -d out --module foo 
 or
@@ -470,7 +483,7 @@ There are three command line options applicable to javac and java that can be us
 configurations of modules temporarily. 
 These are: `add-reads`, `add-exports`, and, `add-opens`. For example, if you want module1 to be able to read public
 packages of module2 and neither of the modules have appropriate information in their respective module-info files, then
-you can use the following commands to enable such access :  
+you can use the following commands to enable such access:  
 ```shell
 javac --add-reads module1=module2 --add-exports module2/com.ocp.package1=module1 
 
@@ -504,6 +517,10 @@ Alternatively, we can get the dependencies of a specific class:
 ```shell
 jdeps --module-path out out/<module name>/<fully qualified class name>
 ```
+It's also possible to detect any unsupported or for-removal internal jdk dependency
+```java
+jdeps --jdk-internals -module-path out <jar file>.jar 
+```
 ### jmod
 jmods are file extensions only recommended when we have native libraries that cannot be stored in jar files. That said,
 jars are the recommended format for modules.
@@ -518,6 +535,11 @@ Allows to disassemble .class files, displaying information about fields, contruc
 javap -v -p -l <class name>.class
 ```
 Wherein: `v` means verbose, `p` allows to print private fields and methods and `l` displays the line numbers. 
+### jlink
+Allows to create Java runtimes without needing the entire JDK to execute it.
+```java
+jlink -p mods --add-modules <module-name> --output <destination-folder-of-runtime>
+```
 ### Deserialization
 When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
