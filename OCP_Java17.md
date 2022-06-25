@@ -512,3 +512,121 @@ Running the same class from the jar file:
 ```java
 java -p mods -m moduleName/pathToClass.ClassName
 ```
+### Concurrency
+- The `volatile` keywords ensures that only one thread is modifying a variable at a time and that data read by multiple 
+threads is consistent. However, **it does not provide thread-safety**
+- `atomic` is the property of an operation to be run as a single unit of execution without any interference from another 
+thread
+- `Mutual exclusion` is the property that at most one thread is executing a segment of code at a given time. This can be
+implemented with a _lock_ or _monitor_
+- `fairness` happens when two threads waiting to acquire a lock, the first to enter the block of code will be the first 
+that entered the waiting list. It's is disabled by default with `ReentrantLock` and unavailable with `synchronized` blocks
+- Intrinsic locking = synchronized + volatile
+- Explicit locking = manual lock
+#### ReentrantReadWriteLock
+```java
+ReadWriteLock rwLock = new ReentrantReadWriteLock();
+Lock readLock = rwLock.readLock();
+Lock writeLock = rwLock.writeLock();
+Map<String, Object> cache = new HashMap(); 
+// Mind that Collections.synchronizedMap(new HashMap()) could also work but would be inefficient. 
+
+/**
+ * Note that any number of threads can call this method at the same time.
+ */
+public Object readFromCache(final String key) {
+    try {
+        readLock.lock();    
+        return cache.get(key);
+    } finally {
+        readLock.unlock();
+    }    
+}
+
+/**
+ * However, if a write operation is performed, the write lock will protect the modification of the cache and prevent 
+ * concurrent reads that could read corrupted or inconsistent values.  
+ */
+public void writeToCache(final String key, final Object value) {
+    try {
+        writeLock.lock();
+        cache.putIfAbsent(key, value);
+    } finally {
+        writeLock.unlock();
+    }
+}
+
+// Note that a ConcurrentHashMap accomplishes the same goal
+```
+#### Semaphores
+Are a kind of a lock and the different lies on the fact that a lock allows only one thread to access a block of code, 
+whereas a semaphore can rely on a number of permits to allow multiple threads to concurrently access a guarded block of 
+code. In other words, a lock has only 1 permit. 
+```java
+Semaphore semaphore = new Semaphore(5);
+try {
+    semaphore.acquire();
+    // guarded block of code: this block is allowed to be executed by 5 threads at the same time
+} finally {
+    semaphore.release();
+}
+```
+#### CyclicBarrier and CountDownLatch
+- A barrier allows several tasks (**run in different threads**) wait for each other, then trigger a subsequent task or
+action and then reset the system, so that it can run again.
+- A latch works almost in the same way as barriers, the only different is that it does not reset once a latch is open it
+cannot be closed again.
+
+```java
+
+import java.util.concurrent.CyclicBarrier;
+
+class Foo implements Callable<Boolean> {
+
+  private final CyclicBarrier barrier;
+
+  public Boolean call() throws Exception {
+    try {
+      System.out.print("Waiting...");
+      barrier.await();
+      // do something
+      System.out.print("Done");
+      return true;
+    } catch (InterruptedException e) {
+        System.out.print("Interrupted");
+    }
+    return false;
+  }
+  
+  public static void main(final String...args) {
+    final var cyclicBarrier = new CyclicBarrier(4, () -> System.out.println("barrier opened"));
+    final var executorService = Executors.newFixedThreadPool(4);
+    List<Future<Boolean>> futures = new ArrayList<>();
+    try {
+      for (int i = 0; i < 4; i++) {
+        Foo foo = new Foo(cyclicBarrier);
+        futures.add(executorService.submit(foo));
+      }
+      futures.forEach(it -> {
+        try {
+          it.get();
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      });
+    } finally {
+      executorService.shutdown();
+    }
+  }
+  // It'll print:
+  // Waiting...
+  // Waiting...
+  // Waiting...
+  // Waiting...
+  // barrier opened
+  // done
+  // done
+  // done
+  // done
+}
+```
