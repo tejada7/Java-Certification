@@ -1,4 +1,4 @@
-package com.javacertification.multi_threading.producer_consumer_pattern;
+package com.javacertification.multithreading.producerconsumerpattern;
 
 import java.util.logging.Logger;
 

@@ -1,4 +1,4 @@
-package com.javacertification.multi_threading;
+package com.javacertification.multithreading;
 
 /**
  * Created by Favio on 7/1/2018.
