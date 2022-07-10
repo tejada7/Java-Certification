@@ -631,3 +631,6 @@ class Foo implements Callable<Boolean> {
   // done
 }
 ```
+### NIO Streams
+When reading from a `Reader` implementation, -1 or null implies end of file. In hindsight, when reading
+from an `OutputStream` implementation, an `EOFException` is thrown instead.
