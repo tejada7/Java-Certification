@@ -387,11 +387,12 @@ UnaryOperator<Integer> f = x -> x++; // This won't ever increment the value as i
 The below symbols work with `out#printf`, `String#formatter`, `String#format`: 
 
 | Symbol | Supported type  | Additional notes                                                                                                                                                                                                                |
-|--------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| %s     | string          | N/A                                                                                                                                                                                                                             |
-| %d     | int or long     | N/A                                                                                                                                                                                                                             |
-| %f     | float or double | Let's take the example of [3.14159285]<br/>By default it considers 6 decimals → [3.14159]<br/>%.3f will round to two decimals → [3.142]<br/>%5.2f adds spaces to the left → [ 3.14]<br/>%05.2f adds zeros to the left → [03.14] |
-| %n     | \n              | It adds a new line independently<br/> of the operating system.                                                                                                                                                                  |
+|-------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| %s    | string          | N/A                                                                                                                                                                                                                             |
+| %d    | int or long     | N/A                                                                                                                                                                                                                             |
+| %f    | float or double | Let's take the example of [3.14159285]<br/>By default it considers 6 decimals → [3.14159]<br/>%.3f will round to two decimals → [3.142]<br/>%5.2f adds spaces to the left → [ 3.14]<br/>%05.2f adds zeros to the left → [03.14] |
+| %n    | \n              | It adds a new line independently<br/> of the operating system.                                                                                                                                                                  |
+| %x    | byte            | Hexadecimal format.                                                                                                                                                                                                             |
 
 ### Formatting numbers
 The below symbols work with `NumberFormat#format`:
