@@ -1,7 +1,7 @@
 # Java 11 Oracle Certified Professional study notes
 
 ### Inner classes
-* Static nested class
+* Static nested class (or inner records)
     * Can be instantiated without an instance of the enclosing class
     * It cannot access instance variables or methods of the outer class directly, it needs an explicit reference to the outer class.
     * The enclosing class can refer to the static fields and methods of the inner class
@@ -11,7 +11,7 @@ public class Parent {
     private String name;
     public static final String CONSTANT = "";
 
-    public static class InnerStaticClass {
+    public static class InnerStaticClass { // This can alternatively be a record (no need to static though)
         public static void staticMethod() {
             System.out.println(new Parent().name);            
             System.out.println(CONSTANT);            
@@ -30,7 +30,7 @@ package foo;
 import parent.Parent.InnerStaticClass;
     class Foo {
         Parent.InnerClass.staticMethod();
-        new Parent.InnerClass.instanceMethod();
+        new Parent.InnerClass().instanceMethod();
     }   
 ```
 * Member inner class (aka inner class)
@@ -63,10 +63,17 @@ actual object to which the variable points to. Mind that this is opposite of wha
 In case of instance methods, the method of the actual class of the object is called. e.g.
 ```java
 public static void main (String...args) {
-    System.out.println(new Parent().name+", "+new parent().constant+", "+new Parent().getName()); // will print "parent 123 parent"
+    final var parent = new Parent();
+    new StringJoiner(",")
+        .add(parent.name)
+        .add(parent.constant)
+        .add(parent.getName()); // will contain "parent, 123, parent"
 
-    Parent object = new Child();
-    System.out.println(object.name+", "+object.constant+", "+object.getName()); // will print "parent 123 child"
+    final Parent child = new Child(); // Mind the reference type !
+    new StringJoiner(",")
+        .add(child.name)
+        .add(child.constant)
+        .add(child.getName()); // will contain "parent, 123, child"
 }
 ```
 ### Java Collections Framework types

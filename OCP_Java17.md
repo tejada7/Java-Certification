@@ -219,7 +219,7 @@ type without a cast
 Java does not allow variables to be overriden, they can be hidden though. They are resolved based on the type of the
 reference and **not the instance type** conversely to what occurs with polymorphic method calls.
 
-Likewise, static methods can be overriden if the parent's method is not declared as final.  
+Likewise, static methods can be hidden if the parent's method is not declared as final.  
 
 ### Sealing classes
 _Why do we need sealed classes?_ 
@@ -443,7 +443,7 @@ CompactNumberFormat.getInstance(Locale.FR, SHORT).format(1_500_000_000); // 2 Md
 CompactNumberFormat.getInstance(Locale.FR, LONG).format(1_500_000_000); // 2 milliards
         
 CompactNumberFormat.getInstance(Locale.forLanguageTag("es-BO"), SHORT).format(1_400_000_000); // 1400 M
-CompactNumberFormat.getInstance(Locale.forLanguageTag("es-BO"), LONG).format(1_400_000_000); // 1400 milliones
+CompactNumberFormat.getInstance(Locale.forLanguageTag("es-BO"), LONG).format(1_400_000_000); // 1400 millones
 ```
 ### InstantSource
 It certainly becomes an alternative to Instant as it provides an abstraction to Clock, meaning that we should no longer 
@@ -514,7 +514,7 @@ Running the same class from the jar file:
 java -p mods -m moduleName/pathToClass.ClassName
 ```
 ### Concurrency
-- The `volatile` keywords ensures that only one thread is modifying a variable at a time and that data read by multiple 
+- The `volatile` keyword ensures that only one thread is modifying a variable at a time and that data read by multiple 
 threads is consistent. However, **it does not provide thread-safety**
 - `atomic` is the property of an operation to be run as a single unit of execution without any interference from another 
 thread
@@ -654,7 +654,7 @@ same goes to calling `ps.executeUpdate()` on a select query.
 
 Before reading from the `ResultSet`, we must ensure that firstly `ps.next()` is called to allow the cursor to traverse 
 the results, and secondly, return `true` so that we are sure we got results:
-```json
+```java
 final var sql = "SELECT count(*) AS count FROM users";
  
 try (final var ps = conn.prepareStatement(sql);
