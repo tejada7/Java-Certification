@@ -634,3 +634,34 @@ class Foo implements Callable<Boolean> {
 ### NIO Streams
 When reading from a `Reader` implementation, -1 or null implies end of file. In hindsight, when reading
 from an `OutputStream` implementation, an `EOFException` is thrown instead.
+
+### JDBC
+![img.png](src/main/resources/jdbc_interface_hierarchy.png)
+```java
+final var ps = DriverManager.getConnection("URL").preparedStatement("sql")
+if (ps.execute()) { // the query was of type select and hence we can retrieve a ResultSet  
+    final var rs = ps.getResultSet();
+    //...
+} else {
+    final var updatedLines = ps.getUpdateCount();
+    // ...
+}
+``` 
+Note that if we attempt to retrieve the ResultSet from a non select query (i.e. `ps.executeQuery()`), we get a `SQLException`, 
+same goes to calling `ps.executeUpdate()` on a select query.
+
+ℹ **In JDBC we start counting from 1 and not 0.**
+
+Before reading from the `ResultSet`, we must ensure that firstly `ps.next()` is called to allow the cursor to traverse 
+the results, and secondly, return `true` so that we are sure we got results:
+```json
+final var sql = "SELECT count(*) AS count FROM users";
+ 
+try (final var ps = conn.prepareStatement(sql);
+   final var rs = ps.executeQuery()) {
+ 
+   if (rs.next()) {
+      System.out.println(rs.getInt("count"));
+   }
+}
+```
