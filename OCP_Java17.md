@@ -1,12 +1,5 @@
 # Java 17 Oracle Certified Professional study notes
 
-### Some definitions
-- __happens-before relationship:__ it's a guarantee that any action performed in any thread is reflected to other 
-actions in different threads. `Stream#forEachOrdered` is an example of executions that comply with this term. 
-- __Pattern matching:__ is a technique of controlling program flow that only executes a section of code that meets
-certain criteria. Moreover, it's used in conjunction with if statements for greater program control.
-
-
 ### How to print bytes as String
 ```java
 byte b = 4;
@@ -519,6 +512,8 @@ Running the same class from the jar file:
 java -p mods -m moduleName/pathToClass.ClassName
 ```
 ### Concurrency
+- happens-before relationship is a guarantee that any action performed in any thread is reflected to other
+  actions in different threads. `Stream#forEachOrdered` is an example of executions that comply with this term.
 - The `volatile` keyword ensures that only one thread is modifying a variable at a time and that data read by multiple 
 threads is consistent. However, **it does not provide thread-safety**
 - `atomic` is the property of an operation to be run as a single unit of execution without any interference from another 
@@ -699,3 +694,87 @@ techniques to handle exceptions such as [Vavr's Try, API.unchecked](https://docs
 
 I'd rather rely on a more functional approach to declare a contract of return type `Either<Error, Success>`, but that's way out of the 
 scope of the present document.   
+### Pattern matching
+Pattern matching is a technique of controlling program flow that only executes a section of code that meets
+certain criteria. Moreover, it's used in conjunction with if statements for greater program control.
+```java
+// Without pattern matching
+final Number number = someNumber();
+if (number instanceOf Integer) {
+    ((Integer) number)++;    
+}
+
+// With pattern matching
+final Number number = someNumber();
+if (number instanceOf Integer anInteger) {
+    anInteger++;
+}
+
+// But if we were applying FP by the book...
+final Number number = someNumber();
+if (number instanceOf final Integer anInteger) {
+    final var increasedInteger = increase(anInteger, 1);
+}
+
+// We can also add some pre-conditions:
+final Number number = someNumber();
+    if (number instanceOf final Integer anInteger && anInteger != null) {
+    final var increasedInteger = increase(anInteger, 1);
+}
+```
+
+#### The new switch statement
+The switch statement can from now on return values:
+```java
+// Without fallthrough:
+// Statement
+int numLetters;
+switch(seasonName) {
+    case "Fall" -> numLetters = 4;
+    case "Spring" -> {
+        System.out.println("Spring time !!!");
+        numLetters = 6;
+    }
+    case "Summer", "Winter" -> numLetters = 6;
+    default -> numLetters = -1;
+}
+
+// Expression
+int numLetters = switch(seasonName) {
+    case "Fall" -> 4;
+    case "Spring" -> {
+        System.out.println("Spring time !!!");
+        yield 6;
+    }
+    case "Summer", "Winter" -> 6;
+    default -> -1;
+};
+
+// With fallthrough:
+// Statement
+int numLetters;
+switch(seasonName) {
+    case "Fall":
+        numLetters = 4;
+        break;
+    case "Spring":
+        System.out.println("Spring time !!!");
+    case "Summer", "Winter":
+        numLetters = 6;
+        break;
+    default:
+        numLetters = -1;
+}
+
+// Expression
+int numLetters = switch(seasonName) {
+    case "Fall":
+        yield 4;
+    case "Spring":
+        System.out.println("Spring time !!!");
+    case "Summer", "Winter":
+        yield 6;
+    default:
+        yield -1;
+}
+```
