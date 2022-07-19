@@ -258,6 +258,8 @@ record Person(String fullName, int age) {
     }
 }
 ```
+ℹ A `record` cannot extend from a class, only implement interfaces.
+
 ### Lambda expressions & functional interfaces
 Lambdas aren't allowed to redeclare local variables. They're only allowed to reference final or effectively final
 variables.
@@ -275,6 +277,9 @@ void doStuff() {
 ```
 Functional interfaces must only have one abstract class excluding any redefining method of the class Object (i.e. 
 `toString`, `hashCode`, `equals`, etc).
+
+> According to Robert Martin, the usage of funtional interfaces can reinforce the SOLID principles adoption. A clear example
+> is the Command design pattern.
 
 ### Collections and generics
 It's important to note that there're two ArrayList implementations:
