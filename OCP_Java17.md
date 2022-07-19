@@ -411,7 +411,7 @@ System.out.println(MessageFormat.format("{0} {1}!!! {2}", "Hello", "world", 2022
 ### Locales
 - `Locale#toString` formats the locales as `language abbreviation in small letters` + `_` + `country abbreviation in capital letters`,
 e.g. `es_ES,` `en_US,` `fr_FR,` `es_BO`
-- [IETF languages tags](IETF language tag) are in the form `es-ES`, `en-US`, `fr-FR` and `es-BO` ⚠️ mind the `-` instead of `_`. 
+- [IETF languages tags](https://en.wikipedia.org/wiki/IETF_language_tag) are in the form `es-ES`, `en-US`, `fr-FR` and `es-BO` ⚠️ mind the `-` instead of `_`. 
 For Java to correctly load this kind of format, we have two options:
   - `var locale = Locale.forLanguageTag("en-US")`, → `locale.toString(); // en_US`
   - `var locale = new Locale("en", "US");` → `locale.toString(); // en_US`
@@ -682,3 +682,15 @@ try(final var connection = DriverManager.getConnection("url", "user", "password"
         }
 }
 ```
+### Exceptions
+There are two type of exceptions:
+- checked: All exceptions extending from Exception or Throwable → we are forced to handle them.
+- unchecked: All exceptions extending from RuntimeException or Error → we aren't forced to handle them.
+
+Checked exceptions are considered a [Java design flaw](https://phauer.com/2015/checked-exceptions-are-evil/), and the recommended
+approach is to create a runtime counterpart 
+(e.g. For `IOException`, there is a `UncheckedIOException` introduced in Java 8). There are nevertheless other elegant 
+techniques to handle exceptions such as [Vavr's Try, API.unchecked](https://docs.vavr.io) and [Jool's unchecked](https://www.jooq.org/products/jOOλ/javadoc/0.9.5/org/jooq/lambda/Unchecked.html). 
+
+I'd rather rely on a more functional approach to declare a contract of return type `Either<Error, Success>`, but that's way out of the 
+scope of the present document.   
