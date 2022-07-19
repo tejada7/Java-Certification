@@ -665,3 +665,20 @@ try (final var ps = conn.prepareStatement(sql);
    }
 }
 ```
+#### Commit and rollback
+By default, transactions are set to autocommit, meaning that once the Statement implementation is run, changes (if applied)
+are instantly performed in DB.
+
+There is though a way to disable this behavior, by calling `connection.setAutoCommit(false)`.
+```java
+try(final var connection = DriverManager.getConnection("url", "user", "password");
+        final var ps = connection.prepareStatement("TRUNCATE TABLE USERS")) {
+        connection.setAutoCommit(false);
+        try(final var rs = ps.executeUpdate()) {
+            System.out.println(rs > 0 ? "succcess" : "failure");
+        } catch(SQLException exception) {
+            System.err.printf("Something went wrong %s%n", exception);
+            connection.rollback();
+        }
+}
+```
