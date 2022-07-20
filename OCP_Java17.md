@@ -251,7 +251,12 @@ record Person(String fullName, int age) {
     }
 }
 ```
-ℹ A `record` cannot extend from a class, only implement interfaces.
+- A `record` cannot extend from a class, only implement interfaces.
+- A `record`'s canonical constructor, compact constructor, and getters cannot throw any checked exception (i.e. `throws Exception`)
+- A `record` cannot have a compact constructor with an explicit canonical constructor as the compact constructor is kind of a canonical constructor
+- The first line of a non-canonical constructor must call another record constructor
+- An inner record is implicitly static
+- A record is implicitly `final` and cannot be superseded by sealed, non-sealed or abstract  
 
 ### Lambda expressions & functional interfaces
 Lambdas aren't allowed to redeclare local variables. They're only allowed to reference final or effectively final
