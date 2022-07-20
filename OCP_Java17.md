@@ -492,7 +492,7 @@ System.out.println(properties.getProperty("key")); // null
 System.out.println(properties.getProperty("key", "defaultValue")); // defaultValue
 ```
 
-### Module notes 
+### Modules notes 
 For a more detailed description, refer to the [OCP Java 11 study notes | modules section](OCP_Java11.md#modules)  
 Compiling a class within a module:
 
@@ -511,6 +511,29 @@ Running the same class from the jar file:
 ```java
 java -p mods -m moduleName/pathToClass.ClassName
 ```
+#### Migration modules strategies
+##### Bottom-up
+The easiest approach, and recommended when you have the control of all the application dependencies.
+Converting lower-level libraries into modular jars before converting higher-level libraries.
+
+Example:
+`A.jar` depends on `B.jar`, which likewise depends on `C.jar`
+- Step 1: Pick the lowest-level dependency, in this case, modularize `C.jar` by making it a named module (at this point,
+both `B.jar` and `A.jar` will remain unnamed modules and therefore will be able to access `C.jar`).
+- Step 2: Repeat the process for `B.jar` and later on for `A.jar`
+
+The ultimate goal after the migration is to have all packages residing on the module path (and thus none on the classpath). 
+##### Top-down
+
+Recommended approach when we **don't have control of every jar** used by our applications (i.e. become automatic modules)
+The idea is to put all dependencies on the module path and make the highest-level dependency a named module, adding as 
+many `required` as needed in accordance to the default automatic modules' names.   
+
+Example:
+`A.jar` depends on `B.jar`, which likewise depends on `C.jar`, thus, 
+- Step 1: Move `A.jar`, `B.jar`, and `C.jar` to the module path (then they all become automatic modules).
+- Step 2: Make `A.jar` a named module by adding the necessary required in the `module-info.java` file
+
 ### Concurrency
 - happens-before relationship is a guarantee that any action performed in any thread is reflected to other
   actions in different threads. `Stream#forEachOrdered` is an example of executions that comply with this term.

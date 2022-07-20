@@ -367,9 +367,12 @@ It's important to understand what problems are modules designed to solve:
 - Custom Java build → by restricting the number of the internal jdk dependencies that ultimately reduces jar sizing   
 
 That said, there are three types of modules:
-- named → they contain a module-info.java file, they reside in the module path (and not in the classpath)
+- named → they contain a module-info.java file, they reside in the module path (and not in the classpath). Named modules 
+ can only read from automatic modules.
 - automatic → does not contain a module-info.java file but does reside in the module path, so that it gets treated as a module.
-As far as its name, it'll be resolved from the MANIFEST.MF file, property `Automatic-Module-Name` if specified, otherwise Java will automatically determine its name
+As far as its name, it'll be resolved from the MANIFEST.MF file, property `Automatic-Module-Name` if specified, otherwise
+Java will automatically determine its name. Automatic modules can read from unnamed modules (i.e. jars in the classpath) 
+as well as the explicitly exported modules from the named modules.
 - unnamed → resides in the classpath rather that the module path, thus, it's not treated as a module. **It can read from any jars on the class or module paths.** It does not export any package, thus only readable from the classpath
 
 Given the structure:
