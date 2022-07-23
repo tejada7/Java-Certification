@@ -543,7 +543,9 @@ Example:
 - happens-before relationship is a guarantee that any action performed in any thread is reflected to other
   actions in different threads. `Stream#forEachOrdered` is an example of executions that comply with this term.
 - The `volatile` keyword ensures that only one thread is modifying a variable at a time and that data read by multiple 
-threads is consistent. However, **it does not provide thread-safety**
+threads is consistent. However, **it does not provide thread-safety**. As an example, the usage of the volatile keyword 
+on a variable _x_ ensures that if one thread updates _x_, then whichever thread is executed after will be aware of the 
+latest updates on _x_
 - `atomic` is the property of an operation to be run as a single unit of execution without any interference from another 
 thread
 - `Mutual exclusion` is the property that at most one thread is executing a segment of code at a given time. This can be
