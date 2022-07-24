@@ -5,6 +5,35 @@
 byte b = 4;
 String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0'))
 ```
+### Initialization order notes
+A class or interface of type T will be initialized before the first occurrence of any of the following:
+- instantiation of T
+- invoking a static method of T
+- T static field assignment
+- static field (N.B. not a constant) declared in T is used
+- when a class is initialized, so do their super classes and superinterfaces containing default methods
+- a reference to a static (n.b. not a constant) field causes initialization of only the class or interface that declares it (ignoring their possible
+superclasses)
+
+Therefore, the below class does not initialize the Child class (i.e. executing its static initializer block) regardless 
+of referencing a static parent field from it. 
+```java
+class Super {
+    static String id = "Super"; // This member could also be a constant
+}
+
+class Child {
+  static {
+      System.out.printf("Static initializer block...%n");
+  }
+}
+
+public class Test {
+    public static void main(String...args) {
+      System.out.print(Sub.id);  // It'll only print "Super"
+    }
+}
+```
 
 ### New text block methods
 - `public String indent(int numberSpaces)` → adds/removes the same number of blank spaces of each line. **It's with
