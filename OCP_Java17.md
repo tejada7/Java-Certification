@@ -262,6 +262,7 @@ implemented by unspecified classes.
 Direct subclasses of sealed classes must be marked final, sealed or non-sealed (excluding for interfaces for which they 
 can be defined as either sealed or non-sealed).
 
+ℹ️ Sealed classes and their sub-classes **must reside in the same module**.
 ### Records compact constructor
 Given:
 ```java
@@ -837,3 +838,22 @@ int numLetters = switch(seasonName) {
         yield -1;
 }
 ```
+### Navigable set and map
+These interfaces contain a bunch of navigation methods reporting closest matches for given search targets.
+```java
+final NavigableSet<String> set = new TreeSet<>();
+set.addAll(List.of("a", "cc", "b", "c", "bb", "aa")); // a aa b bb c cc
+System.out.println(set.ceiling("bbb")); // returns c, greater than or equal to
+System.out.println(set.lower("aa")); // returns a, the lower element (null if not found)
+System.out.println(set.floor("bbb")); // returns bb, less than or equal
+System.out.println(set.higher("cc")); // returns null no higher element found
+
+System.out.println(set.headSet("aa", true)); // returns [a aa]
+System.out.println(set.subSet("b", "cc")); // returns [b bb c], note that the to is not inclusive !!!
+System.out.println(set.subSet("b", true, "cc", true)); // returns [b bb c cc] same as above but with inclusive final element
+System.out.println(set.tailSet("c")); // returns [c cc]
+
+System.out.println(set.pollFirst()); // returns a from the set and removes it from the set
+System.out.println(set.pollLast()); // returns cc from the set and removes it from the set
+```
+Note that the same methods are available for `NavigbleMap` interface, and therefore its implementations.
