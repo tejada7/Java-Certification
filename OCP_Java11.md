@@ -515,7 +515,22 @@ java -p <module path> --list-modules
 ### jdeps
 As a reminder on how to create a jar:
 ```shell
-jar -cvf <output directory>/<jar file>.jar <outout directory>/ .
+jar -cvf <output directory>/<jar file>.jar <binaries directory>/ .
+```
+If we need to define a Main class, then we must create a file .mf:
+```text
+Manifest-Version: 1.0
+Main-Class: packageToMainClass.Main
+```
+then while building the jar specify the above created file:
+```shell
+jar cmf manifest-file.mf jar-file.jar input-files
+```
+Then, to run it:
+```shell
+java -jar jar-file-with-main.jar
+# or
+java -p jar-file-with-main.jar module/package.Main
 ```
 Then to display a summary of the modules used in the jar:
 ```shell
