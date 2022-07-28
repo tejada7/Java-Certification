@@ -695,6 +695,15 @@ class Foo implements Callable<Boolean> {
 When reading from a `Reader` implementation, -1 or null implies end of file. In hindsight, when reading
 from an `OutputStream` implementation, an `EOFException` is thrown instead.
 
+### RandomAccessFile
+- It extends Object (and not any nio Stream), it implements `Autocloseable` though
+- Allows to read, write, and delete a random access file. The valid modes are `r`, `rw`, `rws`, and `rwd` 
+(`new RandomAccessFile(file, mode)`)
+- Behind the scenes, it works with a cursor whose position can be manipulated with the method `seek(position)`
+- When reaching the end of a file, it throws a `EOFException`
+- The method to write a String is `raf.writeChars(string)` and the method to read a line `raf.readLine()` (beware that 
+both methods throw `IOException`)
+
 ### JDBC
 ![img.png](src/main/resources/jdbc_interface_hierarchy.png)
 ```java
