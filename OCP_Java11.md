@@ -491,7 +491,7 @@ we add requires <automatic-module-name> in the module-info.java*
 
 There are three command line options applicable to javac and java that can be used for customizing exports and requires
 configurations of modules temporarily. 
-These are: `add-reads`, `add-exports`, and, `add-opens`. For example, if you want module1 to be able to read public
+These are: `add-reads`, `add-exports`, and, `add-open`. For example, if you want module1 to be able to read public
 packages of module2 and neither of the modules have appropriate information in their respective module-info files, then
 you can use the following commands to enable such access:  
 ```shell

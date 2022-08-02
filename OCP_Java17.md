@@ -866,3 +866,30 @@ System.out.println(set.pollFirst()); // returns a from the set and removes it fr
 System.out.println(set.pollLast()); // returns cc from the set and removes it from the set
 ```
 Note that the same methods are available for `NavigbleMap` interface, and therefore its implementations.
+
+### Hiding method interfaces with private methods
+Oftentimes, we're faced with situations when we don't necessarily require to implement all methods exposed by an interface
+(c.f. interface segregation principle from SOLID principles).
+There is a technique seldom used that consists in leveraging interface's private methods, let's portray this intent with
+a real example, in the context of a repository interface that allows operations on the persistence layer:
+```java
+interface Repository<T, ID> { // Mind the access level
+    T save(T entity);
+    
+    Optional<T> get(ID id);
+  
+    List<T> findAll();
+    
+    void deleteAll(); // ⚠ dangerous method
+}
+```
+The idea is to keep the interface in a package and create a new one that does implement the dangerous method in a 
+private method:
+```java
+public interface SafeRepository<T, ID> extends Repository<T, ID> {
+    private void deleteAll() {
+        // Do nothing, the method is not allowed to be called.
+    }
+}
+```
+Therefore, the client won't ever see this dangerous method while trying to use or implement the SafeRepository interface.
