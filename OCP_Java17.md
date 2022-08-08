@@ -893,3 +893,23 @@ public interface SafeRepository<T, ID> extends Repository<T, ID> {
 }
 ```
 Therefore, the client won't ever see this dangerous method while trying to use or implement the SafeRepository interface.
+
+### Try with resources
+Introduced in Java 7, they'are meant automatically close any object implementing `Autocloseable` (including `Closeable` from
+Java 5):
+```java
+record AutocloseableObject() implements AutoCloseable {
+
+  void close() throws Exception {
+      // closing logic...
+  }
+} 
+var final autocloseable = new AutocloseableObject();
+try (autocleable){
+// or try (var autocloseable = new AutocloseableObject()) { // -> mind that final is implicit 
+
+} catch(Exception e) {
+    
+}
+```
+Mind that variables used by the try-with-resources block **must be effectively final**.
