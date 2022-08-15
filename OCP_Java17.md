@@ -391,6 +391,17 @@ final Stream<?> stream = StreamSupport.stream(splitetator, false);
 It's worth noting that .spliterator() on a stream is a terminal operation, and it can be applied on infinite streams.
 In that situation, the method getExactSizeIfKnown() will return -1 and estimatedSize() will return Long#MAX_VALUE.
 
+### Sequential vs Parallel vs Ordered vs Unordered streams
+- Sequential streams run on a single thread (N.B. they aren't necessarily ordered)
+- Some operations (intermediary specially) of parallel stream run on multiple threads to improve performance
+- Encounter order dictates whether a stream is considered to be ordered or not, this is defined by source or intermediady
+operatios (depending on the collection implementation, if it's an array or list, then the strean will be orderedm whereas
+for a treeset, it'll be the contrary). The only way to order streams is by calling the `sort()` method
+- Related to the previous point, they depend on the source implementation, although for any stream it's possible to call
+`unordered()` so that the stream becomes unordered, thus potential optimizations can be performed by the JVM
+
+More on this [here](http://enthuware.com/forum/viewtopic.php?f=2&t=6085&sid=7a3ad3af25e6a1e3d06e27d3ab6ba128).
+
 ### Teeing collector
 Allows to merge two collectors into a single object:
 ```java
@@ -865,6 +876,7 @@ System.out.println(set.tailSet("c")); // returns [c cc]
 System.out.println(set.pollFirst()); // returns a from the set and removes it from the set
 System.out.println(set.pollLast()); // returns cc from the set and removes it from the set
 ```
+Methods returning a collection throw an `IllegalArgumentException` if keys are out of range (e.g. adding `c` to the subset of `aa`).
 Note that the same methods are available for `NavigbleMap` interface, and therefore its implementations.
 
 ### Hiding method interfaces with private methods
