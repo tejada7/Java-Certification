@@ -148,6 +148,12 @@ DateTimeFormatter
 LocalTime.of(1, 10)
         .truncatedTo(ChronoUnit.HOURS) // 01:00
 ```
+Temporal adjusters allow to modify temporal objects by externalizing the adjustement process while leveraring the
+strategy pattern. There are two ways to use temporal adjusters:
+```java
+temporal = adjuster.adjustInto(temporal)
+temporal = temporal.with(adjuster)
+```
 ### StringBuilder notes
 - The replace method from `StringBuilder` takes 3 arguments:
 ```java
