@@ -109,19 +109,21 @@ ZonedDateTime.of(LocalDateTime.parse("2022-03-27T01:30:00"), ZoneId.of("CET"))
 ```
 - The most important patterns used by `SimpleDateFormat` and `DateTimeFormatter` are:
 
-| Symbol                                    | Meaning                                                                              | Example                                                    |
-|-------------------------------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------|
-| y<br/>yy<br/>yyyy<br/>yyyyy               | year, it can also work with `Y`                                                      | 2022<br/>22<br/>2022<br/>02022                             |
-| M<br/>MM<br/>MMM<br/>MMMM<br/>MMMMM       | month, it does not work with `m` as it's minute                                      | 6<br/>06<br/>Jun<br/>June<br/>J                            |
-| d or dd                                   | day of the month, it does not work with `D` as it represents<br/>the day of the year | 15                                                         |
-| e<br/>ee<br/>eee<br/>eeee<br/>eeeee       | day of the week, it also works with `E`                                              | 3<br/>03<br/>Wed<br/>Wednesday<br/>W                       |
-| h<br/>hh                                  | hour of the day, it also works with `H`                                              | 5<br/>05                                                   |
-| m<br/>mm                                  | minute, it does not work with `M` as it's month                                      | 1<br/>01                                                   |
-| s<br/>ss<br/>S<br/>SS<br/>SSS<br/>SSSS... | `S` means fraction of second, whereas `s` is the second of the minute                | 1<br/>01<br/>1<br/>01<br/>013<br/>0135                     |
-| a                                         | after meridian or past meridian                                                      | AM or PM                                                   |
-| z, zz, zzz<br/>zzzz                       | Timezone name                                                                        | BOT or CEST, Bolivian Time or Central European Summer Time |
-| Z, ZZ, ZZZ<br/>ZZZZ<br/>ZZZZZ             | Timezone offset                                                                      | -0400 or +0200<br/>GMT-04:00 or GMT+02:00<br/>-04:00 or +02:00|                                           |                                                                                      |                                                            |
+| Symbol                                       | Meaning                                                                              | Example                                                    |
+|----------------------------------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------|
+| y<br/>yy<br/>yyyy<br/>yyyyy [*]              | year, it can also work with `Y`                                                      | 2022<br/>22<br/>2022<br/>02022                             |
+| M<br/>MM<br/>MMM<br/>MMMM<br/>MMMMM[*]       | month, it does not work with `m` as it's minute                                      | 6<br/>06<br/>Jun<br/>June<br/>J                            |
+| d or dd                                      | day of the month, it does not work with `D` as it represents<br/>the day of the year | 15                                                         |
+| e<br/>ee<br/>eee<br/>eeee<br/>eeeee [*]      | day of the week, it also works with `E`                                              | 3<br/>03<br/>Wed<br/>Wednesday<br/>W                       |
+| h<br/>hh                                     | hour of the day, it also works with `H`                                              | 5<br/>05                                                   |
+| m<br/>mm                                     | minute, it does not work with `M` as it's month                                      | 1<br/>01                                                   |
+| s<br/>ss<br/>S<br/>SS<br/>SSS<br/>SSSS...[*] | `S` means fraction of second, whereas `s` is the second of the minute                | 1<br/>01<br/>1<br/>01<br/>013<br/>0135                     |
+| a                                            | after meridian or past meridian                                                      | AM or PM                                                   |
+| z, zz, zzz<br/>zzzz                          | Timezone name                                                                        | BOT or CEST, Bolivian Time or Central European Summer Time |
+| Z, ZZ, ZZZ<br/>ZZZZ<br/>ZZZZZ[*]             | Timezone offset                                                                      | -0400 or +0200<br/>GMT-04:00 or GMT+02:00<br/>-04:00 or +02:00|                                           |                                                                                      |                                                            |
 for the exhaustive list, refer to the `DateTimeFormatter`'s javaDoc
+
+[*] Having a pattern more than 5 times leads to an exception
 - `DateTimeFormatter` contains 4 `FormatStyles`:
   given
 
@@ -931,3 +933,30 @@ try (autocleable){
 }
 ```
 Mind that variables used by the try-with-resources block **must be effectively final**.
+
+### Static members inheritance
+Although static members are actually hidden, there's a special case wherein classes can use a static method "as if they
+were inherited" without requiring its declaring class:
+```java
+abstract class Parent {
+    public static final String ID = "id";
+    public static void foo() {...}
+}
+
+interface Inter {
+  String ID = "id";
+  public static void foo() {...}
+}
+
+class Child extends Parent implements Inter {
+
+  public static void main(String[] args) {
+    foo(); // This will call the method from the abstract class.
+    doSomething(ID); // This is also valid and will reference the ID from the Parent class
+    // To call the static method or reference the ID from the interface, we need to explicitly preceed the member by Inter
+  }
+  
+  // Mind that overriding the method would not compile
+}
+
+```
