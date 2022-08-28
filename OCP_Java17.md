@@ -111,7 +111,7 @@ ZonedDateTime.of(LocalDateTime.parse("2022-03-27T01:30:00"), ZoneId.of("CET"))
 
 | Symbol                                       | Meaning                                                                              | Example                                                    |
 |----------------------------------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------|
-| y<br/>yy<br/>yyyy<br/>yyyyy [*]              | year, it can also work with `Y`                                                      | 2022<br/>22<br/>2022<br/>02022                             |
+| y<br/>yy<br/>yyyy<br/>yyyyy [*]              | year, don't confuse with `Y` which represents week of the year                       | 2022<br/>22<br/>2022<br/>02022                             |
 | M<br/>MM<br/>MMM<br/>MMMM<br/>MMMMM[*]       | month, it does not work with `m` as it's minute                                      | 6<br/>06<br/>Jun<br/>June<br/>J                            |
 | d or dd                                      | day of the month, it does not work with `D` as it represents<br/>the day of the year | 15                                                         |
 | e<br/>ee<br/>eee<br/>eeee<br/>eeeee [*]      | day of the week, it also works with `E`                                              | 3<br/>03<br/>Wed<br/>Wednesday<br/>W                       |
@@ -767,6 +767,16 @@ try (final var ps = conn.prepareStatement(sql);
       System.out.println(rs.getInt("count"));
    }
 }
+```
+ℹ️ If for whatever reason we need to pass a literal to a query `"select * from user where type = '" + type + "'";`, in order
+to avoid SQL injection, it's recommended to leverage Statement's `enquoteLiteral` method:
+```java
+var query = "select * from user where type = " + stmt.enquoteLiteral(type) + ";";
+```
+Now, if we want to apply exact match (e.g. table user and not USER nor User), we can also leverage Statement's `enquoteIdentifier`
+method:
+```java
+var query = "select * from " + stmt.enquoteIdentifier("user") + " where type = " + stmt.enquoteLiteral(type) + ";";
 ```
 #### Commit and rollback
 By default, transactions are set to autocommit, meaning that once the Statement implementation is run, changes (if applied)
