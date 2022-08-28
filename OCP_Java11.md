@@ -73,7 +73,7 @@ public static void main (String...args) {
     new StringJoiner(",")
         .add(child.name)
         .add(child.constant)
-        .add(child.getName()); // will contain "parent, 123, child"
+        .add(child.getName()); // will contain "child, 456, child"
 }
 ```
 ### Java Collections Framework types

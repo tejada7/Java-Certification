@@ -22,7 +22,7 @@ class Super {
     static String id = "Super"; // This member could also be a constant
 }
 
-class Child {
+class Child {   
   static {
       System.out.printf("Static initializer block...%n");
   }
@@ -30,7 +30,7 @@ class Child {
 
 public class Test {
     public static void main(String...args) {
-      System.out.print(Sub.id);  // It'll only print "Super"
+      System.out.print(Super.id);  // It'll only print "Super"
     }
 }
 ```
@@ -382,7 +382,7 @@ original.tryAdvance(System.out::print); // 3, then the original spliterator will
 original.forEachRemaining(System.out::print); // 45
 original.tryAdvance(System.out::print); // Does not print anything and returns false
         
-original.trySplit(); // ret// urn null as no elements are present anymore.
+original.trySplit(); // return null as no elements are present anymore.
 ```
 
 Turning a stream or collection into a Spliterator:
@@ -401,7 +401,7 @@ In that situation, the method getExactSizeIfKnown() will return -1 and estimated
 
 ### Sequential vs Parallel vs Ordered vs Unordered streams
 - Sequential streams run on a single thread (N.B. they aren't necessarily ordered)
-- Some operations (intermediary specially) of parallel stream run on multiple threads to improve performance
+- Some operations (intermediary especially) of parallel stream run on multiple threads to improve performance
 - Encounter order dictates whether a stream is considered to be ordered or not, this is defined by source or intermediady
 operatios (depending on the collection implementation, if it's an array or list, then the strean will be orderedm whereas
 for a treeset, it'll be the contrary). The only way to order streams is by calling the `sort()` method
@@ -427,6 +427,21 @@ final var pairAndOddNumbers = Stream.of(1, 2, 3, 4, 5)
                                 Pair::of));
 System.out.println(pairAndOddNumbers); // (2, 3)
 ```
+### Using Object(){} inside lambdas
+To avoid creating custom value objects, there is a useful technique that consists to create an anonymous object with 
+with custom instance fields:
+```java
+Map<Integer, String> aMap = someMap();
+aMap.entrySet()
+.map(entry -> new Object() {
+    final int id = entry.getKey();
+    final String name = entry.getValue();
+})
+.forEach(tuple -> {
+    System.out.println(tuple.id); // Note that the variable tuple recognizes the id defined in the .map(...) operation
+});
+```
+
 ### Using Unary operator with pre-increment
 Given:
 ```java
