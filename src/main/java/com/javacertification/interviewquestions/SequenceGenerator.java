@@ -1,5 +1,7 @@
 package com.javacertification.interviewquestions;
 
+import java.math.BigInteger;
+
 /**
  * Util containing mathematical generations.
  */
@@ -45,5 +47,25 @@ public class SequenceGenerator {
             c3 = c + c1;
         }
         return c3;
+    }
+
+    /**
+     * Optimization of the {@link SequenceGenerator#recursiveFibonacci} implementation, inspired from the book Clean
+     * Craftmanship.
+     *
+     * @param n the nth element of the fibonacci series
+     * @return the element
+     */
+    public static BigInteger tailRecursiveFibonacci(final int n) {
+        if (n < 1) {
+            throw new IllegalArgumentException("The argument must be greater than 0");
+        }
+        return tailRecursive(BigInteger.ZERO, BigInteger.ONE, n);
+    }
+
+    private static BigInteger tailRecursive(final BigInteger prev, final BigInteger current, final int remainingIteration) {
+        return remainingIteration > 1
+                ? tailRecursive(current, current.add(prev), remainingIteration - 1)
+                : current;
     }
 }
