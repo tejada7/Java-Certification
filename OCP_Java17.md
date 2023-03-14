@@ -36,7 +36,7 @@ public class Test {
 ```
 
 ### New text block methods
-- `public String indent(int numberSpaces)` → adds/removes the same number of blank spaces of each line. **It's with
+- `public String indent(int numberSpaces)` → adds/removes the same number of blank spaces of each line. **It's worth
 noting that if absent, it'll add a new line (\n) to the end of the string.**
 - `public String stripIndent()` → It removes all incidental whitespace, but **does not add 
 a trailing line break if missing like the above method.**
@@ -983,5 +983,9 @@ class Child extends Parent implements Inter {
   
   // Mind that overriding the method would not compile
 }
-
 ```
+## String#strip vs String#trim
+`strip` is the _"Unicode-aware"_ version of `trim`.
+
+`trim` removes only characters <= `U+0020` (space); whereas `strip` removes all Unicode whitespace characters (but not 
+all control characters, such as `\0`)
