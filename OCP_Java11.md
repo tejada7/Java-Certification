@@ -640,3 +640,34 @@ It is the ability of a class to implement more than one interface.
 |`peekLast`|Reads an element from the tail of the `Queue`|
 |`push`|Appends an element to the front of the `Stack`|
 |`pop`|Removes an element from the head of the `Stack`|
+
+### Optional#or method
+In some situations, we're required to combine multiple optionals:
+```java
+
+sealed interface Entity {}
+record UserAccount() implements Entity {}
+record AdminAccount() implements Entity {}
+    
+interface UserRepository {
+    Optional<UserAccount> getById(UUID id);
+}
+
+interface AdminRepository {
+    Optional<AdminAccount> getById(UUID id);
+}
+
+record Service(
+        UserRepository userRepository,
+        AdminRepository adminRepository
+) {
+    public Entity resolveEntity(UUID id) {
+        return userRepository.getById(id)
+                .or(() -> adminRepository.getById(id))
+                .orElseThrow();
+    }    
+}
+```
+From where:
+
+`.or(() -> adminRepository.getById(id))` → gets called if and only if the former optional is not empty.
