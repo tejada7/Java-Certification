@@ -989,3 +989,29 @@ class Child extends Parent implements Inter {
 
 `trim` removes only characters <= `U+0020` (space); whereas `strip` removes all Unicode whitespace characters (but not 
 all control characters, such as `\0`)
+
+## Formattable interface
+
+Introduced in Java 5, it allows to perform a custom formatting of `%s` when an object (implementing `Formatable`) is 
+passed as argument to a `Formatter#format`:
+```java
+class Bear extends Animal implements Formattable {
+        @Override
+        public void formatTo(final Formatter formatter, final int flags, final int width, final int precision) {
+            formatter.format("Bear");
+        }
+}
+
+class Animal {
+    public String toString() {
+        return "%s".formatted(this); // → %s will be replaced by Bear 
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+      System.out.println(new Bear().toString()); // Will pring Bear
+    }
+}
+
+```
