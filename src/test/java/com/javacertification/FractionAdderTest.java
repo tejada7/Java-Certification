@@ -17,8 +17,8 @@ class FractionAdderTest {
 
         // When
         final var actual = Fraction.add()
-                .andThen(Fraction.simplify())
-                .apply(first, second);
+                                   .andThen(Fraction.simplify())
+                                   .apply(first, second);
 
         // Then
         final Fraction expected = Fraction.of(1, "1/4");

@@ -7,26 +7,29 @@
     <groupId>groupId</groupId>
     <artifactId>javacertification</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <junit-jupiter.version>5.9.3</junit-jupiter.version>
+    </properties>
 
     <dependencies>
         <!-- Junit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.4.0</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <!--Junit 4-->
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.4.0</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.4.0</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <!--AssertJ-->

@@ -39,21 +39,33 @@ public record Fraction(int integer, Decimal decimal) {
     private static int resolveCommonDenominator(final int denominator1, final int denominator2) {
         final var maxDenominator = Math.max(denominator1, denominator2);
         return maxDenominator % Math.min(denominator1, denominator2) == 0
-                ? maxDenominator
-                : denominator1 * denominator2;
+               ? maxDenominator
+               : denominator1 * denominator2;
     }
 
     public static UnaryOperator<Fraction> simplify() {
         return fraction -> {
             final var numerator = fraction.decimal().numerator();
             final var denominator = fraction.decimal().denominator();
-            final var maxMinPair = Pair.of(Math.max(numerator, denominator), Math.min(numerator, denominator));
+            if (numerator < denominator) {
+                final var greatestCommonDenominator = gcd(numerator, denominator);
+                return Fraction.of(0, (numerator / greatestCommonDenominator)
+                                      + "/" + (denominator / greatestCommonDenominator));
+            }
+            final var maxMinPair = Pair.of(numerator, denominator);
             final var quotient = maxMinPair.getLeft() / maxMinPair.getRight();
             final var remainder = maxMinPair.getLeft() % maxMinPair.getRight();
             return quotient >= 1
-                    ? new Fraction(fraction.integer() + quotient, new Decimal(remainder, denominator))
-                    : fraction;
+                   ? new Fraction(fraction.integer() + quotient, new Decimal(remainder / gcd(remainder, denominator),
+                    denominator / gcd(remainder, denominator)))
+                   : fraction;
         };
+    }
+
+    public static int gcd(int a, int b) {
+        return b == 0
+               ? a
+               : gcd(b, a % b);
     }
 
     public record Decimal(int numerator, int denominator) {
