@@ -912,11 +912,11 @@ System.out.println(set.pollLast()); // returns cc from the set and removes it fr
 Methods returning a collection throw an `IllegalArgumentException` if keys are out of range (e.g. adding `c` to the subset of `aa`).
 Note that the same methods are available for `NavigbleMap` interface, and therefore its implementations.
 
-### Hiding method interfaces with private methods
+### Hiding method interfaces
 Oftentimes, we're faced with situations when we don't necessarily require to implement all methods exposed by an interface
 (c.f. interface segregation principle from SOLID principles).
-There is a technique seldom used that consists in leveraging interface's private methods, let's portray this intent with
-a real example, in the context of a repository interface that allows operations on the persistence layer:
+There is a technique rarely used to tackle this requirement, it's about using an encapsulated version of the
+original interface. Let's consider the below example:
 ```java
 interface Repository<T, ID> { // Mind the access level
     T save(T entity);
@@ -928,16 +928,29 @@ interface Repository<T, ID> { // Mind the access level
     void deleteAll(); // ⚠ dangerous method
 }
 ```
-The idea is to keep the interface in a package and create a new one that does implement the dangerous method in a 
-private method:
+We can create another interface (mind that this one will be exposed) containing only the methods we want to expose: 
 ```java
-public interface SafeRepository<T, ID> extends Repository<T, ID> {
-    private void deleteAll() {
-        // Do nothing, the method is not allowed to be called.
-    }
+public interface EncapsulatedRepository<T, ID> { // Mind the access level
+    T save(T entity);
+    
+    Optional<T> get(ID id);
+  
+    List<T> findAll();
+    
+    // 😄 no dangerous method exposed
 }
 ```
-Therefore, the client won't ever see this dangerous method while trying to use or implement the SafeRepository interface.
+So that the original interface can extend the encapsulated one:
+```java
+interface Repository<T, ID> extends EncapsulatedRepository<T, ID>{
+  ...
+}
+```
+As a matter of fact, the client will use the `EncapsulatedRepository` which has no dangerous method whatsoever.
+I created a working example for a Spring Data Jdbc's interface, available [here](https://github.com/tejada7/spring-certification/commit/f5d823c597cc2dee12bfc5e16461c8a4eb0204e1).
+
+I found an alternative technique that consists in using an inner interface implementation and composition, article 
+available [here](https://www.javaspecialists.eu/archive/Issue225-Hiding-Interface-Methods.html).
 
 ### Try with resources
 Introduced in Java 7, they'are meant automatically close any object implementing `Autocloseable` (including `Closeable` from
