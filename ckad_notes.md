@@ -98,3 +98,34 @@ end
 - **Metadata** → contains higher-level information about the object, such as label and name
 - **Spec** → defines the desired state after the object has been created 
 - **Status** → describes the actual state of the object. If no status is set, its value is `{}`
+
+## kubectl 
+
+```shell
+kubectl [command] [type] [name] [flags]
+          get       po    app   -o yaml
+          run            myPod  --image=nginx --port=80
+```
+
+### Updating objects
+```shell
+kubectl edit po myPod
+kubectl patch po myPod -p '{"spec":{"containers":[{"name":"myPod", "image":"nginx:1.25"}]}}'
+kubectl delete po myPod --now # forces deletion disabling graceful deletion  
+```
+
+### Creating objects
+```shell
+kubectl apply -f deployment.yaml # creates an object from a manifest file
+kubectl apply -f /creation # creates object(s) from a directory containing manifest files
+kubectl apply -f /root -R  # creates object(s) from a directory containing manifest files recursively
+kubectl apply -f https://raw.githubusercontent.com/tejada7/deployment.yaml # creates an object from a URL 
+```
+
+### Hybrid approach
+```shell
+kubectl run myPod --image=nginx \
+ --port=80 \
+ -o yaml \
+ --dry-run=client > pod.yaml
+```
