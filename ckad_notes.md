@@ -104,14 +104,14 @@ end
 ```shell
 kubectl [command] [type] [name] [flags]
           get       po    app   -o yaml
-          run            myPod  --image=nginx --port=80
+          run            my_pod  --image=nginx --port=80
 ```
 
 ### Updating objects
 ```shell
-kubectl edit po myPod
-kubectl patch po myPod -p '{"spec":{"containers":[{"name":"myPod", "image":"nginx:1.25"}]}}'
-kubectl delete po myPod --now # forces deletion disabling graceful deletion  
+kubectl edit po my_pod
+kubectl patch po my_pod -p '{"spec":{"containers":[{"name":"my_pod", "image":"nginx:1.25"}]}}'
+kubectl delete po my_pod --now # forces deletion disabling graceful deletion  
 ```
 
 ### Creating objects
@@ -124,8 +124,140 @@ kubectl apply -f https://raw.githubusercontent.com/tejada7/deployment.yaml # cre
 
 ### Hybrid approach
 ```shell
-kubectl run myPod --image=nginx \
+kubectl run my_pod --image=nginx \
  --port=80 \
  -o yaml \
  --dry-run=client > pod.yaml
 ```
+
+### Getting container runtime
+```shell
+kubectl get nodes -o wide
+```
+### Pod life cycle phases
+
+```mermaid
+flowchart TD
+;
+        Pending --> Running --> Succeeded
+        Running --> Failed
+        Unknown
+```
+- **Pending** → the pod has been accepted by the Kubernetes cluster, but containers aren't being created
+- **Running** → at least one container is running, or is starting or restarting 
+- **Succeeded** → all containers in the pod terminated successfully
+- **Failed** → at least one pod failed with an error 
+- **Unknown** → the state of the pod could not be obtained 
+
+ℹ️ Pod's default restart policy (i.e. `spec.template.spec.restartPolicy`) is `Always`, which tells Kubernetes scheduler 
+to *always* restart the pod even if the container exits.   
+### Pod details
+```shell
+kubectl describe po my_pod
+kubectl get po my_pod
+kubectl get po my_pod -o wide
+kubectl get po my_pod -o yaml
+```
+
+### Accessing logs
+```shell
+kubectl logs my_pod
+kubectl logs my_pod -f # follow logs in real time
+kubectl logs my_pod --previous # logs of the previous run
+```
+
+### Executing commands in containers
+```shell
+kubectl exec -it my_pod -- /bin/sh
+kubectl exec -it my_pod -- bash
+kubectl exec my_pod -- env
+```
+
+ℹ️ `--` separates the `exec` command and its options from the command to be run inside the container 
+
+### Requesting an IP within a pod
+```shell
+# instead of wget, we could also use curl
+kubectl run busybox --image=busybox --rm -it --restart=Never -- wget xxx.xxx.xxx.xxx:80 
+```
+
+These are equivalent:
+```mermaid
+flowchart TD
+;
+    subgraph frame[ ]
+        direction LR
+        subgraph example1[ ]
+            description1[
+            apiVersion: v1
+            kind: Pod
+            metadata:
+            #nbsp; #nbsp; name: my_pod
+            spec:
+            #nbsp; #nbsp; containers:
+            #nbsp; #nbsp; - args:
+            #nbsp; #nbsp; #nbsp; #nbsp; - /bin/sh
+            #nbsp; #nbsp; #nbsp; #nbsp; - -c
+            #nbsp; #nbsp; #nbsp; #nbsp; - while true; do date; sleep 10; done
+            #nbsp; #nbsp; image: busybox:1.36.1
+            #nbsp; #nbsp; name: my_pod]
+        end
+        example1:::color
+        description1:::alignLeft
+        subgraph example2[ ]
+            description2[
+            api_version: v1
+            kind: Pod 
+            metadata:
+            #nbsp; #nbsp; name: my_pod
+            spec:
+            #nbsp; #nbsp; containers:
+            #nbsp; #nbsp; - command: #91;#34;/bin/sh#34;#93;
+            #nbsp; #nbsp; #nbsp; args: #91;#34;-c#34;, #34;while true; do date; sleep 10; done#34;#93;
+            #nbsp; #nbsp; #nbsp; image: busybox:1.36.1
+            #nbsp; #nbsp; #nbsp; name: my_pod]:::yamlText
+        end
+        example2:::color
+        example1 --> example2
+        classDef color fill:#08421b;
+        classDef yamlText text-align-last: left, text-align: justify, text-justify: distribute;
+        classDef alignLeft text-align: left;
+end
+```
+
+### Namespaces
+```shell
+kubectl config set-context --current --namespace=nsName
+```
+
+### Jobs and Cronjobs
+ℹ️ There is a way to auto-cleanup for jobs by specifying the attribute `spec.ttlSecondsAfterFinished`
+
+ℹ️ Jobs operate in three modes:
+- non-parallel with one completion count (default)
+- parallel with a fixed completion count
+- parallel with worker queue
+
+ℹ️ The attribute `spec.completions` controls the number of required successful completions, whereas the attribute 
+`spec.parallelism` allows execution in parallel 
+
+#### Creation
+```shell
+kubectl create job counter --image=nginx -- /bin/sh 
+-c 'counter=0; while [$counter -lt 3 ]; do counter=$((counter+1)); echo "$counter"; sleep 3; done;'
+```
+
+```shell
+kubectl create cronjob now --schedule="* * * * *" --image=nginx -- /bin/sh 
+-c 'echo "Current date: $(date)"'
+```
+
+#### Getting number of completions
+```shell
+kubectl get jobs counter -o yaml | grep -C 1 "completions"
+```
+#### Restart behavior
+ℹ️ The `spec.backoffLimit` attribute determines the number of retries a Job tries to successfully complete (i.e. exit 
+code = 0). It's defaulted to **6**
+
+ℹ️ The restart policy of a Job can be either `OnFailure` or `Never`
