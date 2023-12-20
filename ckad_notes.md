@@ -112,6 +112,11 @@ kubectl [command] [type] [name] [flags]
           run            my_pod  --image=nginx --port=80
 ```
 
+```shell
+kubectl api-resources # find all available commands with their abbreviations
+kubectl config view 
+```
+
 ### Updating objects
 
 ```shell
@@ -135,7 +140,8 @@ kubectl apply -f https://raw.githubusercontent.com/tejada7/deployment.yaml # cre
 kubectl run my_pod --image=nginx \
  --port=80 \
  -o yaml \
- --dry-run=client > pod.yaml
+ --dry-run=client > pod.yaml # mind that --dry-run without any value is deprecated
+ --labels=app=backend,env=dev
 ```
 
 ### Getting container runtime
@@ -168,6 +174,7 @@ to *always* restart the pod even if the container exits.
 ```shell
 kubectl describe po my_pod
 kubectl get po my_pod
+kubectl get po --show-labels
 kubectl get po my_pod -o wide
 kubectl get po my_pod -o yaml
 ```
@@ -178,6 +185,7 @@ kubectl get po my_pod -o yaml
 kubectl logs my_pod
 kubectl logs my_pod -f # follow logs in real time
 kubectl logs my_pod --previous # logs of the previous run
+kubectl logs my_pod -c container1 # logs of the container 1 in case of many within the Pod
 ```
 
 ### Executing commands in containers
@@ -382,3 +390,34 @@ spec:
       - mountPath: "/tmp/data"
         name: pod-storage
 ```
+### Multi-container pods
+- **sidecar** → a container that enhances the primary application, for example logging 
+- **ambassador** → a container that represents the primary container to the outside world, such as a proxy
+- **adapter** → used to adopt the traffic or data pattern to match the traffic 
+
+### Labels, selectors and annotations
+```shell
+kubectl describe describe pod labeled-pod  | grep -C 2 Labels:
+kubectl get pods --show-labels
+kubectl label pod labeled-pod region=bo # to add a label region to the existing pod
+kubectl label pod labeled-pod region=eu --overwrite # overrides an existing label
+kubectl label pod labeled-pod region- # removes the label region
+kubectl get po -l key=value --show-labels # retrieve the pods with the label key=value, or --selector instead of -l
+kubectl get po --selector 'key in (value1, value2)' # retrieve those pods whose key value is either value1 or value2 
+```
+Unlike labels (i.e. `metadata.labels`), annotations (i.e. `metadata.annotations`) cannot be added via `kubectl run 
+--label=...`; however, what can be done is modification:
+```shell
+kubectl annotate pod my-pod key='value'
+kubectl annotate pod my-pod key='value1' --overwrite
+kubectl annotate pod my-pod key-
+```
+### Pod security standards
+
+Configurable via the `pod-security.kubernetes.io/enforce: "baseline"`annotation 
+
+| Profile     | Description                 |
+|-------------|-----------------------------|
+| Privileged  | Unrestricted policy         |
+| Baseline    | Minimally restricted policy |
+| Restrictive | Heavily restricted policy   |
