@@ -421,3 +421,54 @@ Configurable via the `pod-security.kubernetes.io/enforce: "baseline"`annotation
 | Privileged  | Unrestricted policy         |
 | Baseline    | Minimally restricted policy |
 | Restrictive | Heavily restricted policy   |
+
+### Deployments
+When creating a deployment imperatively (i.e. `kubectl create deploy deploy-name ...`), `app` is the label key used by
+the deployment to identify the related replicas and pods. It can be find in three different sections of the manifest:
+- `metadata.labels`
+- `spec.selector.matchLabels`
+- `spec.template.metadata.labels`
+
+ℹ️ For label selection to work properly, the last two of the above must match.
+
+#### Updating a deployment
+```shell
+kubectl edit deployment my-deployment
+kubectl set image deployment my-deployment container-name:new-image
+kubectl patch deployment my-deployment -p '{"spec": "template": {"spec": {"containers": [{"name": "nginx", "image":"newImage"}]}}}}'
+```
+
+ℹ️ The *rolling update strategy* consists in the deployment taking care of updating all replicas to the new version one at 
+a time.
+
+```shell
+kubectl rollout status deploy my-deployment # checks whether all the replicas were successfully rolled out
+kubectl rollout history deploy my-deployment # gets the history of rollouts in sequential order (i.e. revision 1 was before revision 2 and so on...)
+kubectl rollout history deploy my-deployment --revision 1 # gets the detailed description of the revision 1
+```
+
+#### Deployment strategy type
+
+| Type                    | Description                                                                            |
+|-------------------------|----------------------------------------------------------------------------------------|
+| RollingUpdate (default) | It means that two versions of the same application coexist during update process       |
+| Recreate                | Kills all pods first, then creates Pods with the newest version. ⚠️ Beware of downtime |
+
+#### Adding change cause for revision
+```shell
+kubectl annotate deployment my-deployment kubernetes.io/change-cause="reason for the rollout"
+```
+
+#### Rolling back to a previous revision
+```shell
+kubectl rollout undo deploy my-deployment --to-revision=1 # rolls back deployment to revision 1
+```
+
+### Scaling 
+```shell
+kubectl scale deploy my-deployment --replicas=3 # scales up the number of replicas to 3
+```
+#### Horizontal Pod auto scaler (HPA)
+```shell
+kubectl autoscale deploy my-deployment --cpu-percent=80 --min=3 --max=5
+```
