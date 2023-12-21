@@ -474,5 +474,19 @@ kubectl scale deploy my-deployment --replicas=3 # scales up the number of replic
 ```shell
 kubectl autoscale deploy my-deployment --cpu-percent=80 --min=3 --max=5
 ```
+### Helm
+It's a templating engine and package manager for Kubernetes. 
+Charts can be found at [https://artifacthub.io/](https://artifacthub.io/)
 
-#### Deployment strategies
+```shell
+helm repo add my-repo https://charts.my-repo.io # downloads the repo
+
+helm install foo foo/my-repo --version 1.0.0 # installs foo with version 1.0.0
+
+helm install foo foo/my-repo --version 1.0.0 --set spec.username=boss --set spec.password=password -n custom-ns --create-namespace # installs foo with version 1.0.0, overloading the properties username and password, as well as creating the namespace custom-ns 
+
+helm repo update
+helm upgrade foo foo/my-repo --version 2.0.0 # upgrades the chart to version 2.0.0
+
+helm uninstall foo # uninstalls the chart 
+``` 
