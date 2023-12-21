@@ -447,12 +447,14 @@ kubectl rollout history deploy my-deployment # gets the history of rollouts in s
 kubectl rollout history deploy my-deployment --revision 1 # gets the detailed description of the revision 1
 ```
 
-#### Deployment strategy type
+#### Deployment strategies
 
-| Type                    | Description                                                                            |
-|-------------------------|----------------------------------------------------------------------------------------|
-| RollingUpdate (default) | It means that two versions of the same application coexist during update process       |
-| Recreate                | Kills all pods first, then creates Pods with the newest version. ⚠️ Beware of downtime |
+| Type                               | Description                                                                                                                                                                                                                                                                                        |
+|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Ramped - `RollingUpdate` (default) | It means that two versions of the same application coexist during update process. In that sense, it's advisable to develop backward-compatible applications.                                                                                                                                       |
+| Fixed - `Recreate`                 | Kills all pods first, then creates Pods with the newest version. ⚠️ Beware of downtime                                                                                                                                                                                                             |
+| Blue-green aka red-back            | Two deployments in parallel: blue represents the old version, and green the new one, upon validation of the green version, the svc can now target the green deployment and hence scale down or delete the blue one. This strategy is convenient for complex upgrades without downtime to consumers |
+| Canary                             | Similar to the blue-green deployment in the sense that two deployments co-exist. The only difference is that the newer version is targeted to a subset of consumers. This is useful for experimental features                                                                                      |
 
 #### Adding change cause for revision
 ```shell
@@ -464,7 +466,7 @@ kubectl annotate deployment my-deployment kubernetes.io/change-cause="reason for
 kubectl rollout undo deploy my-deployment --to-revision=1 # rolls back deployment to revision 1
 ```
 
-### Scaling 
+#### Scaling 
 ```shell
 kubectl scale deploy my-deployment --replicas=3 # scales up the number of replicas to 3
 ```
@@ -472,3 +474,5 @@ kubectl scale deploy my-deployment --replicas=3 # scales up the number of replic
 ```shell
 kubectl autoscale deploy my-deployment --cpu-percent=80 --min=3 --max=5
 ```
+
+#### Deployment strategies
