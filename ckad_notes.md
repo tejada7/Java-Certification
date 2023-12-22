@@ -114,6 +114,7 @@ kubectl [command] [type] [name] [flags]
 
 ```shell
 kubectl api-resources # find all available commands with their abbreviations
+kubectl api-versions # list all api versions in the format group/version
 kubectl config view 
 ```
 
@@ -490,3 +491,39 @@ helm upgrade foo foo/my-repo --version 2.0.0 # upgrades the chart to version 2.0
 
 helm uninstall foo # uninstalls the chart 
 ``` 
+
+### Probes
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probes-pod
+spec:
+  containers:
+  - image: nginx
+    name: my-container
+    ports:
+    - name: web-port
+      containerPort: 80
+    args:
+      - /bin/sh
+      - -c
+      - 'while true; do touch /tmp/heartbeat.txt; sleep 5; done;'
+    startupProbe:
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 3
+      periodSeconds: 15
+    readinessProbe:
+      httpGet:
+        path: /
+        port: web-port # instead of using the port, we can reference the name
+      initialDelaySeconds: 2
+      periodSeconds: 8
+    livenessProbe:
+      exec:
+        command:
+          - test `find /tmp/heartbeat.txt -mmin -1`
+      initialDelaySeconds: 5
+      periodSeconds: 30
+```
