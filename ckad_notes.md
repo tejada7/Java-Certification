@@ -527,3 +527,22 @@ spec:
       initialDelaySeconds: 5
       periodSeconds: 30
 ```
+
+### How to restart a deployment
+```shell
+# Method 1
+kubectl rollout restart deploy my-deployment
+
+# Method 2
+kubectl scale rs my-rs --replicas=0 # scales down
+kubectl scale rs my-rs --replicas=4 # scales up
+
+# Method 3
+kubectl delete po pod-1 --now # deleting every single outdated instance of the pod to get restarted by the rs
+```
+
+### DNS
+```shell
+my-service.my-namespace.svc.cluster.local # automatically created
+service-name.namespace.service.domain
+```
