@@ -143,6 +143,7 @@ kubectl run my_pod --image=nginx \
  -o yaml \
  --dry-run=client > pod.yaml # mind that --dry-run without any value is deprecated
  --labels=app=backend,env=dev
+ -- "command" "arg1" "arg2" ...
 ```
 
 ### Getting container runtime
@@ -561,9 +562,9 @@ service-name.namespace.service.domain
 kubectl create svc <service type> my-service --tcp=<port>:<targetPort> # wherein service type can be clusterip, externalname, loadbalancer or nodeport 
 
 # Exposing a resource as service
-kubectl expose <object> my-service --port=80 --targetPort=3000 # wherein <object> can be po, deploy, rs
+kubectl expose <object> --name=my-service --port=80 --target-port=3000 [--type=NodePort] # wherein <object> can be po, deploy, rs
 
-# Creating a pod and exposing it
+# Creating a pod and exposing it as service
 kubectl run my-pod --image=<image> --restart=Never --port=80 --expose
 
 # Updating a ClusterIP to a NodePort
@@ -588,3 +589,28 @@ flowchart TD
     service --> Pod1
 
 ```
+### Some Docker useful commands
+```shell
+docker images # lists the available images
+
+docker container ls # lists the running containers (add -a to display all existing ones)
+
+docker build -t imageName:tag .
+
+docker run -p <host-port>:<container-port> imageName:tag -d  
+```
+
+The argument of the below dockerfile can be overriden by running `docker run my-image 10`
+```dockerfile
+FROM ubuntu
+
+ENTRYPOINT["sleep"]
+
+CMD["5"]
+```
+
+However, if we ever want to override the executable (i.e. `sleep`), then `docker run my-image --entrypoint cat /etc/*release*`
+
+The correspondence to a pod definition is:
+
+![img.png](docker_kube_entrypoint_cmd.png)
