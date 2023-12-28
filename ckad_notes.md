@@ -546,3 +546,45 @@ kubectl delete po pod-1 --now # deleting every single outdated instance of the p
 my-service.my-namespace.svc.cluster.local # automatically created
 service-name.namespace.service.domain
 ```
+
+### Services
+
+| Type         | Description                                                                                                                                                                                                                                                     |
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ClusterIP    | Service can only be reached by other applications within the cluster. The most common and default type.                                                                                                                                                         |
+| NodePort     | The Service is exposed as a static port on each Node in the cluster. Access from outside the cluster to the Service is via `<NodeIP>:<NodePort>`. Each NodePort is unique to the cluster at the default range 30000-32767. Accessible from outside the cluster. |
+| LoadBalancer | Connects an external load balancer from your cloud to the Service.                                                                                                                                                                                              |
+| ExternalName | Access for in-cluster applications to reach other services in a different namespace, a different cluster, or some application outside the clusters, such as a cloud service. Maps a service to a DNS name.                                                      |
+
+```shell
+# Creating a service independently from the object to expose
+kubectl create svc <service type> my-service --tcp=<port>:<targetPort> # wherein service type can be clusterip, externalname, loadbalancer or nodeport 
+
+# Exposing a resource as service
+kubectl expose <object> my-service --port=80 --targetPort=3000 # wherein <object> can be po, deploy, rs
+
+# Creating a pod and exposing it
+kubectl run my-pod --image=<image> --restart=Never --port=80 --expose
+
+# Updating a ClusterIP to a NodePort
+kubectl patch svc my-service -p='{"spec:": {"type": "NodePort"}}'
+```
+
+```mermaid
+flowchart TD
+;
+    top["Incoming traffic"] --> port 
+    subgraph port[3000 - port]
+        direction TB
+        service[service\n80 - targetPort]
+    end
+    subgraph Pod[80]
+        minipod[Pod]
+    end
+    service --> Pod[80]
+    subgraph Pod1[80 - container port]
+        minipod1[Pod]
+    end
+    service --> Pod1
+
+```
