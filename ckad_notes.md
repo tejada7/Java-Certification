@@ -637,3 +637,35 @@ spec:
               name: my-config-map
               key: PROPERTY_KEY
 ```
+
+### Secrets
+
+```shell
+kubectl create secret generic <secret-name> --from-literal=<key>=<value>
+kubectl create secret generic <secret-name> --from-file=<path-to-file>
+
+# to encode base 64
+echo -n 'secret' | base64
+echo -n 'bxosi==' | base64 --decode
+
+# to read a secret
+kubectl get secret <secret-name> --template={{data.SECRET_NAME}} | base64 -d
+```
+
+```yaml
+spec:
+  containers:
+    - name: my-container
+      image: image-name
+      ports:
+        - containerPort: 8080
+      env:
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: <secret-name>
+              key: PASSWORD
+      envFrom:
+        - secretRef:
+            name: <secret-name>
+```
