@@ -143,7 +143,7 @@ kubectl run my_pod --image=nginx \
  -o yaml \
  --dry-run=client > pod.yaml # mind that --dry-run without any value is deprecated
  --labels=app=backend,env=dev
- -- "command" "arg1" "arg2" ...
+ -- "arg1" "arg2" ... # or --command -- "command" "arg1" "arg2"
 ```
 
 ### Getting container runtime
@@ -614,3 +614,26 @@ However, if we ever want to override the executable (i.e. `sleep`), then `docker
 The correspondence to a pod definition is:
 
 ![img.png](docker_kube_entrypoint_cmd.png)
+
+### Config maps
+```shell
+kubectl create configmap my-config-map --from-literal=<key>=<value>
+kubectl create configmap my-config-map --from-file=<path-to-file>
+```
+
+```yaml
+spec:
+  containers:
+    - name: my-container
+      image: image-name
+      ports:
+        - containerPort: 8080
+      envFrom:
+        - configMapRef:
+            name: my-config-map # This is how we inject a cm to a pod
+        - name: MY_ENV_VAR
+          valueFrom:
+            configMapKeyRef:
+              name: my-config-map
+              key: PROPERTY_KEY
+```
