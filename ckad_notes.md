@@ -669,3 +669,16 @@ spec:
         - secretRef:
             name: <secret-name>
 ```
+
+### Security Context
+```yaml
+spec:
+  securityContext:
+    runAsUser: 1010
+  containers:
+  - image: ubuntu
+    name: web
+    securityContext:
+      capabilities:
+        add: ["SYS_TIME"] # This is only available at this level and not on spec.securityContext
+```
