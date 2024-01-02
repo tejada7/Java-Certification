@@ -45,10 +45,8 @@ flowchart TD
 - **Worker node** → executes workloads in containers within pods. Each work node must have a container runtime engine
   to be able to manage containers
     - **kubelet** → agent that makes sure that containers are running in a pod, in other words, it links Kubernetes to
-      the
-      container runtime engine by ensuring that containers are running healthy. It can also be present in the control
-      plane
-      node although inconventional
+      the container runtime engine by ensuring that containers are running healthy. It can also be present in the control
+      plane node although inconventional (due to the existence of a Taint on the master node `kubectl describe node kubemaster | grep Taint`)
     - **Kube proxy** → network proxy allowing network communication and keeping network rules. It also implements the
       svc
     - **Container runtime** → responsible for managing containers
@@ -682,3 +680,52 @@ spec:
       capabilities:
         add: ["SYS_TIME"] # This is only available at this level and not on spec.securityContext
 ```
+
+### Service accounts
+ℹ️ Every namespace has a service account, containing a secret token, from version 1.22 onwards, a token is not 
+automatically created upon service account creation and instead a TokenRequest API is recommended i.e. `kubectl create token`
+
+### Resource management
+ℹ️ When configuring the cpu, the measure can be as low as 1m (wherein m stands for milli), (or .01 equals to 100m).
+
+ℹ️ One count of cpu is equal to a core of cpu or vcpu, depending on the cloud provider.
+
+As per the memory, it's measured using Kibibytes:|   |   |
+
+| Measure | Total in bytes      |
+|---|---------------------|
+| 1G (Gigabyte)  | 1 000 000 000 bytes |
+| 1M (MegaByte)  | 1 000 000 bytes     |
+| 1K (Kilobyte)  | 1 000 bytes         |
+| 1Gi (Gibibyte) | 1 073 741 824 bytes |
+| 1Mi (Mebibyte) | 1 048 576 bytes     |
+| 1Ki (Kibibyte)  | 1 024 bytes         |
+
+ℹ️ If a Pod exceeds the max cpu allotted, it throttles, whereas, if it exceeds the maximum memory, it terminates with an OOM error.    
+
+ℹ️ By default, k8s does not set a resource limit, meaning that any Pod can consume as many resources as required within a 
+node and suffocate others Pods or processes running. 
+
+[This](https://hub.docker.com/r/polinux/stress-ng) is an awesome image used to test the resource limits.
+
+ℹ️ Taints are set on nodes, whereas tolerations on Pods.
+
+```shell
+kubectl taint nodes <node-name> key=value:taint-effect (NoSchedule | PreferNoSchedule | NoExecute)
+```
+
+```yaml
+...
+kind: Pod
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  tolerations:
+  - key: app
+    operator: "Equal"
+    value: "blue"
+    effect: "NoSchedule"
+```
+
+_Taints tell Nodes to accept Pods with certain tolerations._
