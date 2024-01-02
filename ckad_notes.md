@@ -393,7 +393,7 @@ spec:
 ### Multi-container pods
 - **sidecar** → a container that enhances the primary application, for example logging 
 - **ambassador** → a container that represents the primary container to the outside world, such as a proxy
-- **adapter** → used to adopt the traffic or data pattern to match the traffic 
+- **adapter** → used to adapt the traffic or data pattern to match the traffic 
 
 ### Labels, selectors and annotations
 ```shell
@@ -690,7 +690,7 @@ automatically created upon service account creation and instead a TokenRequest A
 
 ℹ️ One count of cpu is equal to a core of cpu or vcpu, depending on the cloud provider.
 
-As per the memory, it's measured using Kibibytes:|   |   |
+As per the memory, it's measured using Kibibytes:
 
 | Measure | Total in bytes      |
 |---|---------------------|
@@ -729,3 +729,34 @@ spec:
 ```
 
 _Taints tell Nodes to accept Pods with certain tolerations._
+
+### Node selectors and node affinity
+```shell
+kubectl label nodes <node-name> <key>=<label>
+```
+
+```yaml
+...
+kind: Pod
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: disktype
+            operator: In
+            values:
+            - ssd            
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+```
+### Monitoring
+
+```shell
+# displays the resource consumption
+kubectl top nodes
+kubectl top po
+```
