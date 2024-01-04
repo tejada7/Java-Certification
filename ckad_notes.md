@@ -453,7 +453,7 @@ kubectl rollout history deploy my-deployment --revision 1 # gets the detailed de
 |------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Ramped - `RollingUpdate` (default) | It means that two versions of the same application coexist during update process. In that sense, it's advisable to develop backward-compatible applications.                                                                                                                                       |
 | Fixed - `Recreate`                 | Kills all pods first, then creates Pods with the newest version. ⚠️ Beware of downtime                                                                                                                                                                                                             |
-| Blue-green aka red-back            | Two deployments in parallel: blue represents the old version, and green the new one, upon validation of the green version, the svc can now target the green deployment and hence scale down or delete the blue one. This strategy is convenient for complex upgrades without downtime to consumers |
+| Blue-green aka red-black           | Two deployments in parallel: blue represents the old version, and green the new one, upon validation of the green version, the svc can now target the green deployment and hence scale down or delete the blue one. This strategy is convenient for complex upgrades without downtime to consumers |
 | Canary                             | Similar to the blue-green deployment in the sense that two deployments co-exist. The only difference is that the newer version is targeted to a subset of consumers. This is useful for experimental features                                                                                      |
 
 #### Adding change cause for revision
@@ -465,6 +465,12 @@ kubectl annotate deployment my-deployment kubernetes.io/change-cause="reason for
 ```shell
 kubectl rollout undo deploy my-deployment --to-revision=1 # rolls back deployment to revision 1
 ```
+
+#### ⚠️ Deprecated - Recording the exact change rolling update
+```shell
+kubectl set image deploy nginx nginx=nginx:1.17 --record
+```
+
 
 #### Scaling 
 ```shell
@@ -573,7 +579,7 @@ kubectl patch svc my-service -p='{"spec:": {"type": "NodePort"}}'
 flowchart TD
 ;
     top["Incoming traffic"] --> port 
-    subgraph port[3000 - port]
+    subgraph port[3000 - node port]
         direction TB
         service[service\n80 - targetPort]
     end
@@ -587,6 +593,8 @@ flowchart TD
     service --> Pod1
 
 ```
+ℹ️ Mind that if not specified, target port with get the same value as port, whereas nodeport (in case of a svc of type=NodePort)
+will get a random IP from the range 3xxxx
 ### Some Docker useful commands
 ```shell
 docker images # lists the available images
@@ -759,4 +767,73 @@ spec:
 # displays the resource consumption
 kubectl top nodes
 kubectl top po
+```
+
+### Ingress
+```shell
+kubectl create ingress <ingress-name> --rule="host/path=service:port"
+
+# example
+k create ingress testingress --rule="/watch=video-service:8080" --rule="/wear=wear-service:8080" -n app-space
+```
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: my-ns
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: / # important to avoid forwarding the path to the Pod
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /path
+        backend:
+          serviceName: my-service
+          servicePort: 8080
+```
+#### Steps to setup nginx as ingress controller
+1. Create a ns called `ingress-nginx` to isolate the ingress objects → `kubectl create ns ingress-nginx`
+2. Create a cm called `ingress-nginx-controller` in the same ns → `kubectl create cm ingress-nginx-controller -n ingress-nginx`
+3. Create 2 sa → `kubectl create sa ingress-nginx -n ingress-nginx` && `kubectl create sa ingress-nginx-admission -n ingress-nginx`
+4. Setup Roles, RoleBindings, ClusterRoles, and ClusterRoleBindings for the ServiceAccount.
+
+### Network policies
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: internal-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      name: internal
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: external
+    ports:
+      - port: 8080
+        protocol: TCP
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          name: external
+    ports:
+    - port: 8080
+      protocol: TCP
+  - to:
+    - podSelector:
+        matchLabels:
+          name: mysql
+    ports:
+    - port: 3306
+      protocol: TCP
+  policyTypes:
+  - Ingress
+  - Egress
 ```
