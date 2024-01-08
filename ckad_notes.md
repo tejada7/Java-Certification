@@ -53,6 +53,7 @@ flowchart TD
 
 #### Objects
 
+ℹ️ Resources, objects or primitives in Kubernetes are either namespaced or cluster-scoped. `kubectl api-resources --namespaced=true`
 ```mermaid
 flowchart TD
 ;
@@ -299,6 +300,17 @@ code = 0). It's defaulted to **6**
   containers running within the same Pod. It gets cleaned up and reconstructed upon Pod restart
 - *Persistent volumes* preserve data beyond the lifespan of a Pod
 
+ℹ️ StorageClasses allow to automatically create pvs when using a cloud provider. It then can be referneced in the pvc definition. 
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+```
+
 #### Common volume types
 
 | Type                     | Description                                                                       |
@@ -495,6 +507,14 @@ helm repo update
 helm upgrade foo foo/my-repo --version 2.0.0 # upgrades the chart to version 2.0.0
 
 helm uninstall foo # uninstalls the chart 
+
+helm search hub <release-name> # searches for an available chart on the hub
+
+helm search repo <release-name> # searches for an available chart on the local repo
+
+helm pull --untar repo # downloads a repo locally
+
+helm install <release-name> . # installs it from a downloaded chart
 ``` 
 
 ### Probes
@@ -837,3 +857,34 @@ spec:
   - Ingress
   - Egress
 ```
+### Authorization
+##### Modes
+
+- Node → authorization within the cluster
+- ABAC (attribute-based access control) → a user with a set of permissions
+- RBAC (role-based access control) → a role defined to be assigned to a bunch of users
+- Webhook → 3rd party solutions
+
+ℹ️ Roles are named-spaced. 
+
+```shell
+kubectl auth can-i create deploy # to check whether the connected user is allowed to perform an action (create a deployment in this case)
+kubectl auth can-i delete pods --as dev-user # to check whether dev-user is allowed to perform an action
+```
+
+##### Creating roles
+```shell
+kubectl create role developer --namespace=default --verb=list,create,delete --resource=pods 
+```
+
+##### Creating role bindings
+```shell
+kubectl create rolebinding dev-user-binding --namespace=default --role=developer --user=dev-user
+```
+
+### Admission control
+There are multiple ways to strengthen security, one of which is admission control which for instance hinders resources 
+from being created on unknown namespaces by default.
+
+To set it up, we must refer to the kube-api-server pod definition wherein we must add the line `--enable-admission-plugins=NamespaceAutoProvision`
+in the command
