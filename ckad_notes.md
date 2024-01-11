@@ -167,7 +167,7 @@ flowchart TD
 - **Failed** → at least one pod failed with an error
 - **Unknown** → the state of the pod could not be obtained
 
-ℹ️ Pod's default restart policy (i.e. `spec.template.spec.restartPolicy`) is `Always`, which tells Kubernetes scheduler
+ℹ️ Pod's default restart policy (i.e. `spec.restartPolicy`) is `Always`, which tells Kubernetes scheduler
 to *always* restart the pod even if the container exits.
 
 ### Pod details
@@ -217,7 +217,7 @@ subgraph frame[ ]
         apiVersion: v1
         kind: Pod
         metadata:
-        #nbsp; #nbsp; name: my_pod
+        #nbsp; #nbsp; name: my-pod
         spec:
         #nbsp; #nbsp; containers:
         #nbsp; #nbsp; - args:
@@ -225,22 +225,22 @@ subgraph frame[ ]
         #nbsp; #nbsp; #nbsp; #nbsp; - -c
         #nbsp; #nbsp; #nbsp; #nbsp; - while true; do date; sleep 10; done
         #nbsp; #nbsp; image: busybox:1.36.1
-        #nbsp; #nbsp; name: my_pod"]
+        #nbsp; #nbsp; name: my-pod"]
     end
     example1:::color
     description1:::alignLeft
     subgraph example2[ ]
         description2["
-        api_version: v1
+        apiVersion: v1
         kind: Pod
         metadata:
-        #nbsp; #nbsp; name: my_pod
+        #nbsp; #nbsp; name: my-pod
         spec:
         #nbsp; #nbsp; containers:
         #nbsp; #nbsp; - command: #91;#34;/bin/sh#34;#93;
         #nbsp; #nbsp; #nbsp; args: #91;#34;-c#34;, #34;while true; do date; sleep 10; done#34;#93;
         #nbsp; #nbsp; #nbsp; image: busybox:1.36.1
-        #nbsp; #nbsp; #nbsp; name: my_pod"]:::yamlText
+        #nbsp; #nbsp; #nbsp; name: my-pod"]:::yamlText
     end
     example2:::color
     example1 --> example2
@@ -254,11 +254,13 @@ end
 
 ```shell
 kubectl config set-context --current --namespace=nsName
+
+kubectl config use-context <context-name> # to switch between contexts
 ```
 
 ### Jobs and Cronjobs
 
-ℹ️ There is a way to auto-cleanup for jobs by specifying the attribute `spec.ttlSecondsAfterFinished`
+ℹ️ There is a way to auto-cleanup jobs by specifying the attribute `spec.ttlSecondsAfterFinished`
 
 ℹ️ Jobs operate in three modes:
 
@@ -300,7 +302,7 @@ code = 0). It's defaulted to **6**
   containers running within the same Pod. It gets cleaned up and reconstructed upon Pod restart
 - *Persistent volumes* preserve data beyond the lifespan of a Pod
 
-ℹ️ StorageClasses allow to automatically create pvs when using a cloud provider. It then can be referneced in the pvc definition. 
+ℹ️ StorageClasses allow to automatically create pvs when using a cloud provider. It then can be referenced in the pvc definition. 
 ```yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -583,7 +585,8 @@ service-name.namespace.service.domain
 
 ```shell
 # Creating a service independently from the object to expose
-kubectl create svc <service type> my-service --tcp=<port>:<targetPort> # wherein service type can be clusterip, externalname, loadbalancer or nodeport 
+kubectl create svc [nodeport | clusterip | loadbalancer] my-service --tcp=<port>:<targetPort> # wherein service type can be clusterip, externalname, loadbalancer or nodeport 
+                    
 
 # Exposing a resource as service
 kubectl expose <object> --name=my-service --port=80 --target-port=3000 [--type=NodePort] # wherein <object> can be po, deploy, rs
