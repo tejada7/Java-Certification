@@ -694,6 +694,10 @@ spec:
             secretKeyRef:
               name: <secret-name>
               key: PASSWORD
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName # this is useful if we need to expose additional information from the existing manifest
       envFrom:
         - secretRef:
             name: <secret-name>
