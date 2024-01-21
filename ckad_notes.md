@@ -178,6 +178,9 @@ kubectl get po my_pod
 kubectl get po --show-labels
 kubectl get po my_pod -o wide
 kubectl get po my_pod -o yaml
+
+# custom output, allowing to get the pod name as well as its IP, ordered by ip
+kubectl get po -A -o custom-columns=POD_NAME:.metadata.name,IP_ADDR:.status.podIP --sort-by=.status.podIP
 ```
 
 ### Accessing logs
