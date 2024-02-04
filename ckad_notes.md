@@ -414,7 +414,7 @@ spec:
 
 ### Labels, selectors and annotations
 ```shell
-kubectl describe describe pod labeled-pod  | grep -C 2 Labels:
+kubectl describe pod labeled-pod  | grep -C 2 Labels:
 kubectl get pods --show-labels
 kubectl label pod labeled-pod region=bo # to add a label region to the existing pod
 kubectl label pod labeled-pod region=eu --overwrite # overrides an existing label
@@ -515,7 +515,7 @@ helm uninstall foo # uninstalls the chart
 
 helm search hub <release-name> # searches for an available chart on the hub
 
-helm search repo <release-name> # searches for an available chart on the local repo
+helm search repo <release-name> --versions # searches for an available chart on the local repo, listing all possible versions
 
 helm pull --untar repo # downloads a repo locally
 
