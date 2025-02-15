@@ -324,22 +324,22 @@ Most important implementations:
 
 - Reader: FileReader (mark not supported), StringReader (mark supported), CharArrayReader (mark supported)
 
-|Class Name|Parent Class|Low/High Level|Description|
-|---|---|---|---|
-|`FileInputStream`|`InputStream`|Low|Reads file data as bytes.|
-|`FileOutputStream`|`OutputStream`|Low|Writes file data as bytes.|
-|`FileReader`|`InputStreamReader <-- Reader`|Low|Reads file data as characters.|
-|`FileWriter`|`OutputStreamWriter <-- Writer`|Low|Writes file data as characters.|
-|`InputStreamReader`|`Reader`|High|It reads bytes and decodes them into characters.|
-|`OutputStreamWriter`|`Writer`|High|Characters written to it are encoded into bytes.|
-|`BufferedInputStream`|`FilterInputStream <-- InputStream`|High|Reads byte data from an existing InputStream in a buffered manner, which improves efficiency and performance.|
-|`BufferedOutputStream`|`FilterOutputStream <-- OutputStream`|High|Writes byte data to an existing OutputStream in a buffered manner, which improves efficiency and performance.|
-|`BufferedReader`|`Reader`|High|Reads character data from an existing Reader in a buffered manner, which improves efficiency and performance.|
-|`BufferedWriter`|`Writer`|High|Writes character data to an existing Writer in a buffered manner, which improves efficiency and performance.|
-|`ObjectInputStream`|`InputStream`|High|Deserializes primitive Java data types and graphs of Java objects from an existing InputStream.|
-|`ObjectOutputStream`|`OutputStream`|High|Serializes primitive Java data types and graphs of Java objects to an existing OutputStream.|
-|`PrintStream`|`FilterOutputStream <-- OutputStream`|High|Writes formatted representations of Java objects to a binary stream.|
-|`PrintWriter`|`Writer`|High|Writes formatted representations of Java objects to a character stream.|
+|Class Name|Parent Class|Low/High Level| Description                                                                                                              |
+|---|---|---|--------------------------------------------------------------------------------------------------------------------------|
+|`FileInputStream`|`InputStream`|Low| Reads file data as bytes.                                                                                                |
+|`FileOutputStream`|`OutputStream`|Low| Writes file data as bytes.                                                                                               |
+|`FileReader`|`InputStreamReader <-- Reader`|Low| Reads file data as characters.                                                                                           |
+|`FileWriter`|`OutputStreamWriter <-- Writer`|Low| Writes file data as characters.                                                                                          |
+|`InputStreamReader`|`Reader`|High| It reads bytes and decodes them into characters.                                                                         |
+|`OutputStreamWriter`|`Writer`|High| Characters written to it are encoded into bytes.                                                                         |
+|`BufferedInputStream`|`FilterInputStream <-- InputStream`|High| Reads byte data from an existing InputStream in a buffered manner, which improves efficiency and performance.            |
+|`BufferedOutputStream`|`FilterOutputStream <-- OutputStream`|High| Writes byte data to an existing OutputStream in a buffered manner, which improves efficiency and performance.            |
+|`BufferedReader`|`Reader`|High| Reads character data from an existing Reader in a buffered manner, which improves efficiency and performance.            |
+|`BufferedWriter`|`Writer`|High| Writes character data to an existing Writer in a buffered manner, which improves efficiency and performance.             |
+|`ObjectInputStream`|`InputStream`|High| Deserializes primitive Java data types and graphs of Java objects from an existing InputStream.                          |
+|`ObjectOutputStream`|`OutputStream`|High| Serializes primitive Java data types and graphs of Java objects to an existing OutputStream.                             |
+|`PrintStream`|`FilterOutputStream <-- OutputStream`|High| Writes formatted representations of Java objects to a binary stream. Mind that its methods **do not throw IOException**. |
+|`PrintWriter`|`Writer`|High| Writes formatted representations of Java objects to a character stream.                                                  |
 From which, a _low-level_ stream connects directly with the source of the data, such as a file, an array, or a String; whereas a _high-level_ stream is built on top of another stream using wrapping. Wrapping is the process by which an instance is passed to the constructor of another class, and operations on the resulting instance are filtered and applied to the original instance.
 
 The below table compares the legacy `java.io.File` vs. the `NIO.2` methods:
@@ -567,17 +567,23 @@ jlink -p mods --add-modules <module-name> --output <destination-folder-of-runtim
 ```
 ### Serialization
 The class must implement the `Serializable` interface. Unless explicitly provided, the compiler will automatically generate 
-the constant serialVersionUID, its value is computed based on the attributes of the class.
+the constant `serialVersionUID`, its value is computed based on the attributes of the class.
 
-ℹ️ To check the value generated by the compiler, we can run:
-```shell
-serialver fullyQualifiedJavaClassName
-```
+> [!IMPORTANT]  
+> `serialVersionUid` constant is useful to historize the object serialized versions, it's generated based on the fields and implemented interfaces. 
+
+> [!NOTE]
+> To check the value generated by the compiler, we can run:
+> - using JDK's `serialver fullyQualifiedJavaClassName`, example: `serialver -classpath classes/ com.ftm...ClassName`, or
+> - `ObjectInputStream#readClassDescriptor()` method as in new `ObjectInputStream(new FileInputStream(foo.bin)).readClassDescriptor()`
+
+
 ### Deserialization
 When deserializing an object, the constructor of the serialized class, along with any instance initializers, is not
 called when the object is created. Java will however call the no-arg constructor of the first nonserializable **parent
 class** it can find in the class hierarchy.
-Any static or transient fields are ignored. Values that are not provided will be given their default Java value, such as null for String, or 0 for int values. 
+Any static or transient fields are ignored. Values that are not provided will be given their default Java value, such as null for String, or 0 for int values.
+
 ### Concurrency
 * **Liveness** - Ability of an application to be able to execute in a timely manner. Liveness problems, then, are those
 in which the application becomes unresponsive or in some kind of "stuck" state.
