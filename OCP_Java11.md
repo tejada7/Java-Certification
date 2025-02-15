@@ -220,6 +220,16 @@ being modified. Besides, this method allows null elements.
  
         List.of("h", "o", "l", "a").stream().parallel().collect(TreeSet::new, Set::add, Set::addAll); // Set<h,o,l,a>
     ```
+
+> [!IMPORTANT]  
+> `short-circuiting stateful intermediate operations` are methods that given an **infinite input** (e.g. `Stream.generate(...)`, may terminate in **finite time**. Some examples:
+> - `allMatch(Predicate)`
+> - `anyMatch(Predicate)`
+> - `noneMatch(Predicate)`
+> - `takeWhile(Predicate)`
+> - `findAny()`
+> - `findFirst()`
+
 ### IO
 In Java, although the file separator / can be used in both Unix-based and Microsoft Windows operating systems, it is recommended to use either:
 ```java
