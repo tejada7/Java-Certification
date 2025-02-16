@@ -594,6 +594,9 @@ called when the object is created. Java will however call the no-arg constructor
 class** it can find in the class hierarchy.
 Any static or transient fields are ignored. Values that are not provided will be given their default Java value, such as null for String, or 0 for int values.
 
+> [!IMPORTANT]  
+> This rule does not apply to record, whose canonical constructor is always called during deserialization
+
 ### Concurrency
 * **Liveness** - Ability of an application to be able to execute in a timely manner. Liveness problems, then, are those
 in which the application becomes unresponsive or in some kind of "stuck" state.
