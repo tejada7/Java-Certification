@@ -456,11 +456,11 @@ Alternatively, we can restructure the program as:
 .
 └── src
     └── com.ocp.hello 
-        ├── module-info.java
-        └── com
-            └── ocp
-                └── hello
-                    └── Main.java
+                  ├── module-info.java
+                  └── com
+                      └── ocp
+                          └── hello
+                              └── Main.java
 ```
 And compile with:
 Compiling a module:
@@ -474,7 +474,7 @@ or
 java --module-path <module path> --module <module name>/<fully qualified class name>
 ```
 For **compiling** Java files using modules, the following command-line options are available:
-* `--module-source-path`: location of the modules sources files, it has to point to a parent directory where all
+* `--module-source-path`: location of the module(s) sources files, it has to point to a parent directory where all
 module-info files are stored, note that if we have module called foo, then a directory foo must be present in this
 parent directory (usually src). If more directories are available, then they can be separated with semicolon
 (--module-source-path src;src1).
@@ -484,8 +484,8 @@ For running the program the old way, the `-cp` option must point to the same fol
 * `--module or -m`: Use only with `--module-source-path`. It's useful to compile all classes in a module at once without
 listing them out. 
 * `--module-path or -p` (also used for running with java command): This option specifies the location(s) of any other
-module upon which the module to be compiled depends. You can specify the exploded module directories, directories
-containing modular jars, or specific modular jars here. e.g.
+module dependency. You can specify the exploded module directories, directories containing modular jars, or specific 
+modular jars here. e.g.
 If you want to compile module foo and it depends on another module named abc.util packaged as utils.jar located in
 thirdpartymodules directory then your module-path can be thirdpartymodules or thirdpartymodules/utils.jar.
 The following commands would equally work:
@@ -527,12 +527,12 @@ As a reminder on how to create a jar:
 ```shell
 jar -cvf <output directory>/<jar file>.jar <binaries directory>/ .
 ```
-If we need to define a Main class, then we must create a file .mf:
+If we need to define a Main class, then we must create a `.mf` file with the below content:
 ```text
 Manifest-Version: 1.0
 Main-Class: packageToMainClass.Main
 ```
-then while building the jar specify the above created file:
+then while building the jar reference the above-created file:
 ```shell
 jar cmf manifest-file.mf jar-file.jar input-files
 ```
