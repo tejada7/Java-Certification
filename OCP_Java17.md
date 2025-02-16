@@ -336,8 +336,8 @@ final int[] array = list.toArray(new Integer[list.size()]);
 // However, there is this good-looking option with method reference:
 final int[] array = list.toArray(Integer[]::new);
 ```
-#### Deque
-`java.util.ArrayDeque` is combination of stack and queue, the exhaustive list of methods can be found [here](OCP_Java11.md).
+#### Deque API reminder
+`java.util.ArrayDeque` is combination of stack and queue, the exhaustive list of methods can be found [here](OCP_Java11.md#deque).
 
 ```java
 add == addLast == offerLast == offer
@@ -347,13 +347,10 @@ getLast == peekLast == removeLast == pollLast
 ```
 Mind that there are some methods that remove and return the element such as remove and pop.
 
-### Generic limitations
-- We cannot invoke `new T[]` nor `new T()`
-- Generic variables cannot be superseded of static modifier (do not confuse with static generic methods)
-- No primitive support, except employing auto-boxing
-- Unsupported `instanceOf` as due to type erasure, all generics become `Object` at runtime
+### Records with generics
 
 It's possible to create records with generics, take a look at the following simplified Monad implementation:
+
 ```java
 record IdentityFunctor<T>(T value) {
         IdentityFunctor {
@@ -402,10 +399,10 @@ In that situation, the method getExactSizeIfKnown() will return -1 and estimated
 ### Sequential vs Parallel vs Ordered vs Unordered streams
 - Sequential streams run on a single thread (N.B. they aren't necessarily ordered)
 - Some operations (intermediary especially) of parallel stream run on multiple threads to improve performance
-- Encounter order dictates whether a stream is considered to be ordered or not, this is defined by source or intermediady
-operatios (depending on the collection implementation, if it's an array or list, then the strean will be orderedm whereas
-for a treeset, it'll be the contrary). The only way to order streams is by calling the `sort()` method
-- Related to the previous point, they depend on the source implementation, although for any stream it's possible to call
+- Encounter order dictates whether a stream is considered to be ordered or not, this is defined by the source or intermediate
+operations (depending on the collection implementation, if it's an array or list, then the stream will be ordered whereas
+for a TreeSet, it'll be the contrary). The only way to order streams is by calling the `sort()` method
+- As a side note to the above statement, they depend on the source implementation, although for any stream it's possible to call
 `unordered()` so that the stream becomes unordered, thus potential optimizations can be performed by the JVM
 
 More on this [here](http://enthuware.com/forum/viewtopic.php?f=2&t=6085&sid=7a3ad3af25e6a1e3d06e27d3ab6ba128).
@@ -481,7 +478,7 @@ e.g. `es_ES,` `en_US,` `fr_FR,` `es_BO`
 - [IETF languages tags](https://en.wikipedia.org/wiki/IETF_language_tag) are in the form `es-ES`, `en-US`, `fr-FR` and `es-BO` ⚠️ mind the `-` instead of `_`. 
 For Java to correctly load this kind of format, we have two options:
   - `var locale = Locale.forLanguageTag("en-US")`, → `locale.toString(); // en_US`
-  - `var locale = new Locale("en", "US");` → `locale.toString(); // en_US`
+  - `var locale = new Locale("en", "US");` → `locale.toString(); // en_US` ⚠️ deprecated in Java 19, instead favor `Locale.of("en", "US");`
   - To check whether a locale is valid: `asList(Locale.getAvailableLocales()).contains(locale)`
   - It's possible to set finer-grained control of the default locale by setting the `Locale#Category` (either `DISPLAY` 
 or `FORMAT`) by calling `Locale.setDefault(category, locale)`
@@ -596,7 +593,7 @@ The ultimate goal after the migration is to have all packages residing on the mo
 
 Recommended approach when we **don't have control of every jar** used by our applications (i.e. become automatic modules)
 The idea is to put all dependencies on the module path and make the highest-level dependency a named module, adding as 
-many `required` as needed in accordance to the default automatic modules' names.   
+many `requires` as needed in accordance to the default automatic modules' names.   
 
 Example:
 `A.jar` depends on `B.jar`, which likewise depends on `C.jar`, thus, 
@@ -795,21 +792,28 @@ try(final var connection = DriverManager.getConnection("url", "user", "password"
         }
 }
 ```
-### Exceptions
+## Exceptions
 There are two type of exceptions:
 - checked: All exceptions extending from Exception or Throwable → we are forced to handle them.
 - unchecked: All exceptions extending from RuntimeException or Error → we aren't forced to handle them.
 
-Checked exceptions are considered a [Java design flaw](https://phauer.com/2015/checked-exceptions-are-evil/), and the recommended
+Checked exceptions are debatable considered a [Java design flaw](https://phauer.com/2015/checked-exceptions-are-evil/), and the recommended
 approach is to create a runtime counterpart 
 (e.g. For `IOException`, there is a `UncheckedIOException` introduced in Java 8). There are nevertheless other elegant 
-techniques to handle exceptions such as [Vavr's Try, API.unchecked](https://docs.vavr.io) and [Jool's unchecked](https://www.jooq.org/products/jOOλ/javadoc/0.9.5/org/jooq/lambda/Unchecked.html). 
+techniques to handle exceptions such as [Vavr's Try, API.unchecked](https://docs.vavr.io), [Jool's unchecked](https://www.jooq.org/products/jOOλ/javadoc/0.9.5/org/jooq/lambda/Unchecked.html) or [Apache Commons' asRuntimeException](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/exception/ExceptionUtils.html#asRuntimeException(java.lang.Throwable)). 
 
-I'd rather rely on a more functional approach to declare a contract of return type `Either<Error, Success>`, but that's way out of the 
-scope of the present document.   
+Depending on the application requirements and error handling rules, there is a more-functional-friendly alternative 
+without *side-effects* that consists in declaring a contract of return type in the form`Either<Error, Success>`, but 
+that's way out of the scope of the present document and has pros and cons.
+
+> [!IMPORTANT]  
+> Be aware that using those jool, vavr or Apache Commons fancy tools to turn **checked into unchecked exceptions** behind a Cglib proxy as you might end up facing the obscure [UndeclaredThrowableException]([https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/UndeclaredThrowableException.html](https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/UndeclaredThrowableException.html)), I coded an example [here](https://gist.github.com/tejada7/995d89f999a18b60b86a46ea538b9011).  
+
 ### Pattern matching
-Pattern matching is a technique of controlling program flow that only executes a section of code that meets
+
+Pattern matching is a technique for controlling program flow that only executes a section of code that meets
 certain criteria. Moreover, it's used in conjunction with if statements for greater program control.
+
 ```java
 // Without pattern matching
 final Number number = someNumber();
@@ -1002,6 +1006,17 @@ class Child extends Parent implements Inter {
 
 `trim` removes only characters <= `U+0020` (space); whereas `strip` removes all Unicode whitespace characters (but not 
 all control characters, such as `\0`)
+
+## String's new transform method
+
+Now we can provide a `Function<? extends String, R>` to **map** a String into something else 🧐 curious to find out why 
+they decided to call it *transform* and not *map* as done in the Stream API), regardless below an example:
+
+```java
+String aString = "foo";
+Function<String, Integer> function = String::length; // mind that we can functions as parameters which is powerful
+int length = aString.transform(function); //
+```
 
 ## Formattable interface
 
