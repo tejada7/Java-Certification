@@ -301,16 +301,16 @@ Path.of(String first, String...more)
 Path.of(URI uri)
 ```
 
-|||
-|---|---|
-|`Path of(String, String…)`|`Path getParent()`|
-|`URI toURI()`|`Path getRoot()`|
-|`File toFile()`|`boolean isAbsolute()`|
-|`String toString()`|`Path toAbsolutePath()`|
-|`int getNameCount()`|`Path relativize()`|
-|`Path getName(int)`|`Path resolve(Path)`|
-|`Path subpath(int, int)`|`Path normalize()`|
-|`Path getFileName()`|`Path toRealPath(LinkOption…)`|
+|                                                                                                                                             |                               |
+|---------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|
+| `Path of(String, String…)`                                                                                                                  | `Path getParent()`            |
+| `URI toURI()`                                                                                                                               | `Path getRoot()`              |
+| `File toFile()`                                                                                                                             | `boolean isAbsolute()`        |
+| `String toString()`                                                                                                                         | `Path toAbsolutePath()`       |
+| `int getNameCount()`                                                                                                                        | `Path relativize()`           |
+| `Path getName(int)` <br/> → indices start from 0, <br/> → root excluded from the path (e.g. `c:\` or `/`),<br/> → invalid paths throw an exception |`Path resolve(Path)`|
+| `Path subpath(int, int)`                                                                                                                    | `Path normalize()`            |
+| `Path getFileName()`                                                                                                                        | `Path toRealPath(LinkOption…)` |
 
 ##### Paths factory class
 ```java
