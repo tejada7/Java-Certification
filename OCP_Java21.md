@@ -2,7 +2,9 @@
 
 ### Java basic reminders
 
-- method's **local variables** are also known as _automatic variables_ because they cease to exist as soon as the execution of the block in which they were defined completes
+- method **local variables** are also known as _automatic variables_ because they cease to exist as soon as the
+  execution of the block in which they were defined completes
+
 ```java
 public void foo() {
     var i = 1; // automatic variable
@@ -12,11 +14,13 @@ public void foo() {
 ```
 
 - due to 2's complement method of representing negative integers, the below method always returns -1
+
 ```java
 int negativeOne(int input) {
     return input^~input;
 }
 ```
+
 - nested class is any class declared in another class/interface
   - inner class is any implicit or explicit static nested class
   - a class defined inside an interface is implicitly static
@@ -41,25 +45,35 @@ long l = 10L;
 double d = l;// this compiles just fine
 float f = l;// this compiles just fine
 ```
+
 - native methods cannot have a body
-- Virtual threads are daemons and calling `setDaemon(false)` throws an `IllegalArgumentException` 
+- Virtual threads are daemons and calling `setDaemon(false)` throws an `IllegalArgumentException`
 - A map object cannot act as a key on itself, (e.g. `var map = Map.of(...); map.put(map, ...);`)
 - `Map#put(key, value)` returns the value of the key prior replacement (if existing, otherwise `null`)
-- if element is not found by binarySearch, it returns the position (-(insertion point) - 1), ⚠️ beware that the arrays must preemptively be sorted
-- records may have either one explicit canonical, one explicit compact constructor, or none 
+- if element is not found by binarySearch, it returns the position (-(insertion point) - 1), ⚠️ beware that the arrays
+  must preemptively be sorted
+- records may have either one explicit canonical, one explicit compact constructor, or none
 - it's possible to make recursive calls of synchronized methods as they can reacquire the lock they already possess
 - comparison operators (> == < have lower precedence over mathematical ones)
-- anything != 0 number divided by 0.0f, 0.0 will return INFINITY, whereas 0 divided by any of the aforementioned will return NaN 
-- Arrays.asList creates a list backed on the array, meaning that if the array changes, so that the List. It's important noting that add or remove are not allowed on the list, or else UnsupportedOperationException
-- `Exception#toString` only prints the exception name + message (and not the stacktrace) 
-- `if (false) {...}` does not generate a compile-time error, which is an exception to the rule for optimizations, however, `while(false) {...}` or `for(;false;) {...}` won't compile
-- Java always passes parameters by value, and for objects, it passes the reference value that sometimes can lead us think that we're passing by reference when we change the state of the object referenced by the parameter passed into the method
-- A virtual call is when a method call is bound at runtime and not at compile time, therefore, all non-private and non-final instance methods calls are virtual 
+- anything != 0 number divided by 0.0f, 0.0 will return INFINITY, whereas 0 divided by any of the aforementioned will
+  return NaN
+- Arrays.asList creates a list backed on the array, meaning that if the array changes, so that the List. It's important
+  noting that add or remove are not allowed on the list, or else UnsupportedOperationException
+- `Exception#toString` only prints the exception name + message (and not the stacktrace)
+- `if (false) {...}` does not generate a compile-time error, which is an exception to the rule for optimizations,
+  however, `while(false) {...}` or `for(;false;) {...}` won't compile
+- Java always passes parameters by value, and for objects, it passes the reference value that sometimes can lead us
+  think that we're passing by reference when we change the state of the object referenced by the parameter passed into
+  the method
+- A virtual call is when a method call is bound at runtime and not at compile time, therefore, all non-private and
+  non-final instance methods calls are virtual
 - Stack overflow only occurs in recursive calls
 - It's not allowed to access static fields in enum constructors (not even effectively finals)
 
 ### Understanding Arrays#compare and Arrays#mismatch
-It uses lexicographical comparison (i.e. dictionary-like) while comparing letter by letter until finding the first mismatch:
+
+It uses lexicographical comparison (i.e. dictionary-like) while comparing letter by letter until finding the first
+mismatch:
 
 ```java
 
@@ -83,6 +97,7 @@ Arrays.compare(array3, array3) == 0
 ```
 
 As per the Arrays.mismatch, the rules are much simpler:
+
 ```java
 import java.util.Arrays;
 
@@ -102,4 +117,35 @@ Arrays.mismatch(array3, array4) == Arrays.mismatch(array5, array6) == 0
 char[] array7 = {'1', '2', '3'};
 char[] array8 = {'1', '2', '3'};
 Arrays.mismatch(array7, array8) == -1
+```
+
+### Operators precedence
+
+| Precedence | Operator                        | expression                                                                   | evaluation order |
+|------------|---------------------------------|------------------------------------------------------------------------------|------------------|
+| 1          | post-unary operators            | `foo++`, `foo--`                                                             | left-to-right    |
+| 2          | pre-unary operators             | `++foo`, `--foo`                                                             | left-to-right    |
+| 3          | unary operators                 | `+`, `-`, `!`, `~`, `(type)`                                                 | right-to-left    |
+| 4          | cast                            | `(type)`var                                                                  | right-to-left    |
+| 5          | multiplication/division/modulus | `*`, `/`, `%`                                                                | left-to-right    |
+| 6          | addition/subtraction            | `+`, `-`                                                                     | left-to-right    |
+| 7          | shift operators                 | `<<`, `>>`, `>>>`                                                            | left-to-right    |
+| 8          | relational operators            | `<`, `>`, `<=`, `>=`, `instanceof`                                           | left-to-right    |
+| 9          | equal to/not equal to           | `==`, `!=`                                                                   | left-to-right    |
+| 10         | logical AND                     | `&`                                                                          | left-to-right    |
+| 11         | logical XOR                     | `^`                                                                          | left-to-right    |
+| 12         | logical OR                      | &#124;                                                                       | left-to-right    |
+| 13         | conditional AND                 | `&&`                                                                         | left-to-right    |
+| 14         | conditional OR                  | &#124;&#124;                                                                 | left-to-right    |
+| 15         | ternary operators               | `(conditional expression)? expression1 : expression2`                        | right-to-left    |
+| 16         | assignment operators            | `=`, `+=`, `-=`, `*=`, `/=`, `%=`, `&=`, &#124;=, `^=`, `<<=`, `>>=`, `>>>=` | right-to-left    |
+
+example
+```java
+int k = 1;
+k  +=   (k=4) * (k+2); 
+// P16   P16 P5  P6 ->  ℹ️ evaluate what is in () first, regardless of the precedence.
+k  +=   (4)  *  (6)
+// P16       P5 -> P5 over P16, hence
+k = 25
 ```
