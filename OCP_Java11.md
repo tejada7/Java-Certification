@@ -312,6 +312,11 @@ Path.of(URI uri)
 | `Path subpath(int, int)`                                                                                                                    | `Path normalize()`            |
 | `Path getFileName()`                                                                                                                        | `Path toRealPath(LinkOption…)` |
 
+> [!NOTE]  
+> Some important reminders about `Path#resolve` and `Path#relativize` methods:
+> - path1.resolve(path2) will return path2 is this last one references an absolute path (e.g. `Path.of("foo/1").resolve(Path.of("/absolute/2))` → /absolute/2 ) 
+> - `path1.relativize(path2)` will throw an `IllegalArgumentException` we path1 and path2 are mixed between absolute and relative paths
+
 ##### Paths factory class
 ```java
 Paths.get(String first, String...more)
