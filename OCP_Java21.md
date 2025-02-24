@@ -50,15 +50,20 @@ float f = l;// this compiles just fine
 - Virtual threads are daemons and calling `setDaemon(false)` throws an `IllegalArgumentException`
 - A map object cannot act as a key on itself, (e.g. `var map = Map.of(...); map.put(map, ...);`)
 - `Map#put(key, value)` returns the value of the key prior replacement (if existing, otherwise `null`)
-- if element is not found by binarySearch, it returns the position (-(insertion point) - 1), ⚠️ beware that the arrays
+- if no element is found by `binarySearch`, it returns the position (-(insertion point) - 1), ⚠️ beware that the arrays
   must preemptively be sorted
 - records may have either one explicit canonical, one explicit compact constructor, or none
 - it's possible to make recursive calls of synchronized methods as they can reacquire the lock they already possess
-- comparison operators (> == < have lower precedence over mathematical ones)
+- comparison operators (> == < have lower precedence over mathematical ones) (c.f. [Operators precedence](#operators-precedence) section)
 - anything != 0 number divided by 0.0f, 0.0 will return INFINITY, whereas 0 divided by any of the aforementioned will
   return NaN
-- Arrays.asList creates a list backed on the array, meaning that if the array changes, so that the List. It's important
-  noting that add or remove are not allowed on the list, or else UnsupportedOperationException
+```java
+0/0.0 -> NaN
+1/0.0 -> Infinity
+1/0 -> throws ArithmeticException("/ by zero")
+```
+- `Arrays.asList` creates a list backed on the array, meaning that if the array changes, so does the List. It's important
+  noting that add or remove are not allowed on the list, or else `UnsupportedOperationException` is thrown
 - `Exception#toString` only prints the exception name + message (and not the stacktrace)
 - `if (false) {...}` does not generate a compile-time error, which is an exception to the rule for optimizations,
   however, `while(false) {...}` or `for(;false;) {...}` won't compile
@@ -149,3 +154,12 @@ k  +=   (4)  *  (6)
 // P16       P5 -> P5 over P16, hence
 k = 25
 ```
+## Doubles scientific notation
+When double variables are too long, and when casting to String, Java applies the scientific notation: 
+```java
+System.out.println("Large Number: " + 256450000d); // Large Number: 2.5645E8
+System.out.println("Small Number: " + 0.0000046d); // Small Number: 4.6E-6
+```
+Quoted from Double's Javadoc
+> - If m is greater than or equal to 10^3 but less than 10^7, then it is represented as the integer part of m, in decimal form with no leading zeroes, followed by '.' ('\u002E'), followed by one or more decimal digits representing the fractional part of m.
+> - If m is less than 10^3 or greater than or equal to 10^7, then it is represented in so-called "computerized scientific notation." Let n be the unique integer such that 10^n ≤ m < 10^n+1; then let a be the mathematically exact quotient of m and 10n so that 1 ≤ a < 10. The magnitude is then represented as the integer part of a, as a single decimal digit, followed by '.' ('\u002E'), followed by decimal digits representing the fractional part of a, followed by the letter 'E' ('\u0045'), followed by a representation of n as a decimal integer, as produced by the method Integer.toString(int).
