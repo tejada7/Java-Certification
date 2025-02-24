@@ -339,22 +339,22 @@ Most important implementations:
 
 - Reader: FileReader (mark not supported), StringReader (mark supported), CharArrayReader (mark supported)
 
-|Class Name|Parent Class|Low/High Level| Description                                                                                                              |
-|---|---|---|--------------------------------------------------------------------------------------------------------------------------|
-|`FileInputStream`|`InputStream`|Low| Reads file data as bytes.                                                                                                |
-|`FileOutputStream`|`OutputStream`|Low| Writes file data as bytes.                                                                                               |
-|`FileReader`|`InputStreamReader <-- Reader`|Low| Reads file data as characters.                                                                                           |
-|`FileWriter`|`OutputStreamWriter <-- Writer`|Low| Writes file data as characters.                                                                                          |
-|`InputStreamReader`|`Reader`|High| It reads bytes and decodes them into characters.                                                                         |
-|`OutputStreamWriter`|`Writer`|High| Characters written to it are encoded into bytes.                                                                         |
-|`BufferedInputStream`|`FilterInputStream <-- InputStream`|High| Reads byte data from an existing InputStream in a buffered manner, which improves efficiency and performance.            |
-|`BufferedOutputStream`|`FilterOutputStream <-- OutputStream`|High| Writes byte data to an existing OutputStream in a buffered manner, which improves efficiency and performance.            |
-|`BufferedReader`|`Reader`|High| Reads character data from an existing Reader in a buffered manner, which improves efficiency and performance.            |
-|`BufferedWriter`|`Writer`|High| Writes character data to an existing Writer in a buffered manner, which improves efficiency and performance.             |
-|`ObjectInputStream`|`InputStream`|High| Deserializes primitive Java data types and graphs of Java objects from an existing InputStream.                          |
-|`ObjectOutputStream`|`OutputStream`|High| Serializes primitive Java data types and graphs of Java objects to an existing OutputStream.                             |
-|`PrintStream`|`FilterOutputStream <-- OutputStream`|High| Writes formatted representations of Java objects to a binary stream. Mind that its methods **do not throw IOException**. |
-|`PrintWriter`|`Writer`|High| Writes formatted representations of Java objects to a character stream.                                                  |
+| Class Name                               | Parent Class                          | Low/High Level | Description                                                                                                                                              |
+|------------------------------------------|---------------------------------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `FileInputStream`                        | `InputStream`                         | Low            | Reads file data as bytes.                                                                                                                                |
+| `FileOutputStream`                       | `OutputStream`                        | Low            | Writes file data as bytes.                                                                                                                               |
+| `FileReader`                             | `InputStreamReader <-- Reader`        | Low            | Reads file data as characters.                                                                                                                           |
+| `FileWriter`                             | `OutputStreamWriter <-- Writer`       | Low            | Writes file data as characters.                                                                                                                          |
+| `InputStreamReader`                      | `Reader`                              | High           | It reads bytes and decodes them into characters.                                                                                                         |
+| `OutputStreamWriter`                     | `Writer`                              | High           | Characters written to it are encoded into bytes.                                                                                                         |
+| `BufferedInputStream`                    | `FilterInputStream <-- InputStream`   | High           | Reads byte data from an existing InputStream in a buffered manner, which improves efficiency and performance.                                            |
+| `BufferedOutputStream`                   | `FilterOutputStream <-- OutputStream` | High           | Writes byte data to an existing OutputStream in a buffered manner, which improves efficiency and performance.                                            |
+| `BufferedReader`                         | `Reader`                              | High           | Reads character data from an existing Reader in a buffered manner, which improves efficiency and performance.                                            |
+| `BufferedWriter`                         | `Writer`                              | High           | Writes character data to an existing Writer in a buffered manner, which improves efficiency and performance.                                             |
+| `ObjectInputStream` / `DataInputStream`  | `InputStream`                         | High           | Deserializes primitive Java data types and graphs of Java objects from an existing InputStream.  ℹ️ This class exposes readUTF only to read strings.     |
+| `ObjectOutputStream`/ `DataOutputStream` | `OutputStream`                        | High           | Serializes primitive Java data types and graphs of Java objects to an existing OutputStream.  ℹ️ This class exposes the writeUTF and writeChars methods. |
+| `PrintStream`                            | `FilterOutputStream <-- OutputStream` | High           | Writes formatted representations of Java objects to a binary stream. Mind that its methods **do not throw IOException**.                                 |
+| `PrintWriter`                            | `Writer`                              | High           | Writes formatted representations of Java objects to a character stream.                                                                                  |
 From which, a _low-level_ stream connects directly with the source of the data, such as a file, an array, or a String; whereas a _high-level_ stream is built on top of another stream using wrapping. Wrapping is the process by which an instance is passed to the constructor of another class, and operations on the resulting instance are filtered and applied to the original instance.
 
 The below table compares the legacy `java.io.File` vs. the `NIO.2` methods:
