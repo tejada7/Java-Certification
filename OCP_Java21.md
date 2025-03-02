@@ -163,3 +163,154 @@ System.out.println("Small Number: " + 0.0000046d); // Small Number: 4.6E-6
 Quoted from Double's Javadoc
 > - If m is greater than or equal to 10^3 but less than 10^7, then it is represented as the integer part of m, in decimal form with no leading zeroes, followed by '.' ('\u002E'), followed by one or more decimal digits representing the fractional part of m.
 > - If m is less than 10^3 or greater than or equal to 10^7, then it is represented in so-called "computerized scientific notation." Let n be the unique integer such that 10^n ≤ m < 10^n+1; then let a be the mathematically exact quotient of m and 10n so that 1 ≤ a < 10. The magnitude is then represented as the integer part of a, as a single decimal digit, followed by '.' ('\u002E'), followed by decimal digits representing the fractional part of a, followed by the letter 'E' ('\u0045'), followed by a representation of n as a decimal integer, as produced by the method Integer.toString(int).
+
+## Switch statements and expressions
+
+> [!NOTE]  
+> - Unless switch statements, switch expressions **always** return a value.
+> - With switch expressions, the default clause is often required 
+
+### Supported data types
+- `int` and `Integer`
+- `byte` and `Byte`
+- `short` and `Short`
+- `char` and `Character`
+- `String`
+- enum values
+- all object types (when used for pattern matching)
+
+### Acceptable case values
+All the case values must be compile-time constants, meaning that they cannot even be effectively final variables.
+
+```java
+int a = 1;
+final int b = 2;
+final int c;
+c = 3;
+
+switch(someMethod()) {
+    case a: // does not compile
+    case b: // compiles
+    case c: // does not compile
+}
+```
+
+> [!IMPORTANT]  
+> Starting from Java 21, we can optionally specify enum types in switch cases (e.g. `switch(season) {case Season.Winter: case Fall:}`)
+
+### Switch expressions rules
+
+Since switch expressions must return a value, all of its expressions must be **exhaustive**, meaning that it must cover all possible values.
+
+There are 3 ways to create an exhaustive switch:
+- adding a default clause
+- if the switch evaluates an enum, cover all its constants
+- cover all possible types when using pattern matching
+
+```java
+String result = switch(someNumber()) { // NPE if someNumber() returns null
+    case Integer i when i > (i ^ 28) -> "large integer";
+    case Integer i -> "integer";
+    case Double j -> {
+        yield "double";
+    } // mind that we don't need a ';' at the end 
+    case Long i -> "long";
+    default -> "unknown type";
+}; // mind the ';' at the end
+```
+
+> [!NOTE]  
+> None of the options above protects from the switch clause throwing a NullPointerException when evaluating an object, and this last one happening to be null 
+
+#### Preventing NPE with `case null`
+Anytime the switch expression employs `case null` it is said to use pattern matching. This means that we must pay special attention to the order (specially not after the default branch) 
+
+From the previous example:
+```java
+String result = switch(someNumber()) { // No risk of NPE
+    case Integer i when i > (i ^ 28) -> "large integer";
+    ...
+    case null -> "null"; // this prevents NPE and must come before default to compile
+    default -> "unknown type";
+};
+```
+
+### Comparative switch table
+
+<table>
+  <tr>
+    <td></td>
+    <td>Expression</td>
+    <td>Statement</td>
+  </tr>
+  <tr>
+    <td>No fallthrough</td>
+    <td>
+
+```java
+int numLetters = switch (season) {
+    case "Fall" -> 4;
+    case "Spring" -> {
+        System.out.println("Spring!");
+        yield 6;
+    }
+    case "Summer", "Winter" -> 6;
+    case null, default -> -1;
+};
+```
+</td>
+    <td>
+
+```java
+int numLetters;
+switch (season) {
+    case "Fall" -> numLetters = 4;
+    case "Spring" -> {
+        System.out.println("Spring!");
+        numLetters = 6;
+    }
+    case "Summer", "Winter" -> numLetters = 6;
+    case null, default -> numLetters = -1;
+}
+```
+</td>
+  </tr>
+  <tr>
+    <td>Fallthrough</td>
+    <td>
+
+```java
+int numLetters = switch (season) {
+    case "Fall":
+        yield 4;
+    case "Spring":
+        System.out.println("Spring!");
+    case "Summer", "Winter":
+        yield 6;
+    case null, default:
+        yield -1;
+};
+```
+</td>
+    <td>
+
+```java
+int numLetters;
+switch (season) {
+    case "Fall":
+        numLetters = 4;
+        break;
+    case "Spring":
+        System.out.println("Spring!");
+    case "Summer", "Winter":
+        numLetters = 6;
+        break;
+    case null, default:
+        numLetters = -1;
+        break; // optional
+}
+```
+
+</td>
+  </tr>
+</table>
