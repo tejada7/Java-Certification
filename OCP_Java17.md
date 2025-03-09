@@ -616,6 +616,15 @@ that entered the waiting list. It's is disabled by default with `ReentrantLock` 
 - Intrinsic locking = synchronized + volatile
 - Explicit locking = manual lock
 #### ReentrantReadWriteLock
+Used to guarantee data consistency by ensuring atomic operations, there is no limit to the number of concurrent readers, 
+however, **from the moment a writer acquires the lock, any reader gets blocked until write lock gets released**.  
+
+It does not allow **lock upgrading**, meaning that if a thread already has a read lock will not be able to acquire the 
+write lock until it first releases the read lock.
+
+Conversely, it does allow **lock downgrading** meaning that a thread that has the write lock may be able to acquire as 
+many read locks as necessary.   
+
 ```java
 ReadWriteLock rwLock = new ReentrantReadWriteLock();
 Lock readLock = rwLock.readLock();
@@ -650,6 +659,13 @@ public void writeToCache(final String key, final Object value) {
 
 // Note that a ConcurrentHashMap accomplishes the same goal
 ```
+> [!NOTE]  
+> There is an alternative with StampedLock that also supports read and write locks (however is not reentrant, meaning 
+> that it does not hold both locks at the same time).
+> 
+> A lock isn't tied to a thread and we can hold multiple read locks at the same time (each with a different stamp) but 
+> only one write lock. 
+
 #### Semaphores
 Are a kind of a lock and the different lies on the fact that a lock allows only one thread to access a block of code, 
 whereas a semaphore can rely on a number of permits to allow multiple threads to concurrently access a guarded block of 
