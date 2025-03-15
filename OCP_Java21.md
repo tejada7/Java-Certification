@@ -1,6 +1,29 @@
 # Java 21 Oracle Certified Professional study notes
 
-### Java basic reminders
+### Virtual Threads
+They are lightweight daemon threads that sit on top of platform threads, they can be initialized via:
+```java
+Thread thread = Thread.ofVirtual()
+        .start(() -> { 
+            //Do something
+          }); // Note that we VirtualThread is a virtual class that can only be accessed through static factory
+// Or,
+Thread thread = Thread.ofVirtual()
+        .unstarted(() -> { 
+            // Do something
+        }); // ℹ️ need to call thread#start to actually start the thread
+``` 
+
+ - ℹ️ Mind that calling `setDaemon(false)` would throw an `IllegalArgumentException`
+ - A platform or kernel thread is managed by the operating system and their creation requires a system call which is
+ expensive, on the other hand, virtual threads are operated by the JVM and therefore it's way cheaper to instantiate
+ them
+ - Leveraging `Executors.netWorkStealing()` can improve virtual threads performance since work-stealing thread pools use
+the number of available processors as its target parallelism level, and virtual threads execute on top of kernel threads,
+and this last ones execute depending on available processors
+ - Virtual threads have a fixed thread priority `Thread.NORM_PRIORITY` that cannot be changed
+
+### Java foundations reminders
 
 - method **local variables** are also known as _automatic variables_ because they cease to exist as soon as the
   execution of the block in which they were defined completes
@@ -47,7 +70,6 @@ float f = l;// this compiles just fine
 ```
 
 - native methods cannot have a body
-- Virtual threads are daemons and calling `setDaemon(false)` throws an `IllegalArgumentException`
 - A map object cannot act as a key on itself, (e.g. `var map = Map.of(...); map.put(map, ...);`)
 - `Map#put(key, value)` returns the value of the key prior replacement (if existing, otherwise `null`)
 - if no element is found by `binarySearch`, it returns the position (-(insertion point) - 1), ⚠️ beware that the arrays
@@ -317,4 +339,3 @@ switch (season) {
 
 ### A note about Map and its implementations
 - `ConcurrentHashMap` throws NullPointerException when adding either a key or value set to `null`
-- 
