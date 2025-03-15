@@ -314,3 +314,7 @@ switch (season) {
 </td>
   </tr>
 </table>
+
+### A note about Map and its implementations
+- `ConcurrentHashMap` throws NullPointerException when adding either a key or value set to `null`
+- 
