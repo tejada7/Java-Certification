@@ -344,7 +344,7 @@ Most important implementations:
 | `FileInputStream`                        | `InputStream`                         | Low            | Reads file data as bytes.                                                                                                                                |
 | `FileOutputStream`                       | `OutputStream`                        | Low            | Writes file data as bytes.                                                                                                                               |
 | `FileReader`                             | `InputStreamReader <-- Reader`        | Low            | Reads file data as characters.                                                                                                                           |
-| `FileWriter`                             | `OutputStreamWriter <-- Writer`       | Low            | Writes file data as characters.                                                                                                                          |
+| `FileWriter`                             | `OutputStreamWriter <-- Writer`       | Low            | Writes file data as characters. It creates a file if it does not exist in the filesystem                                                                 |
 | `InputStreamReader`                      | `Reader`                              | High           | It reads bytes and decodes them into characters.                                                                                                         |
 | `OutputStreamWriter`                     | `Writer`                              | High           | Characters written to it are encoded into bytes.                                                                                                         |
 | `BufferedInputStream`                    | `FilterInputStream <-- InputStream`   | High           | Reads byte data from an existing InputStream in a buffered manner, which improves efficiency and performance.                                            |
@@ -527,6 +527,63 @@ And to list the modules:
 ```shell
 java -p <module path> --list-modules
 ```
+### Service provider
+Given a module exporting an interface:
+```java
+package api.usecases;
+public interface UseCase {
+    Foo doSomething(Args args);
+}
+```
+
+```java
+module api {
+    exports api.usecases;
+}
+```
+
+And a module providing a service:
+```java
+module foo {
+    requires api;
+    provides api.usescases.UseCase with foo.DefaultUseCase;  
+}
+```
+
+`DefaultUseCase` must either:
+- implement the interface, and **define a public no-arg constructor**:
+```java
+package foo;
+import api.usecases.UseCase;
+
+DefaultUseCase implements UseCase {
+    
+    // ℹ️ default no-arg public constructor
+    
+    public Foo doSomething(Args args) {
+        // implementation
+    }
+}
+```
+or,
+- define a public static provider method: 
+```java
+package foo;
+import api.usecases.UseCase;
+
+DefaultUseCase { // ℹ️ No need to implement service
+    
+    public static UseCase provider() {
+        return (args) -> {
+            // implementation
+            return Foo...
+        };
+    }
+}
+```
+
+Services can then be retrieved using `ServiceLoader#load`
+
 ### jdeps
 As a reminder on how to create a jar:
 ```shell
