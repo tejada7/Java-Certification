@@ -96,6 +96,18 @@ float f = l;// this compiles just fine
   non-final instance methods calls are virtual
 - Stack overflow only occurs in recursive calls
 - It's not allowed to access static fields in enum constructors (not even effectively finals)
+- Although java allows _ in between numeric values such as
+  - int i = 123_456, j = 1___2___3___4_5___6; ✅
+  - float f = 1_2_3.4_5_6f ✅
+
+  It does not allow `_` to be present at the beginning, the end or next to `.` or `f`, `d`, `L`, `x` or `b` characters:
+  - int i = _1, j = , 0x_FE00, k = 0_b101; ❌
+  - float f = 123_4.5_f; ❌
+  - long l = 345234234_L; ❌
+  - double d = 3432.1231_d; ❌
+  
+  Nor during parsing (in this case no `_` is allowed regardless of the position)
+  - Integer.parseInt("123_456"); ❌ // throws `java.lang.NumberFormatException`
 
 ### Understanding Arrays#compare and Arrays#mismatch
 
