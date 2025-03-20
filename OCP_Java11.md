@@ -11,7 +11,7 @@ public class Parent {
     private String name;
     public static final String CONSTANT = "";
 
-    public static class InnerStaticClass { // This can alternatively be a record (no need to static though)
+    public static class InnerStaticClass { // This can alternatively be a record (no need for static though)
         public static void staticMethod() {
             System.out.println(new Parent().name);            
             System.out.println(CONSTANT);            
@@ -182,8 +182,13 @@ List.of() creates an immutable collection, meaning any attempt to modify it will
 * `Collections.unmodifiableList()` creates an unmodifiable view of a list and does not protect the underlying list from
 being modified. Besides, this method allows null elements.  
 
+> [!NOTE]
+> ℹ️ If the original list is updated, its change will be reflected in the view
+
 ### Streams
-> With streams, the data isn't generated up front. It is created when needed. This is an example of lazy evaluation, which delays execution until necessary.
+> With streams, data isn't generated up front. It gets executed only when needed. 
+
+>This is an example of lazy evaluation, which delays execution until necessary.
 #### Stream pipeline's parts
 * Source
 * Intermediate operations
@@ -198,13 +203,13 @@ being modified. Besides, this method allows null elements.
     ```java
       List.of("h", "o", "l", "a").stream().reduce(String::concat); // Optional<"Hola">
   
-      Arrays.stream(new String[]{})..reduce(String::concat); // Optional.empty
+      Arrays.stream(new String[]{}).reduce(String::concat); // Optional.empty
     ```
-* `T reduce(T identity, BinaryOperator<T> accumulator)` -> identity is the starting value so that the accumulator sequentially merges other T Stream elements and return a T
+* `T reduce(T identity, BinaryOperator<T> accumulator)` -> identity is the starting value so that the accumulator sequentially merges other T Stream elements and returns a T
     ```java
         List.of("h", "o", "l", "a").stream().reduce("¡" ,String::concat); // "¡Hola"
   
-        Arrays.stream(new String[]{})..reduce("¡", String::concat); // "¡"
+        Arrays.stream(new String[]{}).reduce("¡", String::concat); // "¡"
     ```
 * `U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner)` -> identity is the starting value so that the accumulator sequentially transforms T to U, the combiner is only used for parallel streaming, and its purpose is to combine preliminary results.  
     ```java
@@ -216,9 +221,15 @@ being modified. Besides, this method allows null elements.
 #### Collect method
 * `<R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner)` -> supplier is the function that creates the result container so that the accumulator can fold elements to the result container; finally, the combiner combines the partial result containers in the event it is a parallel stream.  
     ```java
-        List.of("h", "o", "l", "a").stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append); // the result will be a string builder with the greeting hola, it's worth noting that combines does nothing, unlike the belwo example: 
+        List.of("h", "o", "l", "a").stream()
+            .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append); // the result will be a string builder with the greeting hola, it's worth noting that combines does nothing, unlike the below example: 
  
-        List.of("h", "o", "l", "a").stream().parallel().collect(TreeSet::new, Set::add, Set::addAll); // Set<h,o,l,a>
+        List.of("h", "o", "l", "a").stream().parallel()
+            .foreach(System.out::print); // non-deterministic output, it could be any combination
+  
+        // ℹ️ mind that when using collectors, the order depends on the spliterator characteristics of the underlying list 
+        List.of("h", "o", "l", "a").stream().parallel()
+            .collect(ArrayList::new, List::add, List::addAll); // will still be List<h,o,l,a> because the list spliterator reports ORDERED characteristic
     ```
 
 > [!IMPORTANT]  
@@ -301,16 +312,16 @@ Path.of(String first, String...more)
 Path.of(URI uri)
 ```
 
-|                                                                                                                                             |                               |
-|---------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|
-| `Path of(String, String…)`                                                                                                                  | `Path getParent()`            |
-| `URI toURI()`                                                                                                                               | `Path getRoot()`              |
-| `File toFile()`                                                                                                                             | `boolean isAbsolute()`        |
-| `String toString()`                                                                                                                         | `Path toAbsolutePath()`       |
-| `int getNameCount()`                                                                                                                        | `Path relativize()`           |
-| `Path getName(int)` <br/> → indices start from 0, <br/> → root excluded from the path (e.g. `c:\` or `/`),<br/> → invalid paths throw an exception |`Path resolve(Path)`|
-| `Path subpath(int, int)`                                                                                                                    | `Path normalize()`            |
-| `Path getFileName()`                                                                                                                        | `Path toRealPath(LinkOption…)` |
+|                                                                                                                                                    |                                |
+|----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| `Path of(String, String…)`                                                                                                                         | `Path getParent()`             |
+| `URI toURI()`                                                                                                                                      | `Path getRoot()`               |
+| `File toFile()`                                                                                                                                    | `boolean isAbsolute()`         |
+| `String toString()`                                                                                                                                | `Path toAbsolutePath()`        |
+| `int getNameCount()`                                                                                                                               | `Path relativize()`            |
+| `Path getName(int)` <br/> → indices start from 0, <br/> → root excluded from the path (e.g. `c:\` or `/`),<br/> → invalid paths throw an exception | `Path resolve(Path)`           |
+| `Path subpath(int, int)`                                                                                                                           | `Path normalize()`             |
+| `Path getFileName()`                                                                                                                               | `Path toRealPath(LinkOption…)` |
 
 > [!NOTE]  
 > Some important reminders about `Path#resolve` and `Path#relativize` methods:
@@ -343,7 +354,7 @@ Most important implementations:
 |------------------------------------------|---------------------------------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `FileInputStream`                        | `InputStream`                         | Low            | Reads file data as bytes.                                                                                                                                |
 | `FileOutputStream`                       | `OutputStream`                        | Low            | Writes file data as bytes.                                                                                                                               |
-| `FileReader`                             | `InputStreamReader <-- Reader`        | Low            | Reads file data as characters.                                                                                                                           |
+| `FileReader`                             | `InputStreamReader <-- Reader`        | Low            | Reads file data as characters. It throws a FileNotFoundException if the file does not exist                                                              |
 | `FileWriter`                             | `OutputStreamWriter <-- Writer`       | Low            | Writes file data as characters. It creates a file if it does not exist in the filesystem                                                                 |
 | `InputStreamReader`                      | `Reader`                              | High           | It reads bytes and decodes them into characters.                                                                                                         |
 | `OutputStreamWriter`                     | `Writer`                              | High           | Characters written to it are encoded into bytes.                                                                                                         |
