@@ -23,7 +23,7 @@ the number of available processors as its target parallelism level, and virtual 
 and this last ones execute depending on available processors
  - Virtual threads have a fixed thread priority `Thread.NORM_PRIORITY` that cannot be changed
 
-### Java foundations reminders
+### Java foundations reminder
 
 - method **local variables** are also known as _automatic variables_ because they cease to exist as soon as the
   execution of the block in which they were defined completes
@@ -201,7 +201,7 @@ Quoted from Double's Javadoc
 ## Switch statements and expressions
 
 > [!NOTE]  
-> - Unless switch statements, switch expressions **always** return a value.
+> - Unlike switch statements, switch expressions **always** return a value.
 > - With switch expressions, the default clause is often required 
 
 ### Supported data types
@@ -215,6 +215,8 @@ Quoted from Double's Javadoc
 
 ### Acceptable case values
 All the case values must be compile-time constants, meaning that they cannot even be effectively final variables.
+
+ℹ️ The value surrounded by the switch itself does not need to be effectively final. 
 
 ```java
 int a = 1;

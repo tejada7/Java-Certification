@@ -260,24 +260,24 @@ When working with an instance of the File class, keep in mind that it only repre
 
 Below an exhaustive list of its available methods:
 
-|Method Name|Description|
-|---|---|
-|`boolean delete()`|Deletes the file or directory and returns true only if successful. If this instance denotes a directory, then the directory must be empty in order to be deleted.|
-|`boolean exists()`|Checks if a file exists.|
-|`String getAbsolutePath()`|Retrieves the absolute name of the file or directory within the file system.|
-|`String getName()`|Retrieves the name of the file or directory.|
-|`String getParent()`|Retrieves the parent directory that the path is contained in or null if there is none.|
-|`boolean isDirectory()`|Checks if a File reference is a directory within the file system.|
-|`boolean isFile()`|Checks if a File reference is a file within the file system.|
-|`long lastModified()`|Returns the number of milliseconds since the epoch (number of milliseconds since 12 a.m. UTC on January 1, 1970) when the file was last modified.|
-|`long length()`|Retrieves the number of bytes in the file.|
-|`File[] listFiles()`|Retrieves a list of files within a directory|
-|`boolean mkdir()`|Creates the directory named by this path.|
-|`boolean mkdirs()`|Creates the directory named by this path including any nonexistent parent directories.|
-|`boolean renameTo(File dest)`|Renames the file or directory denoted by this path to dest and returns true only if successful|
+|Method Name| Description                                                                                                                                                       |
+|---|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`boolean delete()`| Deletes the file or directory and returns true only if successful. If this instance denotes a directory, then the directory must be empty in order to be deleted. |
+|`boolean exists()`| Checks if a file or directory exists.                                                                                                                             |
+|`String getAbsolutePath()`| Retrieves the absolute name of the file or directory within the file system.                                                                                      |
+|`String getName()`| Retrieves the name of the file or directory.                                                                                                                      |
+|`String getParent()`| Retrieves the parent directory that the path is contained in or null if there is none.                                                                            |
+|`boolean isDirectory()`| Checks if a File reference is a directory within the file system.                                                                                                 |
+|`boolean isFile()`| Checks if a File reference is a file within the file system.                                                                                                      |
+|`long lastModified()`| Returns the number of milliseconds since the epoch (number of milliseconds since 12 a.m. UTC on January 1, 1970) when the file was last modified.                 |
+|`long length()`| Retrieves the number of bytes in the file.                                                                                                                        |
+|`File[] listFiles()`| Retrieves a list of files within a directory                                                                                                                      |
+|`boolean mkdir()`| Creates the directory named by this path.                                                                                                                         |
+|`boolean mkdirs()`| Creates the directory named by this path including any nonexistent parent directories.                                                                            |
+|`boolean renameTo(File dest)`| Renames the file or directory denoted by this path to dest and returns true only if successful                                                                    |
               
 ##### Files utility class
-This utility class operates only on Path instances, and not File ones.
+This utility class operates only on Path instances, and not on File ones.
 
 |Enum type|Interface inherited|Enum value|Details|
 |---|---|---|---|
@@ -293,15 +293,15 @@ This utility class operates only on Path instances, and not File ones.
 | | |WRITE|Open for write access.|
 |`FileVisitOption`|N/A|FOLLOW_LINKS|Follow symbolic links.|
 
-|||
-|---|---|
-|`boolean exists(Path, LinkOption…)`|`Path move(Path, Path, CopyOption…)`|
-|`boolean isSameFile(Path, Path)`|`void delete(Path)`|
-|`Path createDirectory(Path, FileAttribute<?>…)`|`boolean deleteIfExists(Path)`|
-|`Path createDirectories(Path, FileAttribute<?>…)`|`BufferedReader newBufferedReader(Path)`|
-|`Path copy(Path, Path, CopyOption…)`|`BufferedWriter newBufferedWriter(Path, OpenOption…)`|
-|`long copy(InputStream, Path, CopyOption…)`|`List<String> readAllLines(Path)`|
-|`long copy(Path, OutputStream)`| |
+||                                                       |
+|---|-------------------------------------------------------|
+|`boolean exists(Path, LinkOption…)`| `Path move(Path, Path, CopyOption…)`                  |
+|`boolean isSameFile(Path, Path)`| `void delete(Path)`                                   |
+|`Path createDirectory(Path, FileAttribute<?>…)`| `boolean deleteIfExists(Path)`                        |
+|`Path createDirectories(Path, FileAttribute<?>…)`| `BufferedReader newBufferedReader(Path)`              |
+|`Path copy(Path, Path, CopyOption…)`| `BufferedWriter newBufferedWriter(Path, OpenOption…)` |
+|`long copy(InputStream, Path, CopyOption…)`| `List<String> readAllLines(Path)`                     |
+|`long copy(Path, OutputStream)`| `Stream lines(Path)`                                  |
 
 #### 2. Path
 A Path instance represents a hierarchical path on the storage system to a file or directory. You can think of a Path as the NIO.2 replacement for the java.io.File class, although how you use it is a bit different.
@@ -325,7 +325,8 @@ Path.of(URI uri)
 
 > [!NOTE]  
 > Some important reminders about `Path#resolve` and `Path#relativize` methods:
-> - path1.resolve(path2) will return path2 is this last one references an absolute path (e.g. `Path.of("foo/1").resolve(Path.of("/absolute/2))` → /absolute/2 ) 
+> - `path1.relativize(path1.resolve(p2)) == p2`
+> - `path1.resolve(path2)` will return path2 is this last one references an absolute path (e.g. `Path.of("foo/1").resolve(Path.of("/absolute/2))` → `/absolute/2` ) 
 > - `path1.relativize(path2)` will throw an `IllegalArgumentException` we path1 and path2 are mixed between absolute and relative paths
 
 ##### Paths factory class
@@ -395,11 +396,13 @@ It's important to understand what problems are modules designed to solve:
 That said, there are three types of modules:
 - named → they contain a module-info.java file, they reside in the module path (and not in the classpath). Named modules 
  can only read from automatic modules.
-- automatic → does not contain a module-info.java file but does reside in the module path, so that it gets treated as a module.
+- automatic → do not contain module-info.java file but do reside in the module path, so that it gets treated as a module.
 As far as its name, it'll be resolved from the MANIFEST.MF file, property `Automatic-Module-Name` if specified, otherwise
 Java will automatically determine its name. Automatic modules can read from unnamed modules (i.e. jars in the classpath) 
 as well as the explicitly exported modules from the named modules.
-- unnamed → resides in the classpath rather that the module path, thus, it's not treated as a module. **It can read from any jars on the class or module paths.** It does not export any package, thus only readable from the classpath
+- unnamed → reside in the classpath rather that the module path, thus, they aren't treated as modules per se. 
+**They can read from any jars on the class or module paths.** They do not export any package, thus only readable 
+from the classpath and by automatic or other unnamed modules.
 
 Given the structure:
 ```shell script
@@ -413,13 +416,13 @@ Given the structure:
 ```
 And the content of `module-info.java`:
 ```java
-module com.ocp.hello {} // Modules names should usually match the package names 
+module com.ocp.hello {} // Module names should usually match package names 
 ```
 Compiling the old-fashioned way (with classpath):
 ```shell script
 javac -d out src/com/ocp/hello/Main.java 
 ```
-Will create the binary files on the `out` directory:
+will create binary files on the `out` directory:
 ```shell script
 .
 ├── src
@@ -478,8 +481,7 @@ Alternatively, we can restructure the program as:
                           └── hello
                               └── Main.java
 ```
-And compile with:
-Compiling a module:
+And compile the module with:
 ```shell script
 javac -d out --module-source-path src -m com.ocp.hello 
 ```
@@ -567,7 +569,7 @@ module foo {
 package foo;
 import api.usecases.UseCase;
 
-DefaultUseCase implements UseCase {
+public DefaultUseCase implements UseCase {
     
     // ℹ️ default no-arg public constructor
     
@@ -605,7 +607,7 @@ If we need to define a Main class, then we must create a `.mf` file with the bel
 Manifest-Version: 1.0
 Main-Class: packageToMainClass.Main
 ```
-then while building the jar reference the above-created file:
+then to build the jar reference with the above-created file:
 ```shell
 jar cmf manifest-file.mf jar-file.jar input-files
 ```
@@ -621,6 +623,11 @@ jdeps -s <jar file>.jar
 or
 jdeps --summary <jar file>.jar
 ```
+Or the list of all modules on which the underlying module depends
+```shell
+jdeps --list-deps module.jar # mind that it'll display and error if the module requires other non standard module
+```
+
 Alternatively, we can get the dependencies of a specific class:
 ```shell
 jdeps --module-path out out/<module name>/<fully qualified class name>
@@ -669,6 +676,47 @@ Any static or transient fields are ignored. Values that are not provided will be
 
 > [!IMPORTANT]  
 > This rule does not apply to record, whose canonical constructor is always called during deserialization
+
+When defining the `readObject` method, it's possible to force the serializable fields initialization by calling 
+`ObjectInputStream#defaultReadObject` method
+
+```java
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.time.LocalDate;
+
+class Data extends Parent implements Serializable {
+    int id = 12;
+    static String name = "john";
+    transient Localdate birthDate = LocalDate.EPOCH;
+
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        System.out.println("before: " + this); // before: [id=0, name=null, birthDate=null, nonSerializableObject=initialized]
+        //assuming there is a serialized object with id=66;
+        stream.defaultReadObject();
+        System.out.println("after: " + this); // after: [id=66, name=null, birthDate=null, nonSerializableObject=initialized]
+    }
+
+    @Override
+    public String toString() {
+        return "[id=" + id + ", name=" + name + ", birthDate=" + birthDate + ", " + super.toString() + "]";
+    }
+}
+
+class Parent {
+    Object nonSerializableObject;
+
+    Parent() {
+        nonSerializableObject = "initialized";
+    }
+
+    @Override
+    public String toString() {
+        return "nonSerializableObject=" + nonSerializableObject;
+    }
+}
+```
 
 ### Concurrency
 * **Liveness** - Ability of an application to be able to execute in a timely manner. Liveness problems, then, are those

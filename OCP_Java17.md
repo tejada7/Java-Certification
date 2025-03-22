@@ -667,8 +667,8 @@ public void writeToCache(final String key, final Object value) {
 > only one write lock. 
 
 #### Semaphores
-Are a kind of a lock and the different lies on the fact that a lock allows only one thread to access a block of code, 
-whereas a semaphore can rely on a number of permits to allow multiple threads to concurrently access a guarded block of 
+They are a kind of a lock and the difference lies on the fact that a lock allows only one thread to access a block of code, 
+whereas, a semaphore can rely on a number of permits to allow multiple threads to concurrently access a guarded block of 
 code. In other words, a lock has only 1 permit. 
 ```java
 Semaphore semaphore = new Semaphore(5);
@@ -994,7 +994,12 @@ Mind that variables used by the try-with-resources block **must be effectively f
 
 ### Static members inheritance
 Although static members are actually hidden, there's a special case wherein classes can use a static method "as if they
-were inherited" without requiring its declaring class:
+were inherited" without requiring its declaring class.
+
+> [!IMPORTANT]
+> This only applies for static methods declared in abstract classes,
+> static methods from interfaces must be called via interface reference
+
 ```java
 abstract class Parent {
     public static final String ID = "id";
@@ -1003,13 +1008,16 @@ abstract class Parent {
 
 interface Inter {
   String ID = "id";
-  public static void foo() {...}
+  static void foo() {...}
+  
+  static void foo1() {...}
 }
 
 class Child extends Parent implements Inter {
 
   public static void main(String[] args) {
     foo(); // This will call the method from the abstract class.
+    foo1(); // ⚠️ ️does not compile, we need the interface reference Inter.foo1() instead
     doSomething(ID); // This is also valid and will reference the ID from the Parent class
     // To call the static method or reference the ID from the interface, we need to explicitly preceed the member by Inter
   }
