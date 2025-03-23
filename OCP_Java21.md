@@ -25,6 +25,15 @@ and this last ones execute depending on available processors
 
 ### Java foundations reminder
 
+- Exception parameters in a multi-catch clause are implicitly final:
+```java
+try {
+// ...
+} catch(Error | Exception e) {
+ e = new RuntimeException(); // illegal    
+}
+        
+```
 - method **local variables** are also known as _automatic variables_ because they cease to exist as soon as the
   execution of the block in which they were defined completes
 
