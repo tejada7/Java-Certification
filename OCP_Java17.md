@@ -738,6 +738,32 @@ class Foo implements Callable<Boolean> {
   // done
 }
 ```
+
+#### Thread-safe lists
+
+Multiples alternatives:
+- `Vector` → discouraged and inefficient because all its methods are synchronized.
+- `Collections#syncronizedList` → wrapper allowing to synchronize list methods, mind that to guarantee iteration
+ thread-safety, a synchronized block should wrap the list (c.f. example below), it's recommended when:
+  - There are more write than read operations
+  - The list has tendency to grow and becomes larger 
+
+```java
+import java.util.Collections;
+
+var syncList = Collections.synchronizedList(nonThreadSafeList);
+synchronized(syncList) {
+    for(var element : syncList) {
+    // perform actions in a safely fashion    
+    }    
+}
+```
+- `CopyOnArrayList` → alternative way more efficient to the former options where all mutative operations (i.e. add, set)
+ are implemented by making a copy of the underlying array. It does not require an explicit synchronized block before the
+iteration. It's recommended when:
+  - There are more read than write operations
+  - Smaller lists
+
 ### NIO Streams
 When reading from a `Reader` implementation, -1 or null implies end of file. In hindsight, when reading
 from an `OutputStream` implementation, an `EOFException` is thrown instead.
