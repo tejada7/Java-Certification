@@ -744,6 +744,34 @@ void method() {
 ```  
 Only the exception from finally block will be thrown and the exception from the catch block will be **lost** (i.e. not
 even considered as a suppressed exception).
+
+Now, as per the actual suppressed exceptions, only the first thrown will be at the root level, leaving the ones thrown 
+in close method as suppressed:
+
+```java
+import java.util.Arrays;
+
+class Foo implements AutoCloseable {
+
+    @Override
+    public void close() throws Exception {
+        throw new RuntimeException("exception from close");
+    }
+
+    public static void main(String[] args) {
+        try (var foo = new Foo()) {
+            throw new RuntimeException("first exception");
+        } catch (Exception e) {
+            System.out.print("Top-level exception: " + e.getMessage() +
+                ", Suppressed exceptions: " + printSuppressedExceptions(e)); // Top-level exception: first exception, Suppressed exceptions:exception from close   
+        }
+    }
+
+    private static String printSuppressedExceptions(Exception e) {
+        return Arrays.stream(e.getSuppressed()).map(Throwable::getMessage).collect(Collectors.joining("\n"));
+    }
+}
+```
 ### Multiple inheritance of state
 One reason why the Java programming language does not permit you to extend more than one class is to avoid the issues of
 multiple inheritance of state, which is the ability to inherit fields from multiple classes. For example, suppose that
