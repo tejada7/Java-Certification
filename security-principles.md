@@ -49,7 +49,8 @@ flowchart
             padding[Padding]
         end
         subgraph bottomFrame[ ]
-            init-vector[Initialization \n vector]
+            init-vector[Initialization 
+            vector]
             state1[State]
             state2[State]
             state3[State]
@@ -135,3 +136,74 @@ The signature is where the secure hash function comes in:
    
 $$firstHash=hashSha256(XOR(secret.append(String.concat(payload,signature), constant1))$$
 $$jwt=hashSha256(XOR(secret.append(firstHash), constant2))$$
+
+## Symmetric encryption
+This allows to reverse the hiding mechanism. This is done by sharing a **secret key**. This key is used both to encrypt
+and decrypt the message. Because this key is used in both directions, it's called a symmetric key.
+
+```mermaid
+flowchart TD
+;
+subgraph frame[ ]
+    direction LR
+    subgraph plaintext[ 📝 
+    Plaintext]
+    end
+    subgraph symmetricKey[ 🔑 
+    Symmetric Key]
+    end
+    subgraph ciphertext[ 🔐 
+    Ciphertext]
+    end
+    ciphertext:::color
+    plaintext --> symmetricKey
+    symmetricKey --> ciphertext
+    ciphertext --> symmetricKey
+    symmetricKey --> plaintext
+end
+```
+> [!NOTE]
+> The ciphertext can be shared over untrusted communication channels, as an attacker won't be able to read the content 
+> (i.e. plaintext) unless accessing the shared key.
+> 
+> For that reason the shared key **MUST BE PROTECTED**
+
+#### Advanced Encryption Standard (AES)
+It's the symmetric algorithm the is most commonly used nowadays. It essentially uses key expansion.
+- Achieves high level of confusion
+- It's considered strong enough
+
+Example of encrypting a message:
+```shell
+# generating the random 32-bit key (mind that the key must be in hexadecimal as a requirement)
+export SHARED_KEY=`openssl rand -hex 32` 
+
+# encrypting text, this will generate some binary, stored in the ciphertext.enc file
+echo "password" | openssl enc -aes-256-ecb -K $SHARED_KEY > ciphertext.enc
+
+# to read the binary file
+xxd ciphertext.enc
+
+# to decrypt
+openssl enc -aes-256-ecb -d -in ciphertext.enc -K $SHARED_KEY
+```
+
+#### Password-based Key Derivation Function (PBKDF2)
+It computes a key using a passphrase, therefore, the main benefit is that the key does not need to be shared between
+all parties, a passphrase suffices.
+
+```shell
+# encrypting, this will create a default salt and ask for a passphrase twice: 
+echo "password" | openssl enc -aes-256-ecb -pbkdf2 > ciphertext.enc 
+#...enter AES-256-ECB encryption password:
+
+# decrypting, this will require the passphrase set in the previous step
+# It does not need to know the salt as it's already in the ciphertext file
+openssl enc -aes-256-ecb -d -in ciphertext.enc -pbkdf2
+```
+> [!TIP]
+> The more the shared key is used, the more vulnerable it becomes, thus it's highly recommended to share it only between 
+> two people and use it for only one message.
+> 
+> Secure algorithms provide a high level of confusion, making the relation between the shared key and the ciphertext too
+> complicated to be broken down.
