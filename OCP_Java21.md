@@ -57,6 +57,7 @@ int negativeOne(int input) {
   - inner class is any implicit or explicit static nested class
   - a class defined inside an interface is implicitly static
   - as of Java 16, inner classes are allowed to have static members
+  - an anonymous class is implicitly final
 - an enum is either implicitly final if no constants with class body are defined, or implicitly sealed if it has at least one constant with body class defined 
 ```java
 // implicit narrowing occurs only for int, char, byte and short, mind that this does not occur for long, float and double

@@ -418,6 +418,9 @@ And the content of `module-info.java`:
 ```java
 module com.ocp.hello {} // Module names should usually match package names 
 ```
+> [!NOTE]
+> Modules can be empty but must at least define its name
+
 Compiling the old-fashioned way (with classpath):
 ```shell script
 javac -d out src/com/ocp/hello/Main.java 
@@ -562,6 +565,9 @@ module foo {
     provides api.usescases.UseCase with foo.DefaultUseCase;  
 }
 ```
+
+> [!IMPORTANT]
+> A module can only provide one SPI at most per service 
 
 `DefaultUseCase` must either:
 - implement the interface, and **define a public no-arg constructor**:
