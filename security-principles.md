@@ -207,3 +207,101 @@ openssl enc -aes-256-ecb -d -in ciphertext.enc -pbkdf2
 > 
 > Secure algorithms provide a high level of confusion, making the relation between the shared key and the ciphertext too
 > complicated to be broken down.
+
+## Asymmetric encryption
+
+| Symmetric                                                       | Asymmetric                                                          |
+|-----------------------------------------------------------------|---------------------------------------------------------------------|
+| Shared key to encrypt/decrypt                                   | One to encrypt, another to decrypt                                  |
+| Secret must be shared over a different channel than the message | Shared secret can be established over an open communication channel |
+| Extended to any length message                                  | Restricted to specific length                                       |
+| Used to exchange messages                                       | Used to exchange symmetric keys                                     |
+
+A key to making a good asymmetric algorithm is to find out a trapdoor function, allowing to easily go in one direction,
+but really hard to go in another direction.
+
+### Deriving a shared secret
+
+Because exponentiation in a modulus is a trapdoor function used in asymmetric keys, giving the public key, does not give
+the private key, example:
+
+Let's imagine that we need to derive a shared secret between two personas: 
+- we set a common `modulus` to 27
+- we set a common `base` to 2
+- we set a `first private key` to 7
+- we set a `second private key` to 8
+
+Now, to generate the first public key, we'll be using $${base}^{privateKey}_{mod {(modulus)}} $$ which will give us the public key.
+
+Thus, for the first public key calculation: $$firstPublicKey=2^7_{mod 27} = 20$$
+
+and, for the second public key calculation: $$secondPublicKey=2^8_{mod 27} = 13$$
+
+```mermaid
+flowchart TD
+;
+subgraph frame[ ]
+    subgraph common[ ]
+      subgraph calculusPersona1["$$publicKey2^{privateKey1}mod(27)=13^7mod(27)=4$$"]
+      end
+      subgraph calculusPersona2["$$publicKey1^{privateKey2}mod(27)=20^8mod(27)=4$$"]
+      end
+    end
+    subgraph persona1["Persona 1"]
+      subgraph privateKey1["🔑 = 7"]
+      end
+      subgraph publicKey1["🔓 = 20"]
+      end
+    end
+    persona1:::color
+    subgraph persona2["Persona 2"]
+    subgraph privateKey2["🔑 = 8"]
+    end
+    subgraph publicKey2["🔓 = 13"]
+    end
+    end
+    persona2:::color
+    persona2 --> calculusPersona2
+    persona1 --> calculusPersona1
+    classDef color fill:#08421b;
+end
+```
+The interesting part of the above technique is that any eavesdropper that knows the public keys, as well as the common 
+base and modulus, is unable to figure out the shared secret 4. 
+
+> [!TIP]
+> To maximize entropy, it's recommended to use prime numbers for both base and modulus.
+> Regardless, **we should avoid 0**. In other words the Fermat's little theorem should be met:
+> $$g^{a}_{mod(n)} \neq 1$$, where `n` is a prime number, `a` is a factor of `(n-1)`, and `g` isn't a multiple of `n`
+
+#### Using Diffie-Hellman key exchange
+
+To generate a key using Diffie-Hellman key exchange, we can run:
+```shell
+openssl genpkey -genparam -algorithm DH -out params.pem
+```
+From which we can generate a private key:
+```shell
+openssl genpkey -paramfile params.pem -out private_key.pem
+```
+As well as its public key:
+```shell
+openssl pkey -in private_key.pem -pubout -out test_public_key.pem 
+```
+
+Now let's imagine we want to exchange keys with another party, using the generated key exchange:
+```shell
+#generating a new private key
+openssl genpkey -paramfile params.pem -out private_key_1.pem
+
+#generating its public key
+openssl pkey -in private_key_1.pem -pubout -out public_key_another_party.pem
+
+#deriving the shared secret
+openssl pkeyutl -derive -inkey private_key_1.pem -peerkey test_public_key.pem -out shared_secret.bin
+
+#and now generating another shared secret from the first party's standpoint 
+openssl pkeyutl -derive -inkey private_key.pem -peerkey public_key_another_party.pem -out shared_secret1.bin
+# → shared_secret == shared_secret1
+ 
+```
