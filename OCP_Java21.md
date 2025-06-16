@@ -363,3 +363,10 @@ switch (season) {
 
 ### A note about Map and its implementations
 - `ConcurrentHashMap` throws NullPointerException when adding either a key or value set to `null`
+
+### String code point
+It allows to return the ascii code for a given string:
+- `"abc".codePoints().boxed().toList()` -> [97, 98, 99]
+- `"abc".codePointAt(0)` -> 97
+- `"abc".codePointBefore(1)` -> 97
+- `"abc".codePointBefore(0)` -> `throws StringIndexOutOfBoundsException`
