@@ -16,11 +16,9 @@ Thread thread = Thread.ofVirtual()
 
  - ℹ️ Mind that calling `setDaemon(false)` would throw an `IllegalArgumentException`
  - A platform or kernel thread is managed by the operating system and their creation requires a system call which is
- expensive, on the other hand, virtual threads are operated by the JVM and therefore it's way cheaper to instantiate
- them
- - Leveraging `Executors.netWorkStealing()` can improve virtual threads performance since work-stealing thread pools use
-the number of available processors as its target parallelism level, and virtual threads execute on top of kernel threads,
-and this last ones execute depending on available processors
+ expensive, on the other hand, virtual threads are operated by the JVM and therefore way cheaper to instantiate
+ - Leveraging `Executors.newWorkStealingPool()` can improve virtual threads performance since work-stealing thread pools use
+the number of available processors as its target parallelism level
  - Virtual threads have a fixed thread priority `Thread.NORM_PRIORITY` that cannot be changed
 
 ### Java foundations reminder
@@ -95,7 +93,7 @@ float f = l;// this compiles just fine
 1/0 -> throws ArithmeticException("/ by zero")
 ```
 - `Arrays.asList` creates a list backed on the array, meaning that if the array changes, so does the List. It's important
-  noting that add or remove are not allowed on the list, or else `UnsupportedOperationException` is thrown
+  to note that adding or removing are not allowed on the list, or else `UnsupportedOperationException` is thrown
 - `Exception#toString` only prints the exception name + message (and not the stacktrace)
 - `if (false) {...}` does not generate a compile-time error, which is an exception to the rule for optimizations,
   however, `while(false) {...}` or `for(;false;) {...}` won't compile
@@ -133,7 +131,7 @@ char[] array1 = {'c', 'a', 'r'};
 char[] array2 = {'c', 'a', 'r', 'w', 'a', 's', 'h'};
 
 Arrays.compare(array1, array2); // -4
-Arrays.compare(array2, array1); // -4
+Arrays.compare(array2, array1); // 4
 
 // Rule 2: when mismatching the first element found from left to right, returns the result of comparing that element 
 char[] array3 = {'c', 'a', 'r', 'v'};
