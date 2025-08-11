@@ -19,10 +19,10 @@ Therefore, the below class does not initialize the Child class (i.e. executing i
 of referencing a static parent field from it. 
 ```java
 class Super {
-    static String id = "Super"; // This member could also be a constant
+    final static String id = "Super"; // it suffices to remove final to make Static initializer block get executed
 }
 
-class Child {   
+class Child extends Super {   
   static {
       System.out.printf("Static initializer block...%n");
   }
