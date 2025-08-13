@@ -20,17 +20,20 @@ of referencing a static parent field from it.
 ```java
 class Super {
     final static String id = "Super"; // it suffices to remove final to make Static initializer block get executed
+    static {
+        System.out.println("super init...");
+    }
 }
 
 class Child extends Super {   
   static {
-      System.out.printf("Static initializer block...%n");
+      System.out.printf("Static initializer block...%n"); // it won't be executed even if id is not final
   }
 }
 
 public class Test {
     public static void main(String...args) {
-      System.out.print(Super.id);  // It'll only print "Super"
+      System.out.print(Child.id);  // It'll only print "Super"
     }
 }
 ```
