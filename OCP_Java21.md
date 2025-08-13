@@ -368,3 +368,9 @@ It allows to return the ascii code for a given string:
 - `"abc".codePointAt(0)` -> 97
 - `"abc".codePointBefore(1)` -> 97
 - `"abc".codePointBefore(0)` -> `throws StringIndexOutOfBoundsException`
+
+### A note about Interrupting threads
+- `InterruptedException` is a checked exception that gets thrown if an interrupted thread gets blocked in an invocation
+of the `sleep`, `wait` or `join` methods
+- Calling `thread#interrupt` only sets the interrupted flag to `true`, which can be verified by calling 
+`thread#isInterrupted` method
