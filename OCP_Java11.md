@@ -329,6 +329,12 @@ Path.of(URI uri)
 > - `path1.resolve(path2)` will return path2 is this last one references an absolute path (e.g. `Path.of("foo/1").resolve(Path.of("/absolute/2))` → `/absolute/2` ) 
 > - `path1.relativize(path2)` will throw an `IllegalArgumentException` if path1 and path2 are mixed between absolute and relative paths
 
+> [!NOTE]  
+> Some important reminders about Paths
+> - Index starts from 0
+> - Root (i.e. `\` or `c:\`) is not considered as index 0
+> - Paths do not start nor end with `\` with the exception of Unix root `\`
+
 ##### Paths factory class
 ```java
 Paths.get(String first, String...more)
