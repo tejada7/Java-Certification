@@ -4,7 +4,14 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-public final class FizzBuzz implements Function<FizzBuzz.Input, List<String>> {
+public sealed class FizzBuzz implements Function<FizzBuzz.Input, List<String>> {
+
+    public final class FizzBuzzCharles extends FizzBuzz {
+        @Override
+        public List<String> apply(Input input) {
+            return super.apply(input);
+        }
+    }
 
     @Override
     public List<String> apply(final Input input) {
@@ -44,4 +51,3 @@ public final class FizzBuzz implements Function<FizzBuzz.Input, List<String>> {
         }
     }
 }
-

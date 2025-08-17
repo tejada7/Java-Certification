@@ -10,7 +10,7 @@ public class RaceConditionDemo {
 
         // Incrementing its value x1000 times
         Runnable runnable = () -> {
-//            System.out.println("Running from: " + Thread.currentThread().getName());
+            System.out.println("Running from: " + Thread.currentThread().getName());
             for (int i = 0; i < 1_000; i++) {
                 lw.incrementValue();
             }
@@ -47,7 +47,7 @@ public class RaceConditionDemo {
         // Making sure that runnable has been correctly executed, not sure
         for (Thread t : threads) {
             t.join();
-            t.stop();
+//            t.stop();
         }
         System.out.println("The value is: " + lw.getValue());
     }

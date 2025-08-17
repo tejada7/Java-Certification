@@ -327,7 +327,7 @@ Path.of(URI uri)
 > Some important reminders about `Path#resolve` and `Path#relativize` methods:
 > - `path1.relativize(path1.resolve(p2)) == p2`
 > - `path1.resolve(path2)` will return path2 is this last one references an absolute path (e.g. `Path.of("foo/1").resolve(Path.of("/absolute/2))` → `/absolute/2` ) 
-> - `path1.relativize(path2)` will throw an `IllegalArgumentException` we path1 and path2 are mixed between absolute and relative paths
+> - `path1.relativize(path2)` will throw an `IllegalArgumentException` if path1 and path2 are mixed between absolute and relative paths
 
 ##### Paths factory class
 ```java
@@ -683,7 +683,7 @@ Any static or transient fields are ignored. Values that are not provided will be
 > [!IMPORTANT]  
 > This rule does not apply to record, whose canonical constructor is always called during deserialization
 
-When defining the `readObject` method, it's possible to force the serializable fields initialization by calling 
+When defining the `readObject` method (which is executed before actual data deserialization), it's possible to force the serializable fields initialization by calling 
 `ObjectInputStream#defaultReadObject` method
 
 ```java
@@ -730,7 +730,7 @@ in which the application becomes unresponsive or in some kind of "stuck" state.
 * **Deadlock** - Situation where two or more threads are blocked **forever**, waiting for each other.
 * **Livelock** - Occurs when two or more threads are conceptually blocked forever, although they are each still active
 and trying to complete their task. 
-* **Starvation** - Occurs when a single thread is perpetually denied access to a shared resource or lock. The thread is
+* **Starvation** - Occurs when a single thread is perpetually denied to access to a shared resource or lock. The thread is
 still active, but it is unable to complete its work as a result of other threads contanstly taking the resource that
 they are trying to access.
 ### Suppressed Exceptions

@@ -19,6 +19,7 @@ public final class RecursiveJsonFinder implements BiFunction<String, String, Opt
         final var node = paths[index];
         if (doesJsonContainNode(json, node)) {
             return switch (json.get(node)) {
+                case null -> Optional.empty();
                 case JSONObject j -> !isLastIndex(paths, index) && doesJsonContainNode(j, paths[index + 1])
                         ? findPathInJson(j, paths, index + 1)
                         : Optional.of(j.toString());

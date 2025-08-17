@@ -1,27 +1,34 @@
 package com.javacertification.generics;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CircularBufferTest {
+import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.DisplayNameGenerator.*;
+
+@DisplayName("Circular buffer")
+@DisplayNameGeneration(IndicativeSentences.class)
+@IndicativeSentencesGeneration(separator = " ", generator = ReplaceUnderscores.class)
+class CircularBufferTest {
 
     private CircularBuffer buffer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         buffer = new CircularBuffer(3);
     }
 
     @Test
-    public void shouldOfferPollableElement() {
+    void should_offer_pollable_element() {
         buffer.offer(1);
         assertEquals(1, buffer.poll());
     }
 
     @Test
-    public void shouldNotOfferWhenBufferIsFull() {
+    void shouldNotOfferWhenBufferIsFull() {
         buffer.offer(1);
         buffer.offer(2);
         buffer.offer(3);
@@ -29,12 +36,12 @@ public class CircularBufferTest {
     }
 
     @Test
-    public void shouldNotPollWhenBufferIsEmpty() {
+    void shouldNotPollWhenBufferIsEmpty() {
         assertNull(buffer.poll());
     }
 
     @Test
-    public void shouldRecycleBuffer() {
+    void shouldRecycleBuffer() {
         assertTrue(buffer.offer(1));
         assertTrue(buffer.offer(2));
         assertEquals(1, buffer.poll());
