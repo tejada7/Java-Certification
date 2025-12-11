@@ -20,6 +20,7 @@ Thread thread = Thread.ofVirtual()
  - Leveraging `Executors.newWorkStealingPool()` can improve virtual threads performance since work-stealing thread pools use
 the number of available processors as its target parallelism level
  - Virtual threads have a fixed thread priority `Thread.NORM_PRIORITY` that cannot be changed
+ - There is a useful method allowing to transform a Runnable into a Callable: `Executors#callable(runnable, T result)`
 
 ### Java foundations reminder
 
