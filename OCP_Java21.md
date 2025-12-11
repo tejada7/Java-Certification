@@ -105,6 +105,7 @@ float f = l;// this compiles just fine
   non-final instance methods calls are virtual
 - Stack overflow only occurs in recursive calls
 - It's not allowed to access static fields in enum constructors (not even effectively finals)
+- Enum fields are not required to be final 😱
 - Although java allows _ in between numeric values such as
   - int i = 123_456, j = 1___2___3___4_5___6; ✅
   - float f = 1_2_3.4_5_6f ✅
