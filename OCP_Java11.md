@@ -328,6 +328,7 @@ Path.of(URI uri)
 > - `path1.relativize(path1.resolve(p2)) == p2`
 > - `path1.resolve(path2)` will return path2 is this last one references an absolute path (e.g. `Path.of("foo/1").resolve(Path.of("/absolute/2))` → `/absolute/2` ) 
 > - `path1.relativize(path2)` will throw an `IllegalArgumentException` if path1 and path2 are mixed between absolute and relative paths
+> - `Path#relativize` normalizes the paths before computation
 
 > [!NOTE]  
 > Some important reminders about Paths
