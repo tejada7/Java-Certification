@@ -37,6 +37,39 @@ public class Test {
     }
 }
 ```
+### Static members inheritance
+Although static members are actually hidden, there's a special case wherein classes can use a static method "as if they
+were inherited" without requiring its declaring class.
+
+> [!IMPORTANT]
+> This only applies for static methods declared in abstract classes,
+> static methods from interfaces must be called via interface reference
+
+```java
+abstract class Parent {
+    public static final String ID = "id";
+    public static void foo() {...}
+}
+
+interface Inter {
+  String ID = "id";
+  static void foo() {...}
+  
+  static void foo1() {...}
+}
+
+class Child extends Parent implements Inter {
+
+  public static void main(String[] args) {
+    foo(); // This will call the method from the abstract class.
+    foo1(); // ⚠️ ️does not compile, we need the interface reference Inter.foo1() instead
+    doSomething(ID); // This is also valid and will reference the ID from the Parent class
+    // To call the static method or reference the ID from the interface, we need to explicitly preceed the member by Inter
+  }
+  
+  // Mind that overriding the method would not compile
+}
+```
 
 ### New text block methods
 - `public String indent(int numberSpaces)` → adds/removes the same number of blank spaces of each line. **It's worth
@@ -77,14 +110,15 @@ greeting.stripIndent()/**
 
 ### String comparison
 Strings in Java are naturally ordered (i.e. ascending from smaller to bigger) in the following order:
-1. Numbers 
-2. `CharSequences` in capital letters 
-3. `CharSequences` in small letters 
+1. Special characters
+2. Numbers 
+3. `CharSequences` in capital letters 
+4. `CharSequences` in small letters 
 
 e.g.
 Given
 ```java
-String[] array = {"abc", "T", "TOTO", "123", "1", "2", "_1_2", "xyz", "a", "x", "z", "y", "xy", "b", "c", "d", "ab", "ba", "ac", "ca"};
+String[] array = {"abc", "T", "TOTO", "@", "-", "@-", "123", "1", "2", "_1_2", "xyz", "a", "x", "z", "y", "xy", "b", "c", "d", "ab", "ba", "ac", "ca"};
 Arrays.sort(array); // It'll become: [1, 123, 2, T, TOTO, _1_2, a, ab, abc, ac, b, ba, c, ca, d, x, xy, xyz, y, z]
 ```
 
@@ -263,7 +297,7 @@ Some new keywords:
 - `sealed` → indicates that a class (concrete or abstract) or interface may only be extended/implemented by named classes
 or interfaces.
 - `permits` → used along with `sealed`, lists the classes/interfaces that can extend/implement it.
-It's usage depends on the location of the subclasses:
+Its usage depends on the location of the subclasses:
   - In a different package → required
   - In the same file as the sealed class → not required, but permitted.
   - Nested class of the sealed class → not required, but permitted.
@@ -306,7 +340,7 @@ variables.
 void doStuff() {
     var var = "foo";
     final var var1 = "foo";
-    // String p = ""; // If this line would be uncommented out, then the below line wouldn't compile
+    // String p = ""; // May this line uncommented out, then the below line wouldn't compile
     Predicate<String> p = string -> {
         String var1 = ""; // not allowed
         print(var); // allowed if and only if var is effectively final    
@@ -339,7 +373,7 @@ final int[] array = list.toArray(new Integer[list.size()]);
 // However, there is this good-looking option with method reference:
 final int[] array = list.toArray(Integer[]::new);
 ```
-#### Deque API reminder
+### Deque API reminder
 `java.util.ArrayDeque` is combination of stack and queue, the exhaustive list of methods can be found [here](OCP_Java11.md#deque).
 
 ```java
@@ -396,7 +430,7 @@ And conversely:
 final Stream<?> stream = StreamSupport.stream(splitetator, false);
 ```
 
-It's worth noting that .spliterator() on a stream is a terminal operation, and it can be applied on infinite streams.
+It's worth noting that .spliterator() on a stream is a terminal operation, and it can be applied to infinite streams.
 In that situation, the method getExactSizeIfKnown() will return -1 and estimatedSize() will return Long#MAX_VALUE.
 
 ### Sequential vs Parallel vs Ordered vs Unordered streams
@@ -453,13 +487,13 @@ UnaryOperator<Integer> f = x -> x++; // This won't ever increment the value as i
 
 The below symbols work with `out#printf`, `String#formatter`, `String#format`: 
 
-| Symbol | Supported type  | Additional notes                                                                                                                                                                                                                |
-|-------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| %s    | string          | N/A                                                                                                                                                                                                                             |
-| %d    | int or long     | N/A                                                                                                                                                                                                                             |
-| %f    | float or double | Let's take the example of [3.14159285]<br/>By default it considers 6 decimals → [3.14159]<br/>%.3f will round to two decimals → [3.142]<br/>%5.2f adds spaces to the left → [ 3.14]<br/>%05.2f adds zeros to the left → [03.14] |
-| %n    | \n              | It adds a new line independently<br/> of the operating system.                                                                                                                                                                  |
-| %x    | byte            | Hexadecimal format.                                                                                                                                                                                                             |
+| Symbol | Supported type  | Additional notes                                                                                                                                                                                                                  |
+|-------|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| %s    | string          | N/A                                                                                                                                                                                                                               |
+| %d    | int or long     | N/A                                                                                                                                                                                                                               |
+| %f    | float or double | Let's take the example of [3.14159285]<br/>By default it considers 6 decimals → [3.14159]<br/>%.3f will round to three decimals → [3.142]<br/>%5.2f adds spaces to the left → [ 3.14]<br/>%05.2f adds zeros to the left → [03.14] |
+| %n    | \n              | It adds a new line independently<br/> of the operating system.                                                                                                                                                                    |
+| %x    | byte            | Hexadecimal format.                                                                                                                                                                                                               |
 
 ### Formatting numbers
 The below symbols work with `NumberFormat#format`:
@@ -476,17 +510,17 @@ System.out.println(MessageFormat.format("{0} {1}!!! {2}", "Hello", "world", 2022
 ```
 
 ### Locales
+- A locale consists of a required lowercase language code and optional uppercase country code.
 - `Locale#toString` formats the locales as `language abbreviation in small letters` + `_` + `country abbreviation in capital letters`,
 e.g. `es_ES,` `en_US,` `fr_FR,` `es_BO`
-- [IETF languages tags](https://en.wikipedia.org/wiki/IETF_language_tag) are in the form `es-ES`, `en-US`, `fr-FR` and `es-BO` ⚠️ mind the `-` instead of `_`. 
-For Java to correctly load this kind of format, we have two options:
+- [IETF languages tags](https://en.wikipedia.org/wiki/IETF_language_tag) are in the form `es-ES`, `en-US`, `fr-FR` and `es-BO` ⚠️ mind the `-` instead of `_`.
+- For Java to correctly load this kind of format, we have two options:
   - `var locale = Locale.forLanguageTag("en-US")`, → `locale.toString(); // en_US`
   - `var locale = new Locale("en", "US");` → `locale.toString(); // en_US` ⚠️ deprecated in Java 19, instead favor `Locale.of("en", "US");`
-  - To check whether a locale is valid: `asList(Locale.getAvailableLocales()).contains(locale)`
-  - It's possible to set finer-grained control of the default locale by setting the `Locale#Category` (either `DISPLAY` 
-or `FORMAT`) by calling `Locale.setDefault(category, locale)`
-  - A locale consists of a required lowercase language code and optional uppercase country code.
-#### Formatting currencies
+- To check whether a locale is valid: `asList(Locale.getAvailableLocales()).contains(locale)`
+- It's possible to set finer-grained control of the default locale by setting the `Locale#Category` (either `DISPLAY`or 
+`FORMAT`) by calling `Locale.setDefault(category, locale)`
+### Formatting currencies
 ```java
 final var amount = 50.99;
 System.out.println(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("en-US"))
@@ -498,7 +532,7 @@ System.out.println(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("fr-FR
 System.out.println(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-BO"))
         .format(amount)); // Bs50.99
 ```
-#### CompactNumberFormat
+### CompactNumberFormat
 It's designed to be used in places where print space may be limited. There are two self-explanatory styles available:
 - LONG
 - SHORT
@@ -580,8 +614,8 @@ Running the same class from the jar file:
 ```java
 java -p mods -m moduleName/pathToClass.ClassName
 ```
-#### Migration modules strategies
-##### Bottom-up
+### Migration modules strategies
+#### Bottom-up
 The easiest approach, and recommended when you have the control of all the application dependencies.
 Converting lower-level libraries into modular jars before converting higher-level libraries.
 
@@ -592,7 +626,7 @@ both `B.jar` and `A.jar` will remain unnamed modules and therefore will be able 
 - Step 2: Repeat the process for `B.jar` and later on for `A.jar`
 
 The ultimate goal after the migration is to have all packages residing on the module path (and thus none on the classpath). 
-##### Top-down
+#### Top-down
 
 Recommended approach when we **don't have control of every jar** used by our applications (i.e. become automatic modules)
 The idea is to put all dependencies on the module path and make the highest-level dependency a named module, adding as 
@@ -606,19 +640,20 @@ Example:
 ### Concurrency
 - happens-before relationship is a guarantee that any action performed in any thread is reflected to other
   actions in different threads. `Stream#forEachOrdered` is an example of executions that comply with this term.
-- The `volatile` keyword ensures that only one thread is modifying a variable at a time and that data read by multiple 
-threads is consistent. However, **it does not provide thread-safety**. As an example, the usage of the volatile keyword 
+- The `volatile` keyword ensures that a variable's value being concurrently read by multiple threads is consistent. However, **it does not provide thread-safety**. As an example, the usage of the volatile keyword 
 on a variable _x_ ensures that if one thread updates _x_, then whichever thread is executed after will be aware of the 
-latest updates on _x_
+latest updates on _x_. This does not prevent **race conditions**. → To address this limitation, use instead `AtomicReference`
 - `atomic` is the property of an operation to be run as a single unit of execution without any interference from another 
 thread
 - `Mutual exclusion` is the property that at most one thread is executing a segment of code at a given time. This can be
 implemented with a _lock_ or _monitor_
-- `fairness` happens when two threads waiting to acquire a lock, the first to enter the block of code will be the first 
-that entered the waiting list. It's is disabled by default with `ReentrantLock` and unavailable with `synchronized` blocks
+- `fairness` happens when two threads wait to acquire a lock, the first to enter the block of code will be the first 
+that entered the waiting list. It's is disabled by default with `ReentrantLock` (for performance purpose) and unavailable 
+with `synchronized` blocks
 - Intrinsic locking = synchronized + volatile
 - Explicit locking = manual lock
-#### ReentrantReadWriteLock
+
+### ReentrantReadWriteLock
 Used to guarantee data consistency by ensuring atomic operations, there is no limit to the number of concurrent readers, 
 however, **from the moment a writer acquires the lock, any reader gets blocked until write lock gets released**.  
 
@@ -669,7 +704,7 @@ public void writeToCache(final String key, final Object value) {
 > A lock isn't tied to a thread and we can hold multiple read locks at the same time (each with a different stamp) but 
 > only one write lock. 
 
-#### Semaphores
+### Semaphores
 They are a kind of a lock and the difference lies on the fact that a lock allows only one thread to access a block of code, 
 whereas, a semaphore can rely on a number of permits to allow multiple threads to concurrently access a guarded block of 
 code. In other words, a lock has only 1 permit. 
@@ -682,7 +717,7 @@ try {
     semaphore.release();
 }
 ```
-#### CyclicBarrier and CountDownLatch
+### CyclicBarrier and CountDownLatch
 - A barrier allows several tasks (**run in different threads**) wait for each other, then trigger a subsequent task or
 action and then reset the system, so that it can run again.
 - A latch works almost in the same way as barriers, the only different is that it does not reset once a latch is open it
@@ -742,7 +777,7 @@ class Foo implements Callable<Boolean> {
 }
 ```
 
-#### Thread-safe lists
+### Thread-safe lists
 
 Multiples alternatives:
 - `Vector` → discouraged and inefficient because all its methods are synchronized.
@@ -761,11 +796,22 @@ synchronized(syncList) {
     }    
 }
 ```
-- `CopyOnArrayList` → alternative way more efficient to the former options where all mutative operations (i.e. add, set)
- are implemented by making a copy of the underlying array. It does not require an explicit synchronized block before the
+- `CopyOnWriteArrayList` → alternative way more efficient to the former options (assuming read operations outweigh write ones) where all mutative operations (i.e. add, set)
+ are implemented by making a copy of the underlying array. **It does not require an explicit synchronized block** (as 
+internally it uses already one) before the
 iteration. It's recommended when:
   - There are more read than write operations
   - Smaller lists
+- That said, there is a final balanced solution with fewer trade-offs that those of the above that consist in using a 
+ReentrantLock over a classic `ArrayList`, below a summary table:
+
+
+| Collection                    | Thread-Safety Strategy                             | Best Use Case                            | Read Performance        | Write Performance |
+|-------------------------------|----------------------------------------------------|------------------------------------------|-------------------------|-------------------|
+| `Vector`                      | All methods are `synchronized`                     | Legacy code.                             | Slow                    | Slow              |
+| SynchronizedList              | `synchronized` wrapper                             | Simple apps with even read/write ratios. | Slow (Every read locks) | Medium            |
+| `CopyOnWriteArrayList`        | `volatile` reads + internal array cloning on write | 99% Reads / 1% Writes                    | Fastest (Lock-free)     | Slowest           |
+| `ArrayList` + `ReadWriteLock` | Separate read/write locks                          | High-Read / High-Write mix.              | Fast (parallel reads)   | Fast              |
 
 ### NIO Streams
 When reading from a `Reader` implementation, -1 or null implies end of file. In hindsight, when reading
@@ -837,7 +883,7 @@ try(final var connection = DriverManager.getConnection("url", "user", "password"
         }
 }
 ```
-## Exceptions
+### Exceptions
 There are two type of exceptions:
 - checked: All exceptions extending from Exception or Throwable → we are forced to handle them.
 - unchecked: All exceptions extending from RuntimeException or Error → we aren't forced to handle them.
@@ -885,7 +931,7 @@ final Number number = someNumber();
 }
 ```
 
-#### The new switch statement
+### The new switch statement
 The switch statement can from now on return values:
 ```java
 // Without fallthrough:
@@ -945,18 +991,18 @@ These interfaces contain a bunch of navigation methods reporting closest matches
 ```java
 final NavigableSet<String> set = new TreeSet<>();
 set.addAll(List.of("a", "cc", "b", "c", "bb", "aa")); // a aa b bb c cc
-System.out.println(set.ceiling("bbb")); // returns c, greater than or equal to
-System.out.println(set.lower("aa")); // returns a, the lower element (null if not found)
-System.out.println(set.floor("bbb")); // returns bb, less than or equal
-System.out.println(set.higher("cc")); // returns null no higher element found
+System.out.println(set.ceiling("bbb")); // c, greater than or equal to
+System.out.println(set.lower("aa")); // a, the lower element (null if not found)
+System.out.println(set.floor("bbb")); // bb, less than or equal
+System.out.println(set.higher("cc")); // null no higher element found
 
-System.out.println(set.headSet("aa", true)); // returns [a aa]
-System.out.println(set.subSet("b", "cc")); // returns [b bb c], note that the to is not inclusive !!!
-System.out.println(set.subSet("b", true, "cc", true)); // returns [b bb c cc] same as above but with inclusive final element
-System.out.println(set.tailSet("c")); // returns [c cc]
+System.out.println(set.headSet("aa", true)); // [a aa]
+System.out.println(set.subSet("b", "cc")); // [b bb c], note that the to is not inclusive !!!
+System.out.println(set.subSet("b", true, "cc", true)); // [b bb c cc] same as above but with inclusive final element
+System.out.println(set.tailSet("c")); // [c cc]
 
-System.out.println(set.pollFirst()); // returns a from the set and removes it from the set
-System.out.println(set.pollLast()); // returns cc from the set and removes it from the set
+System.out.println(set.pollFirst()); // a from the set and removes it from the set
+System.out.println(set.pollLast()); // cc from the set and removes it from the set
 ```
 Methods returning a collection throw an `IllegalArgumentException` if keys are out of range (e.g. adding `c` to the subset of `aa`).
 Note that the same methods are available for `NavigbleMap` interface, and therefore its implementations.
@@ -1021,57 +1067,24 @@ try (autocleable){
 ```
 Mind that variables used by the try-with-resources block **must be effectively final**.
 
-### Static members inheritance
-Although static members are actually hidden, there's a special case wherein classes can use a static method "as if they
-were inherited" without requiring its declaring class.
-
-> [!IMPORTANT]
-> This only applies for static methods declared in abstract classes,
-> static methods from interfaces must be called via interface reference
-
-```java
-abstract class Parent {
-    public static final String ID = "id";
-    public static void foo() {...}
-}
-
-interface Inter {
-  String ID = "id";
-  static void foo() {...}
-  
-  static void foo1() {...}
-}
-
-class Child extends Parent implements Inter {
-
-  public static void main(String[] args) {
-    foo(); // This will call the method from the abstract class.
-    foo1(); // ⚠️ ️does not compile, we need the interface reference Inter.foo1() instead
-    doSomething(ID); // This is also valid and will reference the ID from the Parent class
-    // To call the static method or reference the ID from the interface, we need to explicitly preceed the member by Inter
-  }
-  
-  // Mind that overriding the method would not compile
-}
-```
-## String#strip vs String#trim
+### String#strip vs String#trim
 `strip` is the _"Unicode-aware"_ version of `trim`.
 
 `trim` removes only characters <= `U+0020` (space); whereas `strip` removes all Unicode whitespace characters (but not 
 all control characters, such as `\0`)
 
-## String's new transform method
+### String's new transform method
 
 Now we can provide a `Function<? extends String, R>` to **map** a String into something else 🧐 curious to find out why 
 they decided to call it *transform* and not *map* as done in the Stream API), regardless below an example:
 
 ```java
 String aString = "foo";
-Function<String, Integer> function = String::length; // mind that we can functions as parameters which is powerful
+Function<String, Integer> function = String::length; // mind that we can send functions as parameters which is powerful
 int length = aString.transform(function); //
 ```
 
-## Formattable interface
+### Formattable interface
 
 Introduced in Java 5, it allows to perform a custom formatting of `%s` when an object (implementing `Formatable`) is 
 passed as argument to a `Formatter#format`:

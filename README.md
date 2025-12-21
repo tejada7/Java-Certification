@@ -9,3 +9,4 @@ Solutions to  [Java Puzzles](src/main/java/com/javacertification/puzzles/puzzles
 - [The mower problem](src/main/java/com/javacertification/interviewquestions/tondeuse/Mower.md)
 - [OCP Java 11 study notes](OCP_Java11.md)
 - [OCP Java 17 study notes](OCP_Java17.md)
+- [OCP Java 21 study notes](OCP_Java21.md)
