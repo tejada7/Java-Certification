@@ -282,7 +282,7 @@ Below an exhaustive list of its available methods:
 |`boolean mkdirs()`| Creates the directory named by this path including any nonexistent parent directories.                                                                            |
 |`boolean renameTo(File dest)`| Renames the file or directory denoted by this path to dest and returns true only if successful                                                                    |
               
-##### Files utility class
+##### File utility classes
 This utility class operates only on Path instances, and not on File ones.
 
 |Enum type|Interface inherited|Enum value|Details|
@@ -346,6 +346,17 @@ Path.of(URI uri)
 ```java
 Paths.get(String first, String...more)
 Paths.get(URI uri)
+```
+
+#### 3. DirectoryStream
+Allows to to iterate over the entries of a directory, there is a constructor variation that takes a glob pattern, example:
+```java
+// Filters out all files with the extensions .java or .class 
+try(DirectoryStream<Path> stream = Files.newDirectoryStream(Path.of("."), "*.{java,class}")) {
+  for (var path : stream) { // it implements Iterable
+  ...
+  }
+}
 ```
 
 #### IO Streams
