@@ -88,6 +88,18 @@ long l = 10L;
 double d = l;// this compiles just fine
 float f = l;// this compiles just fine
 ```
+### Integer caches
+When defining a short `Integer`, `Short`, `Long`, `Character` (i.e. equivalent to `Byte`or -128 <= value <= 127), a cache 
+is used around those wrappers allowing to _reuse_ objects stored in a internal cache, that's why:
+```java
+Long n1 = 127L; 
+Long n2 = 127L;
+IO.println(n1 == n2); // true, and holds true for all types listed above
+// ℹ️ had the number being out of the -128 <= value <= 127 range, tbe output will always be false
+```
+> [!NOTE]  
+> The reason why wrapper constructors got deprecated in Java 9 is because they don't leverage the internal cache. It's 
+> hence recommended to either use auto-boxing or `#valueOf` 
 
 - native methods cannot have a body
 - A map object cannot act as a key on itself, (e.g. `var map = Map.of(...); map.put(map, ...);`)
