@@ -399,3 +399,41 @@ It allows to return the ascii code for a given string:
 of the `sleep`, `wait` or `join` methods
 - Calling `thread#interrupt` only sets the interrupted flag to `true`, which can be verified by calling 
 `thread#isInterrupted` method
+
+### Sequenced collections
+As of Java 17, there are _ordered collections_ implemented by lists, as well as _sorted collections_, implemented by sets 
+and navigable sets, from which `LinkedHashSet` are kind of both.
+
+All of the above are different, but share a common behavior, which is modeled by`SequenceCollections` aiming to fill this gap.
+
+In short, they model common behavior shared for ordered and sorted collections:
+
+```mermaid
+flowchart BT
+;
+    List --> SequencedCollection
+    SequencedCollection:::green --> Collection
+    SequencedSet:::green --> SequencedCollection
+    Set --> Collection
+    SortedSet --> Set
+    SortedSet --> SequencedSet
+    NavigableSet --> SortedSet
+    TreeSet --> NavigableSet
+    LinkedHashSet --> SequencedSet
+    LinkedHashSet --> Set
+    Queue --> Collection
+    Deque --> Queue
+    Deque --> SequencedCollection
+    ArrayList --> List
+    LinkedList --> Deque
+    LinkedList --> List
+    ArrayDeque --> Deque
+    SequencedMap --> Map
+    SortedMap --> SequencedMap:::green
+    NavigableMap --> SortedMap
+    HashMap --> Map
+    LinkedHashMap --> HashMap
+    LinkedHashMap --> SequencedMap
+    TreeMap --> NavigableMap
+    classDef green fill: green
+```
