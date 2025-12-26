@@ -193,6 +193,9 @@ strategy pattern. There are two ways to use temporal adjusters:
 temporal = adjuster.adjustInto(temporal)
 temporal = temporal.with(adjuster)
 ```
+- When invoking `#toString` to `Period` it prints in ISO-8601 format, such as `P6Y3M1D`, zero days being represented as `P0D`
+- Conversely, `Duration`'s looks like `PT8H6M1.1S`, `PT0S` representing zero duration 
+
 ### StringBuilder notes
 - The replace method from `StringBuilder` takes 3 arguments:
 ```java
