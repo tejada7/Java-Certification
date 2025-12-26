@@ -22,6 +22,17 @@ the number of available processors as its target parallelism level
  - Virtual threads have a fixed thread priority `Thread.NORM_PRIORITY` that cannot be changed
  - There is a useful method allowing to transform a Runnable into a Callable: `Executors#callable(runnable, T result)`
 
+### Thread states
+
+| State         | Description                                                      | Virtual Thread Particularity                                                  |
+|---------------|------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| NEW           | Thread created but start() not yet called.                       | Virtual threads are usually created via builders or executors.                |
+| RUNNABLE      | Executing in JVM or waiting for CPU.                             | May be mounted (running on a carrier) or unmounted (waiting in a queue).      |
+| BLOCKED       | Waiting for a monitor lock (synchronized).                       | Can cause Pinning (holding the carrier thread) if not on latest JVM versions. |
+| WAITING       | "Waiting indefinitely for another thread (e.g., join, wait)."    | Unmounted from the carrier and moved to the Heap to save resources.           |
+| TIMED_WAITING | "Waiting for a specified time (e.g., sleep, join with timeout)." | _Very cheap_; allows the carrier thread to go execute other work.             |
+| TERMINATED    | Thread has finished execution.                                   | Object is eligible for Garbage Collection from the Heap.                      |
+
 ### Java foundations reminder
 
 - Exception parameters in a multi-catch clause are implicitly final:
