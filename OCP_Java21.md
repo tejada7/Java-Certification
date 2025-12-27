@@ -118,6 +118,9 @@ IO.println(n1 == n2); // true, and holds true for all types listed above
 ```
 - `Arrays.asList` creates a list backed on the array, meaning that if the array changes, so does the List. It's important
   to note that adding or removing are not allowed on the list, or else `UnsupportedOperationException` is thrown
+- `ArrayList#trimToSize` can help free up some space in memory if for some reason the space allotted to the array list 
+is too big, having plenty of non-used resources (e.g. after a massive deletion of elements)  
+- Do not ever iterate over a `LinkedList` using indexes (prefer iterator)
 - `Exception#toString` only prints the exception name + message (and not the stacktrace)
 - `if (false) {...}` does not generate a compile-time error, which is an exception to the rule for optimizations,
   however, `while(false) {...}` or `for(;false;) {...}` won't compile
