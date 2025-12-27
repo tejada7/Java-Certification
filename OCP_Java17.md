@@ -196,6 +196,9 @@ temporal = temporal.with(adjuster)
 - When invoking `#toString` to `Period` it prints in ISO-8601 format, such as `P6Y3M1D`, zero days being represented as `P0D`
 - Conversely, `Duration`'s looks like `PT8H6M1.1S`, `PT0S` representing zero duration 
 - `Duration` and `Period`'s `#between` method return a negative time if the end if before the start
+> [!IMPORTANT]  
+> `Duration#toString` does never print days, the max measure it can print out is hours, e.g. `Duration.ofHours(49)` -> `PT49H`, 
+> `Duration.ofDays(2)` -> `PT48H`
 
 ### StringBuilder notes
 - The replace method from `StringBuilder` takes 3 arguments:
