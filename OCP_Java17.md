@@ -832,6 +832,7 @@ from an `OutputStream` implementation, an `EOFException` is thrown instead.
 - When reaching the end of a file, it throws a `EOFException`
 - The method to write a String is `raf.writeChars(string)` and the method to read a line `raf.readLine()` (beware that 
 both methods throw `IOException`)
+- Having at least the `w` mode, and a non-existing file, raf will attempt to create it
 
 ### JDBC
 ![img.png](src/main/resources/jdbc_interface_hierarchy.png)
