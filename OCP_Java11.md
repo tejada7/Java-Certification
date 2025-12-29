@@ -283,32 +283,40 @@ Below an exhaustive list of its available methods:
 |`boolean renameTo(File dest)`| Renames the file or directory denoted by this path to dest and returns true only if successful                                                                    |
               
 ##### File utility classes
+
 This utility class operates only on Path instances, and not on File ones.
 
-|Enum type|Interface inherited|Enum value|Details|
-|---|---|---|---|
-|`LinkOption`|CopyOption OpenOption|NOFOLLOW_LINKS|Do not follow symbolic links.|
-|`StandardCopyOption`|CopyOption|ATOMIC_MOVE|Move file as atomic file system operation.|
-| | |COPY_ATTRIBUTES|Copy existing attributes to new file.|
-| | |REPLACE_EXISTING|Overwrite file if it already exists.|
-|`StandardOpenOption`|OpenOption|APPEND|If file is already open for write, then append to the end.|
-| | |CREATE|Create a new file if it does not exist.|
-| | |CREATE_NEW|Create a new file only if it does not exist, fail otherwise.|
-| | |READ|Open for read access.|
-| | |TRUNCATE_EXISTING|If file is already open for write, then erase file and append to beginning.|
-| | |WRITE|Open for write access.|
-|`FileVisitOption`|N/A|FOLLOW_LINKS|Follow symbolic links.|
+| Enum type            | Interface inherited   | Enum value        | Details                                                                     |
+|----------------------|-----------------------|-------------------|-----------------------------------------------------------------------------|
+| `LinkOption`         | CopyOption OpenOption | NOFOLLOW_LINKS    | Do not follow symbolic links.                                               |
+| `StandardCopyOption` | CopyOption            | ATOMIC_MOVE       | Move file as atomic file system operation.                                  |
+|                      |                       | COPY_ATTRIBUTES   | Copy existing attributes to new file.                                       |
+|                      |                       | REPLACE_EXISTING  | Overwrite file if it already exists.                                        |
+| `StandardOpenOption` | OpenOption            | APPEND            | If file is already open for write, then append to the end.                  |
+|                      |                       | CREATE            | Create a new file if it does not exist.                                     |
+|                      |                       | CREATE_NEW        | Create a new file only if it does not exist, fail otherwise.                |
+|                      |                       | READ              | Open for read access.                                                       |
+|                      |                       | TRUNCATE_EXISTING | If file is already open for write, then erase file and append to beginning. |
+|                      |                       | WRITE             | Open for write access.                                                      |
+| `FileVisitOption`    | N/A                   | FOLLOW_LINKS      | Follow symbolic links.                                                      |
 
-||                                                       |
-|---|-------------------------------------------------------|
-|`boolean exists(Path, LinkOption…)`| `Path move(Path, Path, CopyOption…)`                  |
-|`boolean isSameFile(Path, Path)`| `void delete(Path)`                                   |
-|`Path createDirectory(Path, FileAttribute<?>…)`| `boolean deleteIfExists(Path)`                        |
-|`Path createDirectories(Path, FileAttribute<?>…)`| `BufferedReader newBufferedReader(Path)`              |
-|`Path copy(Path, Path, CopyOption…)`| `BufferedWriter newBufferedWriter(Path, OpenOption…)` |
-|`long copy(InputStream, Path, CopyOption…)`| `List<String> readAllLines(Path)`                     |
-|`long copy(Path, OutputStream)`| `Stream lines(Path)`                                  |
+|                                                   |                                                       |
+|---------------------------------------------------|-------------------------------------------------------|
+| `boolean exists(Path, LinkOption…)`               | `Path move(Path, Path, CopyOption…)`                  |
+| `boolean isSameFile(Path, Path)`                  | `void delete(Path)` (*)                               |
+| `Path createDirectory(Path, FileAttribute<?>…)`   | `boolean deleteIfExists(Path)` (*)                    |
+| `Path createDirectories(Path, FileAttribute<?>…)` | `BufferedReader newBufferedReader(Path)`              |
+| `Path copy(Path, Path, CopyOption…)`              | `BufferedWriter newBufferedWriter(Path, OpenOption…)` |
+| `long copy(InputStream, Path, CopyOption…)`       | `List<String> readAllLines(Path)`                     |
+| `long copy(Path, OutputStream)`                   | `Stream lines(Path)`                                  |
 
+(*) Only applicable to files and empty directories, otherwise use:
+```java
+try (var stream = Files.walk(Path.of("aDirectory"))) {
+    stream.forEach(Unchecked.consumer(Files::delete));
+}
+// or if you're using Spring, you can leverage FileSystemUtils#deleteRecursively
+```
 #### 2. Path
 A Path instance represents a hierarchical path on the storage system to a file or directory. You can think of a Path as the NIO.2 replacement for the java.io.File class, although how you use it is a bit different.
 
@@ -331,6 +339,7 @@ Path.of(URI uri)
 
 > [!NOTE]  
 > Some important reminders about `Path#resolve` and `Path#relativize` methods:
+> - `relativize` is meant to transform an absolute path into a relative
 > - `path1.relativize(path1.resolve(p2)) == p2`
 > - `path1.resolve(path2)` will return path2 is this last one references an absolute path (e.g. `Path.of("foo/1").resolve(Path.of("/absolute/2))` → `/absolute/2` ) 
 > - `path1.relativize(path2)` will throw an `IllegalArgumentException` if path1 and path2 are mixed between absolute and relative paths
