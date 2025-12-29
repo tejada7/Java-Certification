@@ -566,6 +566,15 @@ java --add-reads module1=module2 --add-exports module2/com.ocp.package1=module1
 `--add-reads module1=module2` implies that module1 wants to read all exported packages of module2.
 `--add-exports module2/com.ocp.package1=module1` implies that module2 exports package com.ocp.package1 to module1.
 
+> [!IMPORTANT]
+> It's still possible to force the jvm to load modules that aren't explicitly required in the main module, this is 
+> done via the --add-modules flag:
+> ```shell
+> java --module-path main-module.jar;automatic-module.jar 
+>      --add-modules automatic-module # this adds requires automatic-module to main-module at run time
+>      --module main-module/com.example.Main
+> ```
+
 To describe the module:
 ```shell
 java -p <module path> -d <module name>
