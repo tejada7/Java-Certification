@@ -567,6 +567,9 @@ And to list the modules:
 ```shell
 java -p <module path> --list-modules
 ```
+> [!NOTE]
+> Modules don't allow circular dependencies (i.e. module A requires module B and vice versa)
+
 ### Service provider
 Given a module exporting an interface:
 ```java
