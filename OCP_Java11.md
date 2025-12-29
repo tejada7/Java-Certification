@@ -570,6 +570,12 @@ java -p <module path> --list-modules
 > [!NOTE]
 > Modules don't allow circular dependencies (i.e. module A requires module B and vice versa)
 
+> [!IMPORTANT]
+> The Java Platform Module System uses three phases for building an app:
+> - compile time → Source code is compiled into bytecode (.class files or modular JARs) using javac.
+> - link time [optional] → The jlink tool resolves module dependencies, optimizes the code, and packages it into a custom runtime image.
+> - run time → The custom runtime image is executed
+
 ### Service provider
 Given a module exporting an interface:
 ```java
