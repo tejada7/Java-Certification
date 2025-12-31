@@ -33,6 +33,12 @@ the number of available processors as its target parallelism level
 | TIMED_WAITING | "Waiting for a specified time (e.g., sleep, join with timeout)." | _Very cheap_; allows the carrier thread to go execute other work.             |
 | TERMINATED    | Thread has finished execution.                                   | Object is eligible for Garbage Collection from the Heap.                      |
 
+### A note about Interrupting threads
+- `InterruptedException` is a checked exception that gets thrown if an interrupted thread gets blocked in an invocation
+  of the `sleep`, `wait` or `join` methods
+- Calling `thread#interrupt` only sets the interrupted flag to `true`, which can be verified by calling
+  `thread#isInterrupted` method
+
 ### Java foundations reminder
 
 - Exception parameters in a multi-catch clause are implicitly final:
@@ -117,7 +123,7 @@ IO.println(n1 == n2); // true, and holds true for all types listed above
 1/0 -> throws ArithmeticException("/ by zero")
 ```
 - `Arrays.asList` creates a list backed on the array, meaning that if the array changes, so does the List. It's important
-  to note that adding or removing are not allowed on the list, or else `UnsupportedOperationException` is thrown
+  to note that adding or removing is not allowed on the list, or else `UnsupportedOperationException` is thrown
 - `ArrayList#trimToSize` can help free up some space in memory if for some reason the space allotted to the array list 
 is too big, having plenty of non-used resources (e.g. after a massive deletion of elements)  
 - Do not ever iterate over a `LinkedList` using indexes (prefer iterator)
@@ -307,6 +313,10 @@ String result = switch(someNumber()) { // No risk of NPE
 };
 ```
 
+> [!IMPORTANT]
+> In order to compile, the `case null` must be defined before the default one, or alternatively use `case null, default`
+> (mind the ordering here too)
+
 ### Comparative switch table
 
 <table>
@@ -396,12 +406,6 @@ It allows to return the ascii code for a given string:
 - `"abc".codePointAt(0)` -> 97
 - `"abc".codePointBefore(1)` -> 97
 - `"abc".codePointBefore(0)` -> `throws StringIndexOutOfBoundsException`
-
-### A note about Interrupting threads
-- `InterruptedException` is a checked exception that gets thrown if an interrupted thread gets blocked in an invocation
-of the `sleep`, `wait` or `join` methods
-- Calling `thread#interrupt` only sets the interrupted flag to `true`, which can be verified by calling 
-`thread#isInterrupted` method
 
 ### Sequenced collections
 As of Java 17, there are _ordered collections_ implemented by lists, as well as _sorted collections_, implemented by sets 

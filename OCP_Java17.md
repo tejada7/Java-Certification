@@ -195,9 +195,9 @@ temporal = temporal.with(adjuster)
 ```
 - When invoking `#toString` to `Period` it prints in ISO-8601 format, such as `P6Y3M1D`, zero days being represented as `P0D`
 - Conversely, `Duration`'s looks like `PT8H6M1.1S`, `PT0S` representing zero duration 
-- `Duration` and `Period`'s `#between` method return a negative time if the end if before the start
+- `Duration` and `Period`'s `#between` method return a negative time when end < start
 > [!IMPORTANT]  
-> `Duration#toString` does never print days, the max measure it can print out is hours, e.g. `Duration.ofHours(49)` -> `PT49H`, 
+> `Duration#toString` never prints days, the max measure it can print out is hours, e.g. `Duration.ofHours(49)` -> `PT49H`, 
 > `Duration.ofDays(2)` -> `PT48H`
 
 ### StringBuilder notes
@@ -468,7 +468,7 @@ final var pairAndOddNumbers = Stream.of(1, 2, 3, 4, 5)
                                 Pair::of));
 System.out.println(pairAndOddNumbers); // (2, 3)
 ```
-### Using Object(){} inside lambdas
+### Using anonymous state objects (Object(){}) inside lambdas
 To avoid creating custom value objects, there is a useful technique that consists to create an anonymous object with 
 with custom instance fields:
 ```java
@@ -809,8 +809,8 @@ internally it uses already one) before the
 iteration. It's recommended when:
   - There are more read than write operations
   - Smaller lists
-- That said, there is a final balanced solution with fewer trade-offs that those of the above that consist in using a 
-ReentrantLock over a classic `ArrayList`, below a summary table:
+- That said, there is a final balanced solution with fewer trade-offs that those listed above that leverage 
+`ReentrantLock` over a good-old `ArrayList`, below a summary table:
 
 
 | Collection                    | Thread-Safety Strategy                             | Best Use Case                            | Read Performance        | Write Performance |
