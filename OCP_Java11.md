@@ -149,6 +149,14 @@ From where, for upper bounds and unbounded wildcards, the list becomes logically
 ```java
 List<?> list = new ArrayList() != var list = new ArrayList()
 ```
+
+> [!NOTE]
+> Note that lower bound (i.e. `super`) cannot be used alongside bounded generic types:
+> ```java 
+> <T super CharSequence> Collection<T> foo(Collection<T> input){...} // Does not compile
+> // <T extends CharSequence> would've compiled
+>```
+
 ### Rules for identifying correct overriding of generic-return-style methods
 
 Given `T` as type (i.e. class, enum or interface) and `S` and its subtype, `A` being any type for the rules below, we
