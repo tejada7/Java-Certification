@@ -287,7 +287,7 @@ class Child extends Parent {
 3. The method in child may not declare any exceptions (including checked, or else it cannot be broader than the checked 
 exception of the parent)
 4. The child return type must be **covariant** i.e. the overriding return type should be assignable to the parent return
-type without a cast
+type without a cast, and be an **exact match when a primitive type**
 
 ### Variable and method hiding
 Java does not allow variables to be overriden, they can be hidden though. They are resolved based on the type of the
