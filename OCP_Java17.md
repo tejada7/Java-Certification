@@ -445,7 +445,7 @@ In that situation, the method getExactSizeIfKnown() will return -1 and estimated
 - Some operations (intermediary especially) of parallel stream run on multiple threads to improve performance
 - Encounter order is the order in which an iterator will iterate through the elements of a collection. It therefore dictates whether a stream is considered to be ordered or not, this is defined by the source or intermediate
 operations (depending on the collection implementation, if it's an array or list, then the stream will be ordered whereas
-for a TreeSet, it'll be the contrary). The only way to order streams is by calling the `sort()` method
+for a TreeSet, it'll be the contrary). The only way to order streams is by calling the `sorted()` method
 - As a side note to the above statement, they depend on the source implementation, although for any stream it's possible to call
 `unordered()` so that the stream becomes unordered, thus potential optimizations can be performed by the JVM
 

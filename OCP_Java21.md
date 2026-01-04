@@ -444,36 +444,3 @@ flowchart BT
     TreeMap --> NavigableMap
     classDef green fill: green
 ```
-### Invoking/accessing static content with inheritance
-1. classes inheriting from abstract classes or interfaces are allowed to access static members using an instance, as 
-long as there is no conflict
-2. inheriting classes can call abstract methods using a reference
-3. there is no way to invoke interface static methods other than using the interface class name
-```java
-interface Int1 {
-  int B = 1;
-  int C = 0;
-
-  static void staticMethod() {}
-}
-
-interface Int2 {
-  int C = 1;
-
-  static void staticMethod() {}
-}
-
-static abstract class Abs {
-  static int C = 2;
-  static void staticMethod() {} // LINE 1
-}
-static class Impl extends Abs implements Int1, Int2 {
-  static void main() {
-    final var impl = new Impl();
-    IO.println(impl.B); // valid  
-    IO.println(impl.C); // does not compile because conflict, instead use Int1/Int2#C
-    impl.staticMethod(); // invokes LINE 1 
-    // ⚠️ there is no way to invoke staticMethod from the interfaces other than Int1.staticMethod() or Int2.staticMethod()
-  }
-}
-```

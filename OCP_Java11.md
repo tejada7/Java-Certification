@@ -82,6 +82,41 @@ public static void main (String...args) {
         .add(child1.getName()); // will contain "child, 456, child"
 }
 ```
+### Invoking/accessing static content with inheritance
+1. classes inheriting from abstract classes or interfaces are allowed to access static members using an instance, as
+   long as there is no conflict
+2. inheriting classes can call abstract methods using a reference
+3. there is no way to invoke interface static methods other than using the interface class name
+```java
+interface Int1 {
+  int B = 1;
+  int C = 0;
+
+  static void staticMethod() {}
+}
+
+interface Int2 {
+  int C = 1;
+
+  static void staticMethod() {}
+}
+
+static abstract class Abs {
+  static int C = 2;
+  static void staticMethod() {} // LINE 1
+}
+static class Impl extends Abs implements Int1, Int2 {
+  static void main() {
+    final var impl = new Impl();
+    IO.println(impl.B); // valid  
+    IO.println(impl.C); // does not compile because conflict, instead use Int1/Int2#C
+    impl.staticMethod(); // invokes LINE 1 
+    // ⚠️ there is no way to invoke staticMethod from the interfaces other than Int1.staticMethod() or Int2.staticMethod()
+  }
+}
+```
+
+
 ### Java Collections Framework types
  
 |Type|Can contain duplicate elements|Elements always ordered?|Has keys and value?|Must add/remove in specific order?|
@@ -228,9 +263,11 @@ being modified. Besides, this method allows null elements.
 * `U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner)` -> identity is the starting value so that the accumulator sequentially transforms T to U, the combiner is only used for parallel streaming, and its purpose is to combine preliminary results.  
     ```java
         List.of("h", "o", "l", "a").stream().reduce(0, (identity, streamElement) -> identity + streamElement.length(), Integer::sum); // the combiner does not do anything here and the result is 4
- 
+
         List.of("h", "o", "l", "a").stream().parallel().reduce(0, (identity, streamElement) -> identity + streamElement.length(), Integer::sum); // the result is 4 and the performance is better
     ```
+> [!IMPORTANT]  
+> Beware that primitive streams `IntStream`, `DoubleStream` or `LongStream` **do not expose the reduce method with the combiner variation.** 
 
 #### Collect method
 * `<R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner)` -> supplier is the function that creates the result container so that the accumulator can fold elements to the result container; finally, the combiner combines the partial result containers in the event it is a parallel stream.  
