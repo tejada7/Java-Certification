@@ -21,6 +21,8 @@ Thread thread = Thread.ofVirtual()
 the number of available processors as its target parallelism level
  - Virtual threads have a fixed thread priority `Thread.NORM_PRIORITY` that cannot be changed
  - There is a useful method allowing to transform a Runnable into a Callable: `Executors#callable(runnable, T result)`
+ - It's possible to run java programs without compiling (via javac), using the syntax: `java Test.java <args>` (mind 
+the difference when running a classic compile class `java Test <args>`) → this feature is called `single-file source-code` programs
 
 ### Thread states
 
