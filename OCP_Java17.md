@@ -72,6 +72,7 @@ class Child extends Parent implements Inter {
 ```
 
 ### New text block methods
+- incidental whitespace is used to make code easier to read, you can add or remove incidental whitespace as required. 
 - `public String indent(int numberSpaces)` → adds/removes the same number of blank spaces of each line. **It's worth
 noting that if absent, it'll add a new line (\n) to the end of the string.**
 - `public String stripIndent()` → It removes all incidental whitespace, but **does not add 
