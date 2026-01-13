@@ -153,6 +153,7 @@ is too big, having plenty of non-used resources (e.g. after a massive deletion o
   Nor during parsing (in this case no `_` is allowed regardless of the position)
   - Integer.parseInt("123_456"); ❌ // throws `java.lang.NumberFormatException`
 
+- By default, Java prints up to 6 decimals when using formatter (e.g. `"%s".formatter(123f)` -> `123.000000`)
 ### Understanding Arrays#compare and Arrays#mismatch
 
 It uses lexicographical comparison (i.e. dictionary-like) while comparing letter by letter until finding the first
@@ -222,6 +223,7 @@ Arrays.mismatch(array7, array8) == -1
 | 14         | conditional OR                  | &#124;&#124;                                                                 | left-to-right    |
 | 15         | ternary operators               | `(conditional expression)? expression1 : expression2`                        | right-to-left    |
 | 16         | assignment operators            | `=`, `+=`, `-=`, `*=`, `/=`, `%=`, `&=`, &#124;=, `^=`, `<<=`, `>>=`, `>>>=` | right-to-left    |
+| 17         | arrow operator                  | `->`                                                                         | right-to-left    |
 
 example
 ```java
