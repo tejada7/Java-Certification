@@ -1,43 +1,66 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDSoftAssertions.thenSoftly;
 
-public class DNAUtilsTest {
-
+class DNAUtilsTest {
 
     @Test
-    public void noRepeatedSequences() {
+    void noRepeatedSequences() {
+        // Given
         String dna = "CTAATTCGACTATAGCGCTA";
+
+        // When
         Collection<String> result = DNAUtils.repeatedDna(dna);
-        assertTrue(result.isEmpty());
+
+        // Then
+        then(result).isEmpty();
     }
 
     @Test
-    public void singleRepeatedSequence() {
+    void singleRepeatedSequence() {
+        // Given
         String dna = "CTAATTCGACTATAGCGCTACTAATTCGAC";
+
+        // When
         Collection<String> result = DNAUtils.repeatedDna(dna);
-        assertTrue(result.contains("CTAATTCGAC"));
+
+        // Then
+        then(result).contains("CTAATTCGAC");
     }
 
     @Test
-    public void twoRepeatedSequences() {
+    void twoRepeatedSequences() {
+        // Given
         String dna = "CTAATTCGACTATAGCGCTACTAATTCGACGTATAGCGCTA";
+
+        // When
         Collection<String> result = DNAUtils.repeatedDna(dna);
-        assertTrue(result.contains("CTAATTCGAC"));
-        assertTrue(result.contains("TATAGCGCTA"));
+
+        // Then
+        thenSoftly(softly -> {
+            softly.then(result).contains("CTAATTCGAC");
+            softly.then(result).contains("TATAGCGCTA");
+        });
     }
 
     @Test
-    public void manyRepeatedOverlappingSequences() {
-        String dna =
-                "TATAGCGCTAATTCGACGACTATAGCGCTACGACGACTATCTAATTCGAC";
+    void manyRepeatedOverlappingSequences() {
+        // Given
+        String dna = "TATAGCGCTAATTCGACGACTATAGCGCTACGACGACTATCTAATTCGAC";
+
+        // When
         Collection<String> result = DNAUtils.repeatedDna(dna);
-        assertTrue(result.contains("TATAGCGCTA"));
-        assertTrue(result.contains("CTAATTCGAC"));
-        assertTrue(result.contains("CGACGACTAT"));
+
+        // Then
+        thenSoftly(softly -> {
+            softly.then(result).contains("TATAGCGCTA");
+            softly.then(result).contains("CTAATTCGAC");
+            softly.then(result).contains("CGACGACTAT");
+        });
     }
 }

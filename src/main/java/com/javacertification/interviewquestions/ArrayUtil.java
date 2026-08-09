@@ -1,9 +1,6 @@
 package com.javacertification.interviewquestions;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -90,11 +87,11 @@ public class ArrayUtil {
         Map<E, Integer> records = new HashMap<>();
         Arrays.stream(elements).forEach(e -> countElementsIntoMap(records, e));
         return records.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(k)
-                .map(Map.Entry::getKey)
-                .toArray(value -> (E[]) new Object[value]);
+            .stream()
+            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+            .limit(k)
+            .map(Map.Entry::getKey)
+            .toArray(value -> (E[]) new Object[value]);
     }
 
     private static <E> void countElementsIntoMap(Map<E, Integer> records, E element) {
@@ -115,14 +112,14 @@ public class ArrayUtil {
      * @throws IllegalArgumentException if no arguments are provided
      */
     @SuppressWarnings("unchecked")
-    public static <E> E[] mergeAndSortArrays(Comparator comparator, E[]... arrays) {
+    public static <E> List<E> mergeAndSortArrays(Comparator<? super E> comparator, E[]... arrays) {
         if (arrays == null || arrays.length == 0) {
             throw new IllegalArgumentException("No arguments provided.");
         }
-        return (E[]) Arrays.stream(arrays)
-                .flatMap((Function<E[], Stream<?>>) Arrays::stream)
-                .sorted(comparator)
-                .toArray();
+        return Arrays.stream(arrays)
+            .flatMap((Function<E[], Stream<E>>) Arrays::stream)
+            .sorted(comparator)
+            .toList();
     }
 
     /**
@@ -134,8 +131,8 @@ public class ArrayUtil {
      * @throws IllegalArgumentException if no arguments are provided
      */
     @SuppressWarnings("unchecked")
-    public static <E> E[] mergeAndSortArrays(E[]... arrays) {
-        return mergeAndSortArrays(Comparator.naturalOrder(), arrays);
+    public static <E> List<E> mergeAndSortArrays(E[]... arrays) {
+        return mergeAndSortArrays((Comparator<E>) Comparator.naturalOrder(), arrays);
     }
 
 

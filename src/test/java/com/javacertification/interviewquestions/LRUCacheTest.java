@@ -1,16 +1,15 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.BDDSoftAssertions.thenSoftly;
 
-public class LRUCacheTest {
+class LRUCacheTest {
 
-    LRUCache<Integer, Integer> cache = new LRUCache<>(4);
+    private final LRUCache<Integer, Integer> cache = new LRUCache<>(4);
 
     @Test
-    public void evictLeastRecentlyUsed() {
+    void evictLeastRecentlyUsed() {
         // given
         cache.set(1, 11);
         cache.set(2, 22);
@@ -21,63 +20,69 @@ public class LRUCacheTest {
         cache.set(5, 55);
 
         // then
-        assertNull(cache.get(1));
+        thenSoftly(softly -> {
+            softly.then(cache.get(1)).isNull();
+            softly.then(cache.get(2)).isEqualTo(22);
+            softly.then(cache.get(3)).isEqualTo(33);
+            softly.then(cache.get(4)).isEqualTo(44);
+            softly.then(cache.get(5)).isEqualTo(55);
 
-        assertEquals(22, cache.get(2).intValue());
-        assertEquals(33, cache.get(3).intValue());
-        assertEquals(44, cache.get(4).intValue());
-        assertEquals(55, cache.get(5).intValue());
+        });
 
         subTest_1();
         subTest_2();
         subTest_3();
     }
 
-    public void subTest_1() {
+    void subTest_1() {
         // given
         // when
         cache.set(6, 66);
 
         // then
-        assertNull(cache.get(1));
-        assertNull(cache.get(2));
+        thenSoftly(softly -> {
+            softly.then(cache.get(1)).isNull();
+            softly.then(cache.get(2)).isNull();
+            softly.then(cache.get(3)).isEqualTo(33);
+            softly.then(cache.get(4)).isEqualTo(44);
+            softly.then(cache.get(5)).isEqualTo(55);
+            softly.then(cache.get(6)).isEqualTo(66);
 
-        assertEquals(33, cache.get(3).intValue());
-        assertEquals(44, cache.get(4).intValue());
-        assertEquals(55, cache.get(5).intValue());
-        assertEquals(66, cache.get(6).intValue());
+        });
     }
 
-    private void subTest_2() {
+    void subTest_2() {
         // given
         // when
         cache.set(7, 77);
 
         // then
-        assertNull(cache.get(1));
-        assertNull(cache.get(2));
-        assertNull(cache.get(3));
-
-        assertEquals(44, cache.get(4).intValue());
-        assertEquals(55, cache.get(5).intValue());
-        assertEquals(66, cache.get(6).intValue());
-        assertEquals(77, cache.get(7).intValue());
+        thenSoftly(softly -> {
+            softly.then(cache.get(1)).isNull();
+            softly.then(cache.get(2)).isNull();
+            softly.then(cache.get(3)).isNull();
+            softly.then(cache.get(4)).isEqualTo(44);
+            softly.then(cache.get(5)).isEqualTo(55);
+            softly.then(cache.get(6)).isEqualTo(66);
+            softly.then(cache.get(7)).isEqualTo(77);
+        });
     }
 
-    private void subTest_3() {
+    void subTest_3() {
         // given
         // when
         cache.set(8, 88);
 
         // then
-        assertNull(cache.get(1));
-        assertNull(cache.get(2));
-        assertNull(cache.get(3));
-        assertNull(cache.get(4));
-
-        assertEquals(55, cache.get(5).intValue());
-        assertEquals(66, cache.get(6).intValue());
-        assertEquals(77, cache.get(7).intValue());
-        assertEquals(88, cache.get(8).intValue());
+        thenSoftly(softly -> {
+            softly.then(cache.get(1)).isNull();
+            softly.then(cache.get(2)).isNull();
+            softly.then(cache.get(3)).isNull();
+            softly.then(cache.get(4)).isNull();
+            softly.then(cache.get(5)).isEqualTo(55);
+            softly.then(cache.get(6)).isEqualTo(66);
+            softly.then(cache.get(7)).isEqualTo(77);
+            softly.then(cache.get(8)).isEqualTo(88);
+        });
     }
 }

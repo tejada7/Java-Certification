@@ -1,17 +1,20 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.BDDAssertions.then;
 
-public class DateUtilsTest {
+class DateUtilsTest {
 
-    @Test
-    public void isLeapYearTest() {
-        assertTrue(DateUtils.isLeapYear(1992));
-        assertFalse(DateUtils.isLeapYear(2001));
-        assertTrue(DateUtils.isLeapYear(1996));
-        assertFalse(DateUtils.isLeapYear(2005));
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        1992, true
+        2001, false
+        1996, true
+        2005, false
+        """)
+    void isLeapYearTest(int year, boolean expected) {
+        then(DateUtils.isLeapYear(year)).isEqualTo(expected);
     }
 }

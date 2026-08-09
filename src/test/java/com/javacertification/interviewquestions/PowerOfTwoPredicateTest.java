@@ -1,43 +1,35 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.runners.Parameterized.Parameter;
-import static org.junit.runners.Parameterized.Parameters;
+import static org.assertj.core.api.BDDAssertions.then;
 
-@RunWith(Parameterized.class)
-public class PowerOfTwoPredicateTest {
+class PowerOfTwoPredicateTest {
+
+    private final IsPowerOfTwo isPowerOfTwo = new IsPowerOfTwo();
 
     /**
      * Dataset.
      *
-     * @return a collection that contains the value to which we evaluate to know if it belong to a power of 2 and the
+     * @return a collection that contains the value to which we evaluate to know if it belongs to a power of 2 and the
      * expected result.
      */
-    @Parameters
-    public static Collection<Object> getData() {
-        return asList(new Object[][]{
-                {4, true},
-                {27, false},
-                {124, false},
-                {0, true}
-        });
+    private static Stream<Arguments> data() {
+        return Stream.of(
+            Arguments.of(4, true),
+            Arguments.of(27, false),
+            Arguments.of(124, false),
+            Arguments.of(0, true)
+        );
     }
 
-    @Parameter
-    public int input;
-
-    @Parameter(value = 1)
-    public boolean expectedOutput;
-
-    @Test
-    public void powerOfTest() {
-        assertEquals(expectedOutput, new IsPowerOfTwo().test(input));
+    @ParameterizedTest
+    @MethodSource("data")
+    void powerOfTest(int input, boolean expectedOutput) {
+        then(isPowerOfTwo.test(input)).isEqualTo(expectedOutput);
     }
 }

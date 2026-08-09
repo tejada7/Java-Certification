@@ -1,12 +1,13 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class DoubleUtilsTest {
+import static org.assertj.core.api.BDDAssertions.then;
+
+class DoubleUtilsTest {
 
     @Test
-    public void approximatePIValue() {
+    void approximatePIValue() {
         // Given
         double rands[][] = new double[100000][2];
         for (int i = 0; i < rands.length; i++) {
@@ -17,6 +18,6 @@ public class DoubleUtilsTest {
         final double pi = DoubleUtils.approximationPI(rands);
 
         // Then
-        Assert.assertTrue(pi < 3.15d && pi > 3.13d);
+        then(pi).isBetween(3.13, 3.15);
     }
 }

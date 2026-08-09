@@ -1,15 +1,17 @@
 package com.javacertification.datastructures;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
-public class LinkedListTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.*;
+import static org.assertj.core.api.BDDSoftAssertions.thenSoftly;
+
+class LinkedListTest {
 
     @Test
-    public void add() {
+    void add() {
         // Given
         LinkedList<Integer> linkedList = new LinkedList<>();
 
@@ -19,11 +21,11 @@ public class LinkedListTest {
         linkedList.add(3);
 
         // Then
-        Assert.assertEquals("[1->2->3]", linkedList.toString());
+        then(linkedList).hasToString("[1->2->3]");
     }
 
     @Test
-    public void insert() {
+    void insert() {
         // Given
         LinkedList<Integer> linkedList = new LinkedList<>();
 
@@ -37,17 +39,17 @@ public class LinkedListTest {
         linkedList.insert(2, 2);
 
         // Then
-        Assert.assertEquals("[0->1->2->2->3->4]", linkedList.toString());
+        then(linkedList).hasToString("[0->1->2->2->3->4]");
     }
 
     @Test
-    public void whenInsertingAtInvalidIndex_shouldThrowException() {
-        Assertions.assertThrows(IndexOutOfBoundsException.class,
-                () -> new LinkedList<String>().insert("", 2));
+    void whenInsertingAtInvalidIndex_shouldThrowException() {
+        then(catchRuntimeException(() -> new LinkedList<String>().insert("", 2)))
+            .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
-    public void removeAt() {
+    void removeAt() {
         // Given
         LinkedList<Integer> linkedList = new LinkedList<>();
 
@@ -61,48 +63,48 @@ public class LinkedListTest {
         linkedList.removeFirst(); // { 3 4}
 
         // Then
-        Assert.assertEquals("[3->4]", linkedList.toString());
+        then(linkedList).hasToString("[3->4]");
     }
 
     @Test
-    public void randomInsertAndRemoveOperations() {
+    void randomInsertAndRemoveOperations() {
         LinkedList<Integer> linkedList = new LinkedList<>();
 
         linkedList.add(1); // {1}
-        Assert.assertEquals("[1]", linkedList.toString());
+        assertThat(linkedList).hasToString("[1]");
 
         linkedList.insert(2, 1); // {1 2}
-        Assert.assertEquals("[1->2]", linkedList.toString());
+        assertThat(linkedList).hasToString("[1->2]");
 
         linkedList.removeAt(1); // {1}
-        Assert.assertEquals("[1]", linkedList.toString());
+        assertThat(linkedList).hasToString("[1]");
 
         linkedList.insert(0, 1); // {1 0}
-        Assert.assertEquals("[1->0]", linkedList.toString());
+        assertThat(linkedList).hasToString("[1->0]");
 
         linkedList.add(4); // {1 0 4}
-        Assert.assertEquals("[1->0->4]", linkedList.toString());
+        assertThat(linkedList).hasToString("[1->0->4]");
 
         linkedList.removeAt(2); // {1 0};
-        Assert.assertEquals("[1->0]", linkedList.toString());
+        assertThat(linkedList).hasToString("[1->0]");
 
         linkedList.removeFirst(); // {0}
-        Assert.assertEquals("[0]", linkedList.toString());
+        assertThat(linkedList).hasToString("[0]");
 
         linkedList.removeAt(0); // {}
-        Assert.assertEquals("[]", linkedList.toString());
+        assertThat(linkedList).hasToString("[]");
 
         linkedList.insert(1, 0); // {}
-        Assert.assertEquals("[1]", linkedList.toString());
+        assertThat(linkedList).hasToString("[1]");
 
         linkedList.removeFirst(); // {0}
-        Assert.assertEquals("[]", linkedList.toString());
+        assertThat(linkedList).hasToString("[]");
 
-        Assertions.assertThrows(IllegalStateException.class, linkedList::removeFirst);
+        thenIllegalStateException().isThrownBy(linkedList::removeFirst);
     }
 
     @Test
-    public void get() {
+    void get() {
         // Given
         LinkedList<Integer> linkedList = new LinkedList<>();
 
@@ -114,14 +116,17 @@ public class LinkedListTest {
         linkedList.add(5);
 
         // Then
-        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> linkedList.get(5));
-        Assert.assertEquals(Integer.valueOf(1), linkedList.get(0));
-        Assert.assertEquals(Integer.valueOf(5), linkedList.get(4));
-        Assert.assertEquals(Integer.valueOf(3), linkedList.get(2));
+        thenSoftly(softly -> {
+            softly.then(catchRuntimeException(() -> linkedList.get(5)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
+            softly.then(linkedList.get(0)).isEqualTo(1);
+            softly.then(linkedList.get(4)).isEqualTo(5);
+            softly.then(linkedList.get(2)).isEqualTo(3);
+        });
     }
 
     @Test
-    public void find() {
+    void find() {
         // Given
         LinkedList<Integer> linkedList = new LinkedList<>();
 
@@ -133,9 +138,12 @@ public class LinkedListTest {
         linkedList.add(5);
 
         // Then
-        Assertions.assertThrows(NoSuchElementException.class, () -> linkedList.find(6));
-        Assert.assertEquals(0, linkedList.find(1));
-        Assert.assertEquals(4, linkedList.find(5));
-        Assert.assertEquals(2, linkedList.find(3));
+        thenSoftly(softly -> {
+            softly.then(catchRuntimeException(() -> linkedList.find(6)))
+                .isInstanceOf(NoSuchElementException.class);
+            softly.then(linkedList.get(0)).isEqualTo(1);
+            softly.then(linkedList.get(4)).isEqualTo(5);
+            softly.then(linkedList.get(2)).isEqualTo(3);
+        });
     }
 }

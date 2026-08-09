@@ -1,51 +1,38 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.runners.Parameterized.Parameter;
-import static org.junit.runners.Parameterized.Parameters;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 
-@RunWith(Parameterized.class)
-public class LinkedListReverseTest {
+class LinkedListReverseTest {
 
-    @Parameters
-    public static Collection data() {
-        return asList(new Object[][]{
-                {new Integer[]{1, 2, 3, 4, 5}, "[1->2->3->4->5]", "[5->4->3->2->1]"},
-                {new Integer[]{1, 2, 3}, "[1->2->3]", "[3->2->1]"},
-                {new Integer[]{1, 2}, "[1->2]", "[2->1]"},
-                {new Integer[]{1}, "[1]", "[1]"},
-                {null, "[]", "[]"},
-        });
+    private static Stream<Arguments> data() {
+        return Stream.of(
+            Arguments.of(new Integer[]{1, 2, 3, 4, 5}, "[1->2->3->4->5]", "[5->4->3->2->1]"),
+            Arguments.of(new Integer[]{1, 2, 3}, "[1->2->3]", "[3->2->1]"),
+            Arguments.of(new Integer[]{1, 2}, "[1->2]", "[2->1]"),
+            Arguments.of(new Integer[]{1}, "[1]", "[1]"),
+            Arguments.of(null, "[]", "[]")
+        );
     }
 
-    @Parameter(value = 0)
-    public Integer[] dataSet;
-
-    @Parameter(value = 1)
-    public String outputBeforeReversing;
-
-    @Parameter(value = 2)
-    public String expectedOutput;
-
-    @Test
-    public void reverseTest() {
+    @ParameterizedTest
+    @MethodSource("data")
+    void reverseTest(Integer[] dataSet, String outputBeforeReversing, String expectedOutput) {
         // Given
         LinkedList<Integer> linkedList = new LinkedList<>();
         linkedList.add(dataSet);
-
-        assertEquals(outputBeforeReversing, linkedList.toString());
+        assertThat(linkedList).hasToString(outputBeforeReversing);
 
         // When
         linkedList.reverse();
 
         // Then
-        assertEquals(expectedOutput, linkedList.toString());
+        then(linkedList).hasToString(expectedOutput);
     }
 }

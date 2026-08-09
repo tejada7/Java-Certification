@@ -1,91 +1,132 @@
 package com.javacertification.interviewquestions;
 
 import com.javacertification.interviewquestions.model.Fruit;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.javacertification.interviewquestions.IntUtils.*;
 import static com.javacertification.interviewquestions.model.Fruit.*;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.valueOf;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDSoftAssertions.thenSoftly;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IntUtilsTest {
+class IntUtilsTest {
 
     private static void execute() {
         factorial(-1);
     }
 
-    @Test
-    public void isPowerOfTest() {
-        assertTrue(isPowerOf(4, 2));
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        4, 2, true
+        27, 3, true
+        124, 5, false
+        """)
+    void shouldBePowerOf(int number, int powerOf, boolean expected) {
+        then(isPowerOf(number, powerOf)).isEqualTo(expected);
+    }
 
-        assertTrue(isPowerOf(27, 3));
-        assertFalse(isPowerOf(124, 5));
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        12321, true
+        123, false
+        """)
+    void shouldBePalindrome(int number, boolean expected) {
+        then(isPalindrome(number)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        153, true
+        370, true
+        1634, true
+        9474, true
+        1, true
+        1000, false
+        """)
+    void shouldBeArmstrongNumber(int number, boolean expected) {
+        then(isArmstrong(number)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        23, true
+        193, true
+        761, true
+        4, false
+        737, false
+        """)
+    void shouldBeHappyNumber(int number, boolean expected) {
+        then(isHappy(number)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        7, true
+        12, false
+        """)
+    void shouldBePrime(int number, boolean expected) {
+        then(isPrime(number)).isEqualTo(expected);
     }
 
     @Test
-    public void isPalindromeTest() {
-        assertTrue(isPalindrome(12321));
-        assertFalse(isPalindrome(123));
+    void shouldBePairCombinationNumber() {
+        then(getFruitPairCombinationsNumber(Set.of(APPLE, BANANA, ORANGE, PEAR)))
+            .isEqualTo(6);
     }
 
     @Test
-    public void isArmstrongTest() {
-        assertTrue(isArmstrong(153));
-        assertTrue(isArmstrong(370));
-        assertTrue(isArmstrong(1634));
-        assertTrue(isArmstrong(9474));
-        assertTrue(isArmstrong(1));
-        assertFalse(isArmstrong(1000));
+    public void shouldPairCombineElements() {
+        // Given
+        final List<Fruit> fruits = List.of(APPLE, BANANA, ORANGE, PEAR);
+
+        // When
+        final List<Set<Fruit>> result = getFruitPairCombinationsElements(fruits);
+
+        // Then
+        thenSoftly(softly -> {
+            softly.then(result).hasSize(6)
+                .containsExactly(
+                    of(APPLE, BANANA),
+                    of(APPLE, ORANGE),
+                    of(APPLE, PEAR),
+                    of(BANANA, ORANGE),
+                    of(BANANA, PEAR),
+                    of(ORANGE, PEAR)
+                );
+
+        });
+    }
+
+    private static Stream<Arguments> shouldComputeFactorial() {
+        return Stream.of(
+            Arguments.of(0, ONE),
+            Arguments.of(1, ONE),
+            Arguments.of(5, BigInteger.valueOf(120)),
+            Arguments.of(8, BigInteger.valueOf(40320))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void shouldComputeFactorial(int number, BigInteger expected) {
+        then(factorial(number)).isEqualTo(expected);
     }
 
     @Test
-    public void isHappyTest() {
-        assertTrue(isHappy(23));
-        assertTrue(isHappy(193));
-        assertTrue(isHappy(761));
-        assertFalse(isHappy(4));
-        assertFalse(isHappy(737));
-    }
-
-    @Test
-    public void isPrimeTest() {
-        assertTrue(isPrime(7));
-        assertFalse(isPrime(12));
-    }
-
-    @Test
-    public void pairCombinationNumberTest() {
-        assertEquals(6, getFruitPairCombinationsNumber(new HashSet<>(
-                asList(APPLE, BANANA, ORANGE, PEAR))));
-    }
-
-    @Test
-    public void pairCombinationElementsTest() {
-        final List<Set<Fruit>> result = getFruitPairCombinationsElements(new ArrayList<>(
-                asList(APPLE, BANANA, ORANGE, PEAR)));
-        assertEquals(6, result.size());
-        assertTrue(result.contains(of(APPLE, BANANA)));
-        assertTrue(result.contains(of(APPLE, ORANGE)));
-        assertTrue(result.contains(of(APPLE, PEAR)));
-        assertTrue(result.contains(of(BANANA, ORANGE)));
-        assertTrue(result.contains(of(BANANA, PEAR)));
-        assertTrue(result.contains(of(ORANGE, PEAR)));
-    }
-
-    @Test
-    public void factorialTest() {
-        assertEquals(ONE, factorial(0));
-        assertEquals(ONE, factorial(1));
-        assertEquals(valueOf(120), factorial(5));
-        assertEquals(valueOf(40320), factorial(8));
+    void shouldThrowExceptionWhenInvalidFactorialInput() {
         Assertions.assertThrows(IllegalArgumentException.class, IntUtilsTest::execute);
     }
 }

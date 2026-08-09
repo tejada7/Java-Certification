@@ -1,41 +1,33 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static com.javacertification.interviewquestions.ListUtils.*;
+import static com.javacertification.interviewquestions.ListUtils.removeDuplicates;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.runners.Parameterized.Parameter;
-import static org.junit.runners.Parameterized.Parameters;
+import static org.assertj.core.api.BDDAssertions.then;
 
-@RunWith(Parameterized.class)
-public class RemoveDuplicatesFromListTest {
+class RemoveDuplicatesFromListTest {
 
-    @Parameters
-    public static Collection data() {
-        return asList(new Object[][]{
-                {asList(1, 1, 2, 2, 3, 3), asList(1, 2, 3)},
-                {asList("a", "a", "b", "c", "b"), asList("a", "b", "c")},
-                {asList(5f, 4f, 5f, 4f), asList(5f, 4f)},
-                {null, Collections.emptyList()},
-                {asList(1, 5f, 3d, 4L, 4, 9, "a", "@", 0, null, null, "@"), asList(1, 5f, 3d, 4L, 4, 9, "a", "@", 0, null)}
-        });
+    private static Stream<Arguments> data() {
+        return Stream.of(
+            Arguments.of(asList(1, 1, 2, 2, 3, 3), asList(1, 2, 3)),
+            Arguments.of(asList("a", "a", "b", "c", "b"), asList("a", "b", "c")),
+            Arguments.of(asList(5f, 4f, 5f, 4f), asList(5f, 4f)),
+            Arguments.of(null, Collections.emptyList()),
+            Arguments.of(asList(1, 5f, 3d, 4L, 4, 9, "a", "@", 0, null, null, "@"),
+                asList(1, 5f, 3d, 4L, 4, 9, "a", "@", 0, null))
+        );
     }
 
-    @Parameter(value = 0)
-    public List originalList;
-
-    @Parameter(value = 1)
-    public List expectedList;
-
-    @Test
-    public void shouldRemoveDuplicates_andKeepOrder() {
-        assertEquals(expectedList, removeDuplicates(originalList));
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldRemoveDuplicates_andKeepOrder(List<?> originalList, List<?> expectedList) {
+        then(removeDuplicates(originalList)).isEqualTo(expectedList);
     }
 }

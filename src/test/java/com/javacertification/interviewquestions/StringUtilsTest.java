@@ -1,70 +1,76 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static com.javacertification.interviewquestions.StringUtils.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDSoftAssertions.thenSoftly;
 
-public class StringUtilsTest {
+class StringUtilsTest {
 
     @Test
-    public void oneCharacter() {
-        assertTrue(recursivePermutation("A").contains("A"));
-        assertTrue(iterativePermutation("A").contains("A"));
+    void oneCharacter() {
+        assertThat(recursivePermutation("A")).contains("A");
+        assertThat(iterativePermutation("A")).contains("A");
     }
 
     @Test
-    public void twoCharacters() {
+    void twoCharacters() {
         List<String> result = recursivePermutation("AB");
-        assertTrue(result.contains("AB"));
-        assertTrue(result.contains("BA"));
+        assertThat(result).contains("AB");
+        assertThat(result).contains("BA");
 
         List<String> result1 = iterativePermutation("AB");
-        assertTrue(result1.contains("AB"));
-        assertTrue(result1.contains("BA"));
+        assertThat(result1).contains("AB");
+        assertThat(result1).contains("BA");
     }
 
     @Test
-    public void threeCharacters() {
+    void threeCharacters() {
         List<String> result = recursivePermutation("ABC");
-        assertTrue(result.contains("ACB"));
-        assertTrue(result.contains("ABC"));
-        assertTrue(result.contains("CAB"));
-        assertTrue(result.contains("BCA"));
-        assertTrue(result.contains("CBA"));
-        assertTrue(result.contains("BAC"));
+        thenSoftly(softly -> {
+            softly.then(result).contains("ACB");
+            softly.then(result).contains("ABC");
+            softly.then(result).contains("CAB");
+            softly.then(result).contains("BCA");
+            softly.then(result).contains("CBA");
+            softly.then(result).contains("BAC");
+        });
 
         List<String> result1 = iterativePermutation("ABC");
-        assertTrue(result1.contains("ACB"));
-        assertTrue(result1.contains("ABC"));
-        assertTrue(result1.contains("CAB"));
-        assertTrue(result1.contains("BCA"));
-        assertTrue(result1.contains("CBA"));
-        assertTrue(result1.contains("BAC"));
+        thenSoftly(softly -> {
+            softly.then(result1).contains("ACB");
+            softly.then(result1).contains("ABC");
+            softly.then(result1).contains("CAB");
+            softly.then(result1).contains("BCA");
+            softly.then(result1).contains("CBA");
+            softly.then(result1).contains("BAC");
+        });
     }
 
     @Test
-    public void isResultSizeFactorial() {
+    void isResultSizeFactorial() {
         List<String> result = recursivePermutation("12345678");
-        assertEquals(1 * 2 * 3 * 4 * 5 * 6 * 7 * 8, result.size());
+        assertThat(result).hasSize(1 * 2 * 3 * 4 * 5 * 6 * 7 * 8);
 
         List<String> result1 = iterativePermutation("12345678");
-        assertEquals(1 * 2 * 3 * 4 * 5 * 6 * 7 * 8, result.size());
+        assertThat(result1).hasSize(1 * 2 * 3 * 4 * 5 * 6 * 7 * 8);
     }
 
     @Test
-    public void isStringBalancedWithParenthesisAndBrackets() {
-        assertTrue(isBalanced("[()]"));
-        assertTrue(isBalanced("(()[])"));
-        assertFalse(isBalanced("([)]"));
-        assertFalse(isBalanced("(("));
-        assertFalse(isBalanced("[(()])"));
-        assertTrue(isBalanced("([(([[(([]))]]))])"));
-        assertTrue(isBalanced("[](()()[[]])()[]([])"));
-        assertFalse(isBalanced("([((([(([]))])))))])"));
-        assertFalse(isBalanced("[](()()[[]])[][[([])"));
+    void isStringBalancedWithParenthesisAndBrackets() {
+        thenSoftly(softly -> {
+            softly.then(isBalanced("[()]")).isTrue();
+            softly.then(isBalanced("(()[])")).isTrue();
+            softly.then(isBalanced("([)]")).isFalse();
+            softly.then(isBalanced("((")).isFalse();
+            softly.then(isBalanced("[(()])")).isFalse();
+            softly.then(isBalanced("([(([[(([]))]]))])")).isTrue();
+            softly.then(isBalanced("[](()()[[]])()[]([])")).isTrue();
+            softly.then(isBalanced("([((([(([]))])))))])")).isFalse();
+            softly.then(isBalanced("[](()()[[]])[][[([])")).isFalse();
+        });
     }
 }
-

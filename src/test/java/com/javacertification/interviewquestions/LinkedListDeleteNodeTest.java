@@ -1,54 +1,41 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.util.Collection;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.runners.Parameterized.Parameter;
-import static org.junit.runners.Parameterized.Parameters;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
-public class LinkedListDeleteNodeTest {
+import static org.assertj.core.api.BDDAssertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 
-    @Parameters
-    public static Collection data() {
-        return asList(new Object[][]{
-                {new Integer[]{1, 2, 3, 4, 5}, 3, "[1->2->3->4->5]", "[1->2->4->5]"},
-                {new Integer[]{1, 2, 3}, 1, "[1->2->3]", "[2->3]"},
-                {new Integer[]{1, 2}, 3, "[1->2]", "[1->2]"},
-                {new Integer[]{1}, 1, "[1]", "[]"},
-                {null, 4, "[]", "[]"}
-        });
+class LinkedListDeleteNodeTest {
+
+    private static Stream<Arguments> data() {
+        return Stream.of(
+            Arguments.of(new Integer[]{1, 2, 3, 4, 5}, 3, "[1->2->3->4->5]", "[1->2->4->5]"),
+            Arguments.of(new Integer[]{1, 2, 3}, 1, "[1->2->3]", "[2->3]"),
+            Arguments.of(new Integer[]{1, 2}, 3, "[1->2]", "[1->2]"),
+            Arguments.of(new Integer[]{1}, 1, "[1]", "[]"),
+            Arguments.of(null, 4, "[]", "[]")
+        );
     }
 
-    @Parameter(value = 0)
-    public Integer[] dataSet;
-
-    @Parameter(value = 1)
-    public Integer valueToDelete;
-
-    @Parameter(value = 2)
-    public String outputBeforeReversing;
-
-    @Parameter(value = 3)
-    public String expectedOutput;
-
-    @Test
-    public void reverseTest() {
+    @ParameterizedTest
+    @MethodSource("data")
+    void reverseTest(Integer[] dataSet, Integer valueToDelete,
+        String outputBeforeReversing, String expectedOutput
+    ) {
         // Given
         LinkedList<Integer> linkedList = new LinkedList<>();
         linkedList.add(dataSet);
-
-        assertEquals(outputBeforeReversing, linkedList.toString());
+        assertThat(linkedList).hasToString(outputBeforeReversing);
 
         // When
         linkedList.remove(valueToDelete);
 
         // Then
-        assertEquals(expectedOutput, linkedList.toString());
+        then(linkedList).hasToString(expectedOutput);
     }
 }

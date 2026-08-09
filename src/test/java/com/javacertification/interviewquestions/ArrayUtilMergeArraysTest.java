@@ -1,41 +1,55 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
-public class ArrayUtilMergeArraysTest {
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
+
+class ArrayUtilMergeArraysTest {
 
     @Test
-    public void shouldMergeAndSortArraysTest() {
+    void shouldMergeAndSortArraysTest() {
+        // Given
         final Integer[][] input = {new Integer[]{1, 2, 3, 4, 5},
-                new Integer[]{1, 2, 3, 4, 5},
-                new Integer[]{6, 7, 8, 9, 10},
-                new Integer[]{6, 2, 7, 1, 0}};
-        final Integer[] expectedResult = {0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 9, 10};
-        Assert.assertTrue(Arrays.equals(ArrayUtil.mergeAndSortArrays(input), expectedResult));
+            new Integer[]{1, 2, 3, 4, 5},
+            new Integer[]{6, 7, 8, 9, 10},
+            new Integer[]{6, 2, 7, 1, 0}};
+
+        // When
+        final List<Integer> actual = ArrayUtil.mergeAndSortArrays(input);
+
+        // Then
+        then(actual)
+            .containsExactly(0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 9, 10);
     }
 
     @Test
-    public void shouldMergeAndSortArray_whenProvidingComparableImplTest() {
+    void shouldMergeAndSortArray_whenProvidingComparableImpl() {
+        // Given
         final Byte[][] input = {
-                new Byte[]{1, 2, 3, 4, 5},
-                new Byte[]{1, 2, 3, 4, 5},
-                new Byte[]{6, 7, 8, 9, 10},
-                new Byte[]{6, 2, 7, 1, 0}};
-        final Byte[] expectedResult = {10, 9, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1, 0};
-        Assert.assertTrue(Arrays.equals(ArrayUtil.mergeAndSortArrays(Comparator.reverseOrder(), input), expectedResult));
+            new Byte[]{1, 2, 3, 4, 5},
+            new Byte[]{1, 2, 3, 4, 5},
+            new Byte[]{6, 7, 8, 9, 10},
+            new Byte[]{6, 2, 7, 1, 0}};
+
+        // When
+        final List<Byte> actual = ArrayUtil.mergeAndSortArrays(Comparator.reverseOrder(), input);
+
+        // Then
+        then(actual)
+            .containsExactly(new Byte[]{10, 9, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1, 0});
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenNullParameters_shouldThrowException() {
-        ArrayUtil.mergeAndSortArrays(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void whenNoParameters_shouldThrowException() {
-        ArrayUtil.mergeAndSortArrays();
+    @Test
+    void whenNullOrEmptyParameters_shouldThrowException() {
+        thenIllegalArgumentException().isThrownBy(ArrayUtil::mergeAndSortArrays);
+        thenIllegalArgumentException().isThrownBy(() -> ArrayUtil.mergeAndSortArrays(null));
     }
 }

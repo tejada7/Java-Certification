@@ -1,63 +1,56 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static org.junit.runners.Parameterized.*;
-import static org.junit.runners.Parameterized.Parameters;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(Parameterized.class)
 public class WordScoreTest {
 
     private static final String LONG_STRING = "I don't mind\n" +
-            "I don't care\n" +
-            "As long as you're here\n" +
-            "Go ahead, tell me you'll leave again\n" +
-            "You'll just come back running\n" +
-            "Holding your scarred heart in hand\n" +
-            "It's all the same\n" +
-            "And I'll take you for who you are\n" +
-            "If you take me for everything\n" +
-            "And do it all over again\n" +
-            "It's all the same\n" +
-            "Hours slide and days go by\n" +
-            "'Til you decide to come\n" +
-            "But in-between\n" +
-            "It always seems\n" +
-            "Too long for certain";
+        "I don't care\n" +
+        "As long as you're here\n" +
+        "Go ahead, tell me you'll leave again\n" +
+        "You'll just come back running\n" +
+        "Holding your scarred heart in hand\n" +
+        "It's all the same\n" +
+        "And I'll take you for who you are\n" +
+        "If you take me for everything\n" +
+        "And do it all over again\n" +
+        "It's all the same\n" +
+        "Hours slide and days go by\n" +
+        "'Til you decide to come\n" +
+        "But in-between\n" +
+        "It always seems\n" +
+        "Too long for certain";
 
-    @Parameters
-    public static Collection getData() {
-        return asList(new Object[][]{
-                {"XRay Machine", 20},
-                {"Jabbt", 13}
-        });
+    private static Stream<Arguments> data() {
+        return Stream.of(
+            Arguments.of("XRay Machine", 20),
+            Arguments.of("Jabbt", 13)
+        );
     }
 
-    @Parameter
-    public String input;
-
-    @Parameter(value = 1)
-    public int expectedScore;
-
-    @Test
-    public void testWordScore() {
-        Assert.assertEquals(expectedScore, new WordScore().applyAsInt(input));
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testWordScore(String input, int expectedScore) {
+        assertEquals(expectedScore, new WordScore().applyAsInt(input));
     }
 
     @Test
-    public void testWordScore_shouldThrowException_whenNullInput() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new WordScore().applyAsInt(null));
+    void testWordScore_shouldThrowException_whenNullInput() {
+        assertThrows(IllegalArgumentException.class, () -> new WordScore().applyAsInt(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWordScore_shouldThrowException_whenInputGreaterThan50() {
-        new WordScore().applyAsInt(LONG_STRING);
+        thenIllegalArgumentException()
+            .isThrownBy(() -> new WordScore().applyAsInt(LONG_STRING));
     }
 }

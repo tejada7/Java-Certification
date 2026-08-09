@@ -1,45 +1,32 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.runners.Parameterized.Parameter;
-import static org.junit.runners.Parameterized.Parameters;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
-public class VersionNumberComparatorTest {
+class VersionNumberComparatorTest {
 
-    @Parameters
-    public static Collection data() {
-        return asList(new Object[][]{
-                {"2.2.5", "2.3", -1},
-                {"3.0", "2.1.5.3", 1},
-                {"3", "4.0", -1},
-                {"12.5.1", "12.5.2", -1},
-                {"12.5.1", "12.5.1", 0},
-                {"12.6.1", "12.5.1", 1},
-                {"14.10.55", "14.10.20", 1},
-                {"14.13.10", "14.10.55", 1},
-                {"14.13.10", "15.1", -1}
-        });
+    private static Stream<Arguments> data() {
+        return Stream.of(
+            Arguments.of("2.2.5", "2.3", -1),
+            Arguments.of("3.0", "2.1.5.3", 1),
+            Arguments.of("3", "4.0", -1),
+            Arguments.of("12.5.1", "12.5.2", -1),
+            Arguments.of("12.5.1", "12.5.1", 0),
+            Arguments.of("12.6.1", "12.5.1", 1),
+            Arguments.of("14.10.55", "14.10.20", 1),
+            Arguments.of("14.13.10", "14.10.55", 1),
+            Arguments.of("14.13.10", "15.1", -1)
+        );
     }
 
-    @Parameter(value = 0)
-    public String version1;
-
-    @Parameter(value = 1)
-    public String version2;
-
-    @Parameter(value = 2)
-    public int expected;
-
-    @Test
-    public void compareVersionTest() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void compareVersionTest(String version1, String version2, int expected) {
         assertEquals(expected, new VersionNumberComparator().compare(version1, version2));
     }
 }

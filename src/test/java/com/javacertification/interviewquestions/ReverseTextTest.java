@@ -1,38 +1,28 @@
 package com.javacertification.interviewquestions;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static org.junit.runners.Parameterized.Parameter;
-import static org.junit.runners.Parameterized.Parameters;
+import static org.assertj.core.api.BDDAssertions.then;
 
-@RunWith(Parameterized.class)
-public class ReverseTextTest {
+class ReverseTextTest {
 
-    @Parameters(name = "({index}): reverse({1})={0}")
-    public static Collection data() {
-        return Arrays.asList(new Object[][]{
-                {"", null},
-                {"", ""},
-                {"oruro", "oruro"},
-                {"012345", "543210"},
-                {"sDerG", "GreDs"}
-        });
+    private static Stream<Arguments> data() {
+        return Stream.of(
+            Arguments.of("", null),
+            Arguments.of("", ""),
+            Arguments.of("oruro", "oruro"),
+            Arguments.of("012345", "543210"),
+            Arguments.of("sDerG", "GreDs")
+        );
     }
 
-    @Parameter(value = 0)
-    public String expected;
-
-    @Parameter(value = 1)
-    public String input;
-
-    @Test
-    public void reverseText() {
-        Assert.assertEquals(expected, StringUtils.reverse(input));
+    @ParameterizedTest
+    @MethodSource("data")
+    void reverseText(String expected, String input) {
+        then(StringUtils.reverse(input)).isEqualTo(expected);
     }
 }

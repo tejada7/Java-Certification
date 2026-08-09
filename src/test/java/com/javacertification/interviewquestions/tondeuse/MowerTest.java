@@ -1,8 +1,9 @@
 package com.javacertification.interviewquestions.tondeuse;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -12,12 +13,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
-public class MowerTest {
+class MowerTest {
 
     /**
      * Dataset.
@@ -25,32 +26,34 @@ public class MowerTest {
      * @return a collection that contains the value to which we evaluate to know if it belong to a power of 2 and the
      * expected result.
      */
-    @Parameterized.Parameters
-    public static Collection<Object> getData() {
-        return asList(new Object[][]{
-                {asList("5 5",
-                        "1 2 N",
-                        "GAGAGAGAA",
-                        "3 3 E",
-                        "AADAADADDA"), Arrays.asList("1 3 N", "5 1 E")}
-        });
+    private static Stream<Arguments> mowerTestFromCodeInput() {
+        return Stream.of(
+            Arguments.of(
+                asList("5 5",
+                    "1 2 N",
+                    "GAGAGAGAA",
+                    "3 3 E",
+                    "AADAADADDA"),
+                Arrays.asList("1 3 N", "5 1 E")
+            )
+        );
     }
 
-    @Parameterized.Parameter
-    public List<String> input;
-
-    @Parameterized.Parameter(value = 1)
-    public List<String> expectedOutput;
-
-    @Test
-    public void mowerTestFromCodeInput() {
+    @ParameterizedTest
+    @MethodSource
+    void mowerTestFromCodeInput(List<String> input, List<String> expectedOutput) {
         assertEquals(expectedOutput, MowerLauncher.processInput(input, false));
     }
 
     @Test
-    public void mowerTestFromExternalFile() throws URISyntaxException, IOException {
+    void mowerTestFromExternalFile() throws URISyntaxException, IOException {
+        // Given
         final URL resource = getClass().getClassLoader().getResource("mower_test_case_1.txt");
+
+        // When
         List<String> lines = Files.readAllLines(Paths.get(resource.toURI()));
-        assertEquals(expectedOutput, MowerLauncher.processInput(lines, false));
+
+        // Then
+        assertEquals(Arrays.asList("1 3 N", "5 1 E"), MowerLauncher.processInput(lines, false));
     }
 }

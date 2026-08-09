@@ -1,10 +1,11 @@
 package com.javacertification.miscellaneous;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-public class LinkedEnumTest {
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+class LinkedEnumTest {
 
     enum Car implements LinkedEnum<Car> {
         ISUZU, TOYOTA, CHEVI, NISSAN;
@@ -19,7 +20,7 @@ public class LinkedEnumTest {
         final Car nextCar = car.next();
 
         // Then
-        Assert.assertEquals(Car.TOYOTA, nextCar);
+        assertEquals(Car.TOYOTA, nextCar);
     }
 
     @Test
@@ -31,7 +32,7 @@ public class LinkedEnumTest {
         final Car previousCar = car.previous();
 
         // Then
-        Assert.assertEquals(Car.CHEVI, previousCar);
+        assertEquals(Car.CHEVI, previousCar);
     }
 
     @Test
@@ -45,7 +46,7 @@ public class LinkedEnumTest {
         final Car unknownCar2 = car2.previous();
 
         // Then
-        Assert.assertNull(unknownCar1);
-        Assert.assertNull(unknownCar2);
+        then(unknownCar1).isNull();
+        then(unknownCar2).isNull();
     }
 }

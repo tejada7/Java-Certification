@@ -1,19 +1,26 @@
 package com.javacertification.datastructures;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.BDDSoftAssertions.thenSoftly;
 
-public class BinaryTreeTest {
+class BinaryTreeTest {
 
     @Test
-    public void fourElementArrayTest() {
+    void fourElementArrayTest() {
+        // Given
         Integer[] array = new Integer[]{1, 2, 3, 4};
+
+        // When
         BinaryTree<Integer> tree = new BinaryTree<>(array);
-        assertEquals(2, tree.getRoot().value.intValue());
-        assertEquals(1, tree.getRoot().left.value.intValue());
-        assertEquals(3, tree.getRoot().right.value.intValue());
-        assertEquals(4, tree.getRoot().right.right.value.intValue());
+
+        // Then
+        thenSoftly(softly -> {
+            softly.then(tree.getRoot().value.intValue()).isEqualTo(2);
+            softly.then(tree.getRoot().left.value.intValue()).isEqualTo(1);
+            softly.then(tree.getRoot().right.value.intValue()).isEqualTo(3);
+            softly.then(tree.getRoot().right.right.value.intValue()).isEqualTo(4);
+        });
         // 2
         // ┌─┴─┐
         // 1 3
@@ -22,23 +29,30 @@ public class BinaryTreeTest {
     }
 
     @Test
-    public void thirteenElementArrayTest() {
+    void thirteenElementArrayTest() {
+        // Given
         Integer[] array = new Integer[]{1, 2, 4, 5, 6, 8, 9, 10,
                 11, 12, 13, 14, 15};
+
+        // When
         BinaryTree<Integer> tree = new BinaryTree<>(array);
-        assertEquals(9, tree.getRoot().value.intValue());
-        assertEquals(4, tree.getRoot().left.value.intValue());
-        assertEquals(12, tree.getRoot().right.value.intValue());
-        assertEquals(1, tree.getRoot().left.left.value.intValue());
-        assertEquals(6, tree.getRoot().left.right.value.intValue());
-        assertEquals(10, tree.getRoot().right.left.value.intValue());
-        assertEquals(14, tree.getRoot().right.right.value.intValue());
-        assertEquals(2, tree.getRoot().left.left.right.value.intValue());
-        assertEquals(5, tree.getRoot().left.right.left.value.intValue());
-        assertEquals(8, tree.getRoot().left.right.right.value.intValue());
-        assertEquals(11, tree.getRoot().right.left.right.value.intValue());
-        assertEquals(13, tree.getRoot().right.right.left.value.intValue());
-        assertEquals(15, tree.getRoot().right.right.right.value.intValue());
+
+        // Then
+        thenSoftly(softly -> {
+            softly.then(tree.getRoot().value.intValue()).isEqualTo(9);
+            softly.then(tree.getRoot().left.value.intValue()).isEqualTo(4);
+            softly.then(tree.getRoot().right.value.intValue()).isEqualTo(12);
+            softly.then(tree.getRoot().left.left.value.intValue()).isEqualTo(1);
+            softly.then(tree.getRoot().left.right.value.intValue()).isEqualTo(6);
+            softly.then(tree.getRoot().right.left.value.intValue()).isEqualTo(10);
+            softly.then(tree.getRoot().right.right.value.intValue()).isEqualTo(14);
+            softly.then(tree.getRoot().left.left.right.value.intValue()).isEqualTo(2);
+            softly.then(tree.getRoot().left.right.left.value.intValue()).isEqualTo(5);
+            softly.then(tree.getRoot().left.right.right.value.intValue()).isEqualTo(8);
+            softly.then(tree.getRoot().right.left.right.value.intValue()).isEqualTo(11);
+            softly.then(tree.getRoot().right.right.left.value.intValue()).isEqualTo(13);
+            softly.then(tree.getRoot().right.right.right.value.intValue()).isEqualTo(15);
+        });
         // 9
         // ┌──────┴─────┐
         // 4 12

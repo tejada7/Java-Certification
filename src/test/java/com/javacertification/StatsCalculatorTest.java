@@ -4,20 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.IndicativeSentencesGeneration;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.rmi.AccessException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -39,6 +31,7 @@ class StatsCalculatorTest {
         final String actual = new StatsCalculator().calculate(integers);
 
         // Then
+        System.out.println(Locale.getDefault());
         then(actual).isEqualTo("""
             minimum value = -2\
             maximum value = 92\
