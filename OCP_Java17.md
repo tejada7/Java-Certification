@@ -484,6 +484,8 @@ aMap.entrySet()
 });
 ```
 
+*These are also referred to as non-denotable types, used in Java 24's Gatherers*
+
 ### Using Unary operator with pre-increment
 Given:
 ```java
