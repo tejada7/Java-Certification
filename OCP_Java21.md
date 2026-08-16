@@ -1,7 +1,8 @@
 # Java 21 Oracle Certified Professional study notes
 
 ### Virtual Threads
-They are lightweight daemon threads that sit on top of platform threads, they can be initialized via:
+They are lightweight daemon threads that sit on top of platform threads (to be more accurate, they are executed on top 
+of carrier threads, which are essentially threads from the Fork/Join Pool framework), they can be initialized via:
 ```java
 Thread thread = Thread.ofVirtual()
         .start(() -> { 
@@ -14,6 +15,9 @@ Thread thread = Thread.ofVirtual()
         }); // ℹ️ need to call thread#start to actually start the thread
 ``` 
 
+It’s important to clarify that virtual threads **are not designed to be faster but to offer greater scalability**. They 
+follow Little’s Law, providing higher throughput by enabling greater concurrency, not by executing tasks more quickly.
+
  - ℹ️ Mind that calling `setDaemon(false)` would throw an `IllegalArgumentException`
  - A platform or kernel thread is managed by the operating system and their creation requires a system call which is
  expensive, on the other hand, virtual threads are operated by the JVM and therefore way cheaper to instantiate
@@ -23,6 +27,24 @@ the number of available processors as its target parallelism level
  - There is a useful method allowing to transform a Runnable into a Callable: `Executors#callable(runnable, T result)`
  - It's possible to run java programs without compiling (via javac), using the syntax: `java Test.java <args>` (mind 
 the difference when running a classic compile class `java Test <args>`) → this feature is called `single-file source-code` programs
+
+### Pinning
+Refers to the situation where a virtual thread becomes bound to its carrier thread (the underlying platform thread on 
+which it runs). While pinned, a virtual thread cannot unmount itself from the carrier thread even though it may hit blocking operations, effectively monopolizing that carrier thread for the duration of the pinning.
+- It happens when calling native methods and before Java 24 when invoking synchronized blocks
+
+> [!NOTE]
+> The essence of virtual threads is their ability to be unmounted from carrier threads when they perform blocking 
+> operations, essentially freeing up the carrier threads for other tasks. When pinning happens, a virtual thread cannot 
+> unmount itself. This presents a challenge because we have limited carrier threads. If many virtual threads become 
+> pinned for extended periods, they can tie up these carrier threads. This blocks other virtual threads from executing, 
+> effectively limiting the concurrency benefits provided by virtual threads.
+
+> [!TIP]
+> **Monitoring virtual thread issues**
+> 
+> To track the usage of ThreadLocal, you can start the JVM with the `-Djdk.traceVirtualThreadLocals` and 
+> `-Djdk.tracePinnedThreads=short` flags
 
 ### Thread states
 
@@ -40,6 +62,26 @@ the difference when running a classic compile class `java Test <args>`) → this
   of the `sleep`, `wait` or `join` methods
 - Calling `thread#interrupt` only sets the interrupted flag to `true`, which can be verified by calling
   `thread#isInterrupted` method
+
+#### Handling interrupted exceptions correctly
+
+When dealing with `InterruptedException` in Java, it’s crucial to preserve the thread’s interrupted status. The pattern
+shown demonstrates the proper way to handle this exception:
+
+```java
+
+catch (InterruptedException e) {
+  Thread.currentThread().interrupt();
+  throw new RuntimeException(e);
+}
+```
+When a thread is interrupted via `Thread.interrupt()` sets an internal flag, causing blocking methods (such as `sleep()`,
+`wait()`, or blocking I/O operations) to throw `InterruptedException`. However, catching this exception clears the
+interrupted flag, which can cause problems for code higher up the call stack that needs to know about the interruption.
+
+`Thread.currentThread().interrupt()` resets the interrupted flag on the current thread. This ensures that any calling
+code checking `Thread.interrupted()` or `Thread.currentThread().isInterrupted()` will correctly see that an interruption
+occurred.
 
 ### Java foundations reminder
 
@@ -448,3 +490,42 @@ flowchart BT
     TreeMap --> NavigableMap
     classDef green fill: green
 ```
+
+### Some concurrency  concepts
+- `Asynchronous` means the code might run sometime in the future (e.g. a lambda consumer or supplier)
+- Concurrent means a piece of code runs on another thread, thereby it can handle multiple tasks (context switching) even
+on a single cpu core (e.g. a master chef doing plenty of things near real time of a software tech lead constantly context
+switching on various tasks on demand)
+- Concurrent is always asynchronous but not conversely (e.g. running suppliers on a single thread)
+- Parallelism is the simultaneous execution of multiple tasks or calculations, typically on multi-core systems (e.g. 
+multiple chefs working in parallel)
+- Create a kernel thread is expensive, it costs 1ms and around 2MB of memory
+- To limit the number of concurrent requests to a given thread, use either semaphores or `Gatherer#mapConcurrent`
+
+```java
+public <T> T useResource(Callable<T> task) 
+  throws Exception {
+    semaphore.acquire();  // Acquire before try
+    try {
+        return task.call();
+    } finally {
+        semaphore.release();  // ALWAYS releases
+    }
+}
+```
+
+- Asynchronous programming fundamentally changes how we design, debug, and maintain applications. The gains in performance come with significant costs in cognitive overhead, debugging difficulty, and architectural complexity
+
+
+#### Throughput
+> $$throughput = \frac{TotalRequestsProcessed}{totalRime}$$
+
+Throughput in web applications is the rate at which requests are processed and the server delivers responses,
+typically measured in requests per second (RPS) or transactions per second (TPS). It indicates the application's 
+capacity to handle load, serving as a critical metric for performance, scalability and resource utilization.
+
+#### Executor service limitations 
+
+The Executor framework brings significant improvements in resource management and asynchronous execution to Java applications. However, to maximize its benefits, it’s crucial to be aware of its limitations.
+- still blocking with `Future.get`
+- false sharing, occurs when different threads modify different variables that happen to share the same cache line. The frequent cache line invalidations and reloads may negatively impact overall performance in frameworks like the Executor framework, where tasks are distributed across CPUs. 
